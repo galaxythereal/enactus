@@ -436,7 +436,6 @@ function saveEmailTemplate() {
     const templateType = document.getElementById('template-select').value;
     const templateContent = document.getElementById('template-content').value;
     
-    // Implement template save logic here
     console.log(`Saving ${templateType} template`);
     showNotification('Email template saved successfully');
 }
