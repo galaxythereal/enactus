@@ -3,66 +3,131 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enactus Menoufia Interview System</title>
-    <link rel="stylesheet" href="<?= getStylesheetUrl() ?>">
+    <title>Enactus Menoufia Interviewing System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://apis.google.com/js/api.js"></script>
 </head>
 <body>
     <div id="app">
-        <!-- Login Form -->
-        <div id="loginForm" style="display: none;">
-            <h2>Login</h2>
-            <input type="email" id="email" placeholder="Email" required>
-            <input type="password" id="password" placeholder="Password" required>
-            <button onclick="login()">Login</button>
-        </div>
+        <header>
+            <nav>
+                <div class="logo">
+                    <img src="enactus-logo.png" alt="Enactus Menoufia Logo">
+                    <span>Enactus Menoufia</span>
+                </div>
+                <ul>
+                    <li><a href="#" id="nav-home"><i class="fas fa-home"></i> Home</a></li>
+                    <li><a href="#" id="nav-dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                    <li><a href="#" id="nav-logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                </ul>
+            </nav>
+        </header>
 
-        <!-- Interviewer Dashboard -->
-        <div id="interviewerDashboard" style="display: none;">
-            <h2>Interviewer Dashboard</h2>
-            <button onclick="logout()">Logout</button>
-            <h3>Upcoming Interviews</h3>
-            <div id="upcomingInterviews"></div>
-            <h3>Assigned Interviewees</h3>
-            <div id="assignedInterviewees"></div>
-        </div>
+        <main>
+            <section id="login-section" class="section">
+                <div class="container">
+                    <h2><i class="fas fa-user-lock"></i> Login</h2>
+                    <form id="login-form">
+                        <div class="form-group">
+                            <label for="login-email">Email</label>
+                            <input type="email" id="login-email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="login-password">Password</label>
+                            <input type="password" id="login-password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </form>
+                </div>
+            </section>
 
-        <!-- Admin Dashboard -->
-        <div id="adminDashboard" style="display: none;">
-            <h2>Admin Dashboard</h2>
-            <button onclick="logout()">Logout</button>
-            <h3>Statistics</h3>
-            <div id="statistics"></div>
-            <h3>Applicants</h3>
-            <div id="applicantList"></div>
-            <h3>Interviewers</h3>
-            <div id="interviewerList"></div>
-            <h3>Reports</h3>
-            <button onclick="generateReport('applicantPipeline')">Applicant Pipeline Report</button>
-            <button onclick="generateReport('interviewOutcomes')">Interview Outcomes Report</button>
-            <button onclick="generateReport('interviewerPerformance')">Interviewer Performance Report</button>
-        </div>
+            <section id="dashboard-section" class="section hidden">
+                <div class="container">
+                    <h2><i class="fas fa-tachometer-alt"></i> Dashboard</h2>
+                    <div class="dashboard-grid">
+                        <div class="dashboard-card" id="user-info">
+                            <h3>User Information</h3>
+                            <div id="user-details"></div>
+                        </div>
+                        <div class="dashboard-card" id="interview-schedule">
+                            <h3>Upcoming Interviews</h3>
+                            <div id="schedule-list"></div>
+                        </div>
+                        <div class="dashboard-card" id="quick-stats">
+                            <h3>Quick Stats</h3>
+                            <div id="stats-display"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-        <!-- Interviewee Profile -->
-        <div id="intervieweeProfile" style="display: none;">
-            <h2>Interviewee Profile</h2>
-            <button onclick="goBack()">Back</button>
-            <div id="applicantInfo"></div>
-            <h3>Interview Questions</h3>
-            <div id="questionSet"></div>
-            <h3>Notes</h3>
-            <textarea id="interviewNotes" rows="4"></textarea>
-            <button onclick="saveNotes()">Save Notes</button>
-            <h3>Rating</h3>
-            <select id="candidateRating">
-                <option value="1">1 - Poor</option>
-                <option value="2">2 - Below Average</option>
-                <option value="3">3 - Average</option>
-                <option value="4">4 - Good</option>
-                <option value="5">5 - Excellent</option>
-            </select>
-            <button onclick="submitRating()">Submit Rating</button>
-        </div>
+            <section id="interviewee-section" class="section hidden">
+                <div class="container">
+                    <h2><i class="fas fa-user-tie"></i> Interviewee Profile</h2>
+                    <div class="profile-grid">
+                        <div class="profile-card" id="interviewee-info">
+                            <h3>Applicant Information</h3>
+                            <div id="applicant-details"></div>
+                        </div>
+                        <div class="profile-card" id="question-set">
+                            <h3>Interview Questions</h3>
+                            <div id="question-list"></div>
+                        </div>
+                        <div class="profile-card" id="notes-area">
+                            <h3>Interview Notes</h3>
+                            <textarea id="interview-notes" placeholder="Take notes here..."></textarea>
+                        </div>
+                        <div class="profile-card" id="rating-area">
+                            <h3>Candidate Rating</h3>
+                            <div id="rating-stars"></div>
+                            <button id="submit-rating" class="btn btn-primary">Submit Rating</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="admin-section" class="section hidden">
+                <div class="container">
+                    <h2><i class="fas fa-user-cog"></i> Admin Dashboard</h2>
+                    <div class="admin-grid">
+                        <div class="admin-card" id="applicant-overview">
+                            <h3>Applicant Overview</h3>
+                            <div id="applicant-list"></div>
+                        </div>
+                        <div class="admin-card" id="interviewer-management">
+                            <h3>Interviewer Management</h3>
+                            <div id="interviewer-list"></div>
+                        </div>
+                        <div class="admin-card" id="question-management">
+                            <h3>Question Management</h3>
+                            <div id="question-bank"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="reports-section" class="section hidden">
+                <div class="container">
+                    <h2><i class="fas fa-chart-bar"></i> Reports and Analytics</h2>
+                    <div id="report-filters">
+                        <select id="report-type">
+                            <option value="applicant-pipeline">Applicant Pipeline</option>
+                            <option value="interview-outcomes">Interview Outcomes</option>
+                            <option value="interviewer-performance">Interviewer Performance</option>
+                        </select>
+                        <button id="generate-report" class="btn btn-primary">Generate Report</button>
+                    </div>
+                    <div id="report-content"></div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 Enactus Menoufia. All rights reserved.</p>
+        </footer>
     </div>
-    <script src="<?= getScriptUrl() ?>"></script>
+
+    <script src="code.js"></script>
 </body>
 </html>
