@@ -1,505 +1,830 @@
 // Global variables
 let currentUser = null;
-let interviewData = [];
-let questionData = [];
+let currentPage = 'login';
+
+// DOM Elements
+const app = document.getElementById('app');
+const mainNav = document.getElementById('main-nav');
+const logoutBtn = document.getElementById('logout-btn');
+const loginForm = document.getElementById('login-form');
+const pages = document.querySelectorAll('.page');
+
+// Event Listeners
+document.addEventListener('DOMContentLoaded', initApp);
+mainNav.addEventListener('click', handleNavigation);
+logoutBtn.addEventListener('click', handleLogout);
+loginForm.addEventListener('submit', handleLogin);
 
 // Initialize the application
-function init() {
-    gapi.load('client', initGoogleApi);
-    document.getElementById('login-form').addEventListener('submit', handleLogin);
-    document.getElementById('logout').addEventListener('click', handleLogout);
-    document.getElementById('mobile-menu-button').addEventListener('click', toggleMobileMenu);
-    document.getElementById('interview-form').addEventListener('submit', submitInterview);
-    document.getElementById('question-form').addEventListener('submit', addQuestion);
+function initApp() {
+    checkAuthStatus();
+    renderPage(currentPage);
 }
 
-// Initialize Google API client
-function initGoogleApi() {
-    gapi.client.init({
-        apiKey: 'YOUR_API_KEY',
-        clientId: 'YOUR_CLIENT_ID',
-        discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4'],
-        scope: 'https://www.googleapis.com/auth/spreadsheets'
-    }).then(() => {
-        if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
-            handleAuthResult(true);
-        } else {
-            showSection('login');
-        }
-    });
-}
-
-// Handle login form submission
-function handleLogin(event) {
-    event.preventDefault();
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-    // In a real application, you would validate credentials against a secure backend
-    // For this example, we'll use a simple check
-    if (email === 'admin@enactus.com' && password === 'admin123') {
-        currentUser = { name: 'Admin User', role: 'admin' };
-        handleAuthResult(true);
-    } else if (email === 'interviewer@enactus.com' && password === 'interviewer123') {
-        currentUser = { name: 'Interviewer', role: 'interviewer' };
-        handleAuthResult(true);
-    } else {
-        alert('Invalid credentials. Please try again.');
+// Check authentication status
+function checkAuthStatus() {
+    // In a real application, you would check with the server
+    // For this example, we'll use localStorage
+    const storedUser = localStorage.getItem('currentUser');
+    if (storedUser) {
+        currentUser = JSON.parse(storedUser);
+        updateNavigation();
     }
 }
 
-// Handle successful authentication
-function handleAuthResult(isSignedIn) {
-    if (isSignedIn) {
-        loadData().then(() => {
-            updateUI();
-            if (currentUser.role === 'admin') {
-                showSection('admin');
+// Update navigation based on user role
+function updateNavigation() {
+    const navLinks = mainNav.querySelectorAll('.nav-link');
+    navLinks.forEach(link => {
+        if (currentUser) {
+            if (link.dataset.page === 'login') {
+                link.classList.add('hidden');
             } else {
-                showSection('dashboard');
+                link.classList.remove('hidden');
             }
-        });
+        } else {
+            if (link.dataset.page === 'login') {
+                link.classList.remove('hidden');
+            } else {
+                link.classList.add('hidden');
+            }
+        }
+    });
+
+    logoutBtn.classList.toggle('hidden', !currentUser);
+}
+
+// Handle navigation
+function handleNavigation(e) {
+    e.preventDefault();
+    if (e.target.classList.contains('nav-link')) {
+        const page = e.target.dataset.page;
+        renderPage(page);
+    }
+}
+
+// Render the selected page
+function renderPage(page) {
+    pages.forEach(p => p.classList.add('hidden'));
+    const selectedPage = document.getElementById(`${page}-page`);
+    if (selectedPage) {
+        selectedPage.classList.remove('hidden');
+        currentPage = page;
+
+        switch (page) {
+            case 'dashboard':
+                renderDashboard();
+                break;
+            case 'profile':
+                renderProfile();
+                break;
+            case 'admin':
+                renderAdminDashboard();
+                break;
+        }
+    }
+}
+
+// Handle login
+function handleLogin(e) {
+    e.preventDefault();
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    // In a real application, you would send this to the server for authentication
+    // For this example, we'll use a mock login
+    if (email === 'admin@enactus.com' && password === 'admin123') {
+        currentUser = { email, role: 'admin' };
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        updateNavigation();
+        renderPage('dashboard');
+    } else if (email === 'interviewer@enactus.com' && password === 'interviewer123') {
+        currentUser = { email, role: 'interviewer' };
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        updateNavigation();
+        renderPage('dashboard');
     } else {
-        showSection('login');
+        alert('Invalid credentials. Please try again.');
     }
 }
 
 // Handle logout
 function handleLogout() {
     currentUser = null;
-    gapi.auth2.getAuthInstance().signOut().then(() => {
-        showSection('login');
-    });
+    localStorage.removeItem('currentUser');
+    updateNavigation();
+    renderPage('login');
 }
 
-// Toggle mobile menu
-function toggleMobileMenu() {
-    const mobileMenu = document.querySelector('.md\\:hidden');
-    mobileMenu.classList.toggle('hidden');
-}
-
-// Load data from Google Sheets
-function loadData() {
-    return Promise.all([
-        loadInterviewData(),
-        loadQuestionData()
-    ]);
-}
-
-// Load interview data from Google Sheets
-function loadInterviewData() {
-    return gapi.client.sheets.spreadsheets.values.get({
-        spreadsheetId: 'YOUR_SPREADSHEET_ID',
-        range: 'Interviews!A2:F'
-    }).then(response => {
-        interviewData = response.result.values.map(row => ({
-            id: row[0],
-            interviewee: row[1],
-            interviewer: row[2],
-            date: row[3],
-            time: row[4],
-            status: row[5]
-        }));
-    });
-}
-
-// Load question data from Google Sheets
-function loadQuestionData() {
-    return gapi.client.sheets.spreadsheets.values.get({
-        spreadsheetId: 'YOUR_SPREADSHEET_ID',
-        range: 'Questions!A2:B'
-    }).then(response => {
-        questionData = response.result.values.map(row => ({
-            id: row[0],
-            question: row[1]
-        }));
-    });
-}
-
-// Update UI based on current user and data
-function updateUI() {
-    document.getElementById('user-name').textContent = currentUser.name;
-    updateDashboardStats();
-    updateInterviewTable();
+// Render dashboard
+function renderDashboard() {
+    const dashboardContent = document.getElementById('dashboard-content');
     if (currentUser.role === 'admin') {
-        updateAdminDashboard();
+        dashboardContent.innerHTML = `
+            <h3>Welcome, Admin!</h3>
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <h4>Total Applicants</h4>
+                    <p>150</p>
+                </div>
+                <div class="stat-card">
+                    <h4>Interviews Scheduled</h4>
+                    <p>75</p>
+                </div>
+                <div class="stat-card">
+                    <h4>Interviews Completed</h4>
+                    <p>50</p>
+                </div>
+            </div>
+            <div class="dashboard-actions">
+                <button onclick="renderPage('admin')">Go to Admin Dashboard</button>
+            </div>
+        `;
+    } else {
+        dashboardContent.innerHTML = `
+            <h3>Welcome, Interviewer!</h3>
+            <div class="upcoming-interviews">
+                <h4>Upcoming Interviews</h4>
+                <ul>
+                    <li>John Doe - 2:00 PM</li>
+                    <li>Jane Smith - 3:30 PM</li>
+                    <li>Mike Johnson - 5:00 PM</li>
+                </ul>
+            </div>
+            <div class="dashboard-actions">
+                // ... (continued from previous code.js)
+
+                <button onclick="renderPage('profile')">View Next Interviewee</button>
+            </div>
+        `;
     }
 }
 
-// Update dashboard statistics
-function updateDashboardStats() {
-    const upcomingInterviews = interviewData.filter(interview => interview.status === 'Scheduled').length;
-    const completedInterviews = interviewData.filter(interview => interview.status === 'Completed').length;
-    const averageRating = calculateAverageRating();
+// Render profile
+function renderProfile() {
+    const profileContent = document.getElementById('profile-content');
+    // In a real application, you would fetch this data from the server
+    const mockInterviewee = {
+        name: "John Doe",
+        email: "johndoe@example.com",
+        phone: "+20 123 456 7890",
+        university: "Menoufia University",
+        major: "Computer Science",
+        graduationYear: "2025",
+        skills: ["JavaScript", "React", "Node.js", "Python"],
+        experience: "1 year internship at Tech Corp"
+    };
 
-    document.getElementById('upcoming-interviews').textContent = upcomingInterviews;
-    document.getElementById('completed-interviews').textContent = completedInterviews;
-    document.getElementById('average-rating').textContent = averageRating.toFixed(1);
+    profileContent.innerHTML = `
+        <div class="interviewee-info">
+            <h3>${mockInterviewee.name}</h3>
+            <p><strong>Email:</strong> ${mockInterviewee.email}</p>
+            <p><strong>Phone:</strong> ${mockInterviewee.phone}</p>
+            <p><strong>University:</strong> ${mockInterviewee.university}</p>
+            <p><strong>Major:</strong> ${mockInterviewee.major}</p>
+            <p><strong>Graduation Year:</strong> ${mockInterviewee.graduationYear}</p>
+            <p><strong>Skills:</strong> ${mockInterviewee.skills.join(', ')}</p>
+            <p><strong>Experience:</strong> ${mockInterviewee.experience}</p>
+        </div>
+        <div class="interview-questions">
+            <h4>Interview Questions</h4>
+            <ul id="question-list"></ul>
+        </div>
+    `;
+
+    renderInterviewQuestions();
+    setupRating();
 }
 
-// Calculate average rating
-function calculateAverageRating() {
-    const completedInterviews = interviewData.filter(interview => interview.status === 'Completed');
-    if (completedInterviews.length === 0) return 0;
-    const totalRating = completedInterviews.reduce((sum, interview) => sum + parseFloat(interview.rating || 0), 0);
-    return totalRating / completedInterviews.length;
+// Render interview questions
+function renderInterviewQuestions() {
+    const questionList = document.getElementById('question-list');
+    // In a real application, you would fetch these questions from the server
+    const mockQuestions = [
+        "Tell me about yourself and your background in Enactus.",
+        "What motivated you to join Enactus Menoufia?",
+        "Describe a project you've worked on that demonstrates your leadership skills.",
+        "How do you handle conflicts within a team?",
+        "What do you think are the biggest challenges facing social entrepreneurs today?"
+    ];
+
+    questionList.innerHTML = mockQuestions.map(q => `
+        <li>
+            <p>${q}</p>
+            <textarea class="question-notes" rows="2" placeholder="Enter notes here..."></textarea>
+        </li>
+    `).join('');
 }
 
-// Update interview table
-function updateInterviewTable() {
-    const table = document.getElementById('interview-table');
-    const tbody = table.querySelector('tbody');
-    tbody.innerHTML = '';
+// Setup rating system
+function setupRating() {
+    const ratingStars = document.getElementById('rating-stars');
+    const submitRating = document.getElementById('submit-rating');
 
-    const userInterviews = interviewData.filter(interview => interview.interviewer === currentUser.name);
+    ratingStars.innerHTML = `
+        <i class="fas fa-star" data-rating="1"></i>
+        <i class="fas fa-star" data-rating="2"></i>
+        <i class="fas fa-star" data-rating="3"></i>
+        <i class="fas fa-star" data-rating="4"></i>
+        <i class="fas fa-star" data-rating="5"></i>
+    `;
 
-    userInterviews.forEach(interview => {
-        const row = tbody.insertRow();
-        row.innerHTML = `
-            <td class="py-2 px-4 border-b border-gray-200">${interview.interviewee}</td>
-            <td class="py-2 px-4 border-b border-gray-200">${interview.date}</td>
-            <td class="py-2 px-4 border-b border-gray-200">${interview.time}</td>
-            <td class="py-2 px-4 border-b border-gray-200">${interview.status}</td>
-            <td class="py-2 px-4 border-b border-gray-200">
-                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded" onclick="startInterview('${interview.id}')">
-                    ${interview.status === 'Scheduled' ? 'Start' : 'View'}
-                </button>
-            </td>
-        `;
-    });
-}
+    let currentRating = 0;
 
-// Start or view an interview
-function startInterview(interviewId) {
-    const interview = interviewData.find(i => i.id === interviewId);
-    if (!interview) return;
-
-    document.getElementById('interviewee-name').textContent = interview.interviewee;
-    document.getElementById('interview-date').textContent = interview.date;
-    document.getElementById('interview-time').textContent = interview.time;
-    document.getElementById('interview-status').textContent = interview.status;
-
-    const form = document.getElementById('interview-form');
-    form.innerHTML = '';
-    questionData.forEach(question => {
-        const div = document.createElement('div');
-        div.className = 'mb-4';
-        div.innerHTML = `
-            <label class="block text-gray-700 font-bold mb-2" for="q${question.id}">${question.question}</label>
-            <textarea id="q${question.id}" name="q${question.id}" class="w-full p-2 border rounded" rows="3"></textarea>
-        `;
-        form.appendChild(div);
-    });
-
-    showSection('interview');
-}
-
-// Submit interview
-function submitInterview(event) {
-    event.preventDefault();
-    const interviewId = document.getElementById('interviewee-name').textContent;
-    const rating = document.getElementById('interview-rating').value;
-    const notes = document.getElementById('interview-notes').value;
-
-    const answers = questionData.map(question => ({
-        questionId: question.id,
-        answer: document.getElementById(`q${question.id}`).value
-    }));
-
-    // In a real application, you would send this data to your backend or directly to Google Sheets
-    console.log('Interview submitted:', { interviewId, rating, notes, answers });
-
-    // Update interview status
-    const interviewIndex = interviewData.findIndex(i => i.id === interviewId);
-    if (interviewIndex !== -1) {
-        interviewData[interviewIndex].status = 'Completed';
-        interviewData[interviewIndex].rating = rating;
-    }
-
-    updateUI();
-    showSection('dashboard');
-}
-
-// Update admin dashboard
-function updateAdminDashboard() {
-    updateAdminStats();
-    updateAdminCharts();
-    updateAdminInterviewTable();
-}
-
-// Update admin statistics
-function updateAdminStats() {
-    const totalApplicants = interviewData.length;
-    const scheduledInterviews = interviewData.filter(interview => interview.status === 'Scheduled').length;
-    const completedInterviews = interviewData.filter(interview => interview.status === 'Completed').length;
-    const averageRating = calculateAverageRating();
-
-    document.getElementById('total-applicants').textContent = totalApplicants;
-    document.getElementById('interviews-scheduled').textContent = scheduledInterviews;
-    document.getElementById('interviews-completed').textContent = completedInterviews;
-    document.getElementById('admin-average-rating').textContent = averageRating.toFixed(1);
-}
-
-// Update admin charts
-function updateAdminCharts() {
-    updateInterviewProgressChart();
-    updateRatingDistributionChart();
-}
-
-// Update interview progress chart
-function updateInterviewProgressChart() {
-    const ctx = document.getElementById('interview-progress-chart').getContext('2d');
-    new Chart(ctx, {
-        type: 'pie',
-        data: {
-            labels: ['Scheduled', 'Completed', 'Cancelled'],
-            datasets: [{
-                data: [
-                    interviewData.filter(i => i.status === 'Scheduled').length,
-                    interviewData.filter(i => i.status === 'Completed').length,
-                    interviewData.filter(i => i.status === 'Cancelled').length
-                ],
-                backgroundColor: ['#3b82f6', '#10b981', '#ef4444']
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: 'bottom'
-                },
-                title: {
-                    display: true,
-                    text: 'Interview Progress'
-                }
-            }
+    ratingStars.addEventListener('click', (e) => {
+        if (e.target.matches('.fa-star')) {
+            currentRating = parseInt(e.target.dataset.rating);
+            updateStars();
         }
     });
+
+    submitRating.addEventListener('click', () => {
+        if (currentRating > 0) {
+            // In a real application, you would send this rating to the server
+            alert(`Rating of ${currentRating} stars submitted.`);
+        } else {
+            alert('Please select a rating before submitting.');
+        }
+    });
+
+    function updateStars() {
+        const stars = ratingStars.querySelectorAll('.fa-star');
+        stars.forEach((star, index) => {
+            if (index < currentRating) {
+                star.classList.add('active');
+            } else {
+                star.classList.remove('active');
+            }
+        });
+    }
 }
 
-// Update rating distribution chart
-function updateRatingDistributionChart() {
-    const ctx = document.getElementById('rating-distribution-chart').getContext('2d');
-    const ratings = interviewData.filter(i => i.status === 'Completed').map(i => parseInt(i.rating));
-    const ratingCounts = [1, 2, 3, 4, 5].map(rating => ratings.filter(r => r === rating).length);
+// Render admin dashboard
+function renderAdminDashboard() {
+    const adminContent = document.getElementById('admin-content');
+    adminContent.innerHTML = `
+        <div class="admin-stats">
+            <div class="stat-card">
+                <h4>Total Applicants</h4>
+                <p id="total-applicants">Loading...</p>
+            </div>
+            <div class="stat-card">
+                <h4>Interviews Scheduled</h4>
+                <p id="interviews-scheduled">Loading...</p>
+            </div>
+            <div class="stat-card">
+                <h4>Interviews Completed</h4>
+                <p id="interviews-completed">Loading...</p>
+            </div>
+        </div>
+        <div class="admin-actions">
+            <button onclick="showApplicantOverview()">Applicant Overview</button>
+            <button onclick="showInterviewSchedule()">Interview Schedule</button>
+            <button onclick="showInterviewerManagement()">Interviewer Management</button>
+            <button onclick="showQuestionBank()">Question Bank</button>
+        </div>
+        <div id="admin-view-content"></div>
+    `;
 
+    fetchAdminStats();
+}
+
+// Fetch admin statistics
+function fetchAdminStats() {
+    // In a real application, you would fetch this data from the server
+    // For this example, we'll use setTimeout to simulate an API call
+    setTimeout(() => {
+        document.getElementById('total-applicants').textContent = '150';
+        document.getElementById('interviews-scheduled').textContent = '75';
+        document.getElementById('interviews-completed').textContent = '50';
+    }, 1000);
+}
+
+// Show applicant overview
+function showApplicantOverview() {
+    const adminViewContent = document.getElementById('admin-view-content');
+    adminViewContent.innerHTML = `
+        <h3>Applicant Overview</h3>
+        <canvas id="applicant-chart"></canvas>
+    `;
+
+    // Create a chart using Chart.js
+    const ctx = document.getElementById('applicant-chart').getContext('2d');
     new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: ['1 Star', '2 Stars', '3 Stars', '4 Stars', '5 Stars'],
+            labels: ['Applied', 'Shortlisted', 'Interviewed', 'Accepted', 'Rejected'],
             datasets: [{
-                label: 'Number of Interviews',
-                data: ratingCounts,
-                backgroundColor: '#3b82f6'
+                label: 'Number of Applicants',
+                data: [150, 100, 75, 30, 45],
+                backgroundColor: [
+                    'rgba(75, 192, 192, 0.6)',
+                    'rgba(54, 162, 235, 0.6)',
+                    'rgba(255, 206, 86, 0.6)',
+                    'rgba(75, 192, 192, 0.6)',
+                    'rgba(255, 99, 132, 0.6)'
+                ],
+                borderColor: [
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(255, 99, 132, 1)'
+                ],
+                borderWidth: 1
             }]
         },
         options: {
-            responsive: true,
             scales: {
                 y: {
-                    beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: 'Number of Interviews'
-                    }
-                }
-            },
-            plugins: {
-                legend: {
-                    display: false
-                },
-                title: {
-                    display: true,
-                    text: 'Rating Distribution'
+                    beginAtZero: true
                 }
             }
         }
     });
 }
 
-// Update admin interview table
-function updateAdminInterviewTable() {
-    const table = document.getElementById('admin-interview-table');
-    const tbody = table.querySelector('tbody');
-    tbody.innerHTML = '';
+// Show interview schedule
+function showInterviewSchedule() {
+    const adminViewContent = document.getElementById('admin-view-content');
+    adminViewContent.innerHTML = `
+        <h3>Interview Schedule</h3>
+        <div id="interview-calendar"></div>
+    `;
 
-    interviewData.forEach(interview => {
-        const row = tbody.insertRow();
-        row.innerHTML = `
-            <td class="py-2 px-4 border-b border-gray-200">${interview.interviewee}</td>
-            <td class="py-2 px-4 border-b border-gray-200">${interview.interviewer}</td>
-            <td class="py-2 px-4 border-b border-gray-200">${interview.date}</td>
-            <td class="py-2 px-4 border-b border-gray-200">${interview.time}</td>
-            <td class="py-2 px-4 border-b border-gray-200">${interview.status}</td>
-            <td class="py-2 px-4 border-b border-gray-200">
-                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded mr-2" onclick="editInterview('${interview.id}')">Edit</button>
-                <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded" onclick="deleteInterview('${interview.id}')">Delete</button>
+    // Initialize FullCalendar
+    const calendarEl = document.getElementById('interview-calendar');
+    const calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        },
+        events: [
+            {
+                title: 'Interview: John Doe',
+                start: '2024-09-30T10:00:00',
+                end: '2024-09-30T11:00:00'
+            },
+            {
+                title: 'Interview: Jane Smith',
+                start: '2024-09-30T14:00:00',
+                end: '2024-09-30T15:00:00'
+            },
+            // Add more events as needed
+        ]
+    });
+    calendar.render();
+}
+
+// Show interviewer management
+function showInterviewerManagement() {
+    const adminViewContent = document.getElementById('admin-view-content');
+    adminViewContent.innerHTML = `
+        <h3>Interviewer Management</h3>
+        <table class="interviewer-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="interviewer-list"></tbody>
+        </table>
+        <button onclick="showAddInterviewerForm()">Add Interviewer</button>
+    `;
+
+    // Fetch and display interviewers
+    fetchInterviewers();
+}
+
+// Fetch interviewers
+function fetchInterviewers() {
+    // In a real application, you would fetch this data from the server
+    const mockInterviewers = [
+        { id: 1, name: "Alice Johnson", email: "alice@enactus.com", role: "Lead Interviewer" },
+        { id: 2, name: "Bob Smith", email: "bob@enactus.com", role: "Interviewer" },
+        { id: 3, name: "Carol Williams", email: "carol@enactus.com", role: "Interviewer" }
+    ];
+
+    const interviewerList = document.getElementById('interviewer-list');
+    interviewerList.innerHTML = mockInterviewers.map(interviewer => `
+        <tr>
+            <td>${interviewer.name}</td>
+            <td>${interviewer.email}</td>
+            <td>${interviewer.role}</td>
+            <td>
+                <button onclick="editInterviewer(${interviewer.id})">Edit</button>
+                <button onclick="deleteInterviewer(${interviewer.id})">Delete</button>
             </td>
-        `;
-    });
+        </tr>
+    `).join('');
 }
 
-// Edit interview (admin function)
-function editInterview(interviewId) {
-    const interview = interviewData.find(i => i.id === interviewId);
-    if (!interview) return;
+// Show add interviewer form
+function showAddInterviewerForm() {
+    const adminViewContent = document.getElementById('admin-view-content');
+    adminViewContent.innerHTML = `
+        <h3>Add Interviewer</h3>
+        <form id="add-interviewer-form">
+            <div class="form-group">
+                <label for="interviewer-name">Name</label>
+                <input type="text" id="interviewer-name" required>
+            </div>
+            <div class="form-group">
+                <label for="interviewer-email">Email</label>
+                <input type="email" id="interviewer-email" required>
+            </div>
+            <div class="form-group">
+                <label for="interviewer-role">Role</label>
+                <select id="interviewer-role" required>
+                    <option value="Lead Interviewer">Lead Interviewer</option>
+                    <option value="Interviewer">Interviewer</option>
+                </select>
+            </div>
+            <button type="submit">Add Interviewer</button>
+        </form>
+    `;
 
-    // In a real application, you would open a modal or navigate to an edit page
-    console.log('Editing interview:', interview);
+    document.getElementById('add-interviewer-form').addEventListener('submit', handleAddInterviewer);
 }
 
-// Delete interview (admin function)
-function deleteInterview(interviewId) {
-    if (confirm('Are you sure you want to delete this interview?')) {
-        interviewData = interviewData.filter(i => i.id !== interviewId);
-        updateAdminDashboard();
+// Handle add interviewer
+function handleAddInterviewer(e) {
+    e.preventDefault();
+    const name = document.getElementById('interviewer-name').value;
+    const email = document.getElementById('interviewer-email').value;
+    const role = document.getElementById('interviewer-role').value;
+
+    // In a real application, you would send this data to the server
+    alert(`Interviewer added: ${name} (${email}) - ${role}`);
+    showInterviewerManagement();
+}
+
+// Edit interviewer
+function editInterviewer(id) {
+    // In a real application, you would fetch the interviewer's data and populate a form
+    alert(`Editing interviewer with ID: ${id}`);
+}
+
+// Delete interviewer
+function deleteInterviewer(id) {
+    // In a real application, you would send a request to the server to delete the interviewer
+    if (confirm(`Are you sure you want to delete the interviewer with ID: ${id}?`)) {
+        alert(`Interviewer with ID: ${id} deleted`);
+        showInterviewerManagement();
     }
 }
 
-// Add new question (admin function)
-function addQuestion(event) {
-    event.preventDefault();
-    const newQuestion = document.getElementById('new-question').value;
-    if (newQuestion.trim() === '') return;
+// Show question bank
+function showQuestionBank() {
+    const adminViewContent = document.getElementById('admin-view-content');
+    adminViewContent.innerHTML = `
+        <h3>Question Bank</h3>
+        <div id="question-list"></div>
+        <button onclick="showAddQuestionForm()">Add Question</button>
+    `;
 
-    const newId = Math.max(...questionData.map(q => parseInt(q.id))) + 1;
-    questionData.push({ id: newId.toString(), question: newQuestion });
-
-    updateQuestionList();
-    document.getElementById('new-question').value = '';
-
-    // In a real application, you would also update the Google Sheet
+    // Fetch and display questions
+    fetchQuestions();
 }
 
-// Update question list
-function updateQuestionList() {
-    const list = document.getElementById('question-list');
-    list.innerHTML = '';
-    questionData.forEach(question => {
-        const li = document.createElement('li');
-        li.className = 'mb-2';
-        li.innerHTML = `
-            ${question.question}
-            <button class="ml-2 text-red-500 hover:text-red-700" onclick="deleteQuestion('${question.id}')">Delete</button>
-        `;
-        list.appendChild(li);
-    });
+// Fetch questions
+function fetchQuestions() {
+    // In a real application, you would fetch this data from the server
+    const mockQuestions = [
+        { id: 1, text: "Tell me about yourself and your background in Enactus.", category: "General" },
+        { id: 2, text: "What motivated you to join Enactus Menoufia?", category: "Motivation" },
+        { id: 3, text: "Describe a project you've worked on that demonstrates your leadership skills.", category: "Experience" },
+        { id: 4, text: "How do you handle conflicts within a team?", category: "Teamwork" },
+        { id: 5, text: "What do you think are the biggest challenges facing social entrepreneurs today?", category: "Industry Knowledge" }
+    ];
+
+    const questionList = document.getElementById('question-list');
+    questionList.innerHTML = mockQuestions.map(question => `
+        <div class="question-item">
+            <p><strong>${question.category}:</strong> ${question.text}</p>
+            <button onclick="editQuestion(${question.id})">Edit</button>
+            <button onclick="deleteQuestion(${question.id})">Delete</button>
+        </div>
+    `).join('');
 }
 
-// Delete question (admin function)
-function deleteQuestion(questionId) {
-    if (confirm('Are you sure you want to delete this question?')) {
-        questionData = questionData.filter(q => q.id !== questionId);
-        updateQuestionList();
-        // In a real application, you would also update the Google Sheet
+// Show add question form
+function showAddQuestionForm() {
+    const adminViewContent = document.getElementById('admin-view-content');
+    adminViewContent.innerHTML = `
+        <h3>Add Question</h3>
+        <form id="add-question-form">
+            <div class="form-group">
+                <label for="question-text">Question</label>
+                <textarea id="question-text" rows="3" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="question-category">Category</label>
+                <select id="question-category" required>
+                    <option value="General">General</option>
+                    <option value="Motivation">Motivation</option>
+                    <option value="Experience">Experience</option>
+                    <option value="Teamwork">Teamwork</option>
+                    <option value="Industry Knowledge">Industry Knowledge</option>
+                </select>
+            </div>
+            <button type="submit">Add Question</button>
+        </form>
+    `;
+
+    document.getElementById('add-question-form').addEventListener('submit', handleAddQuestion);
+}
+
+// Handle add question
+function handleAddQuestion(e) {
+    e.preventDefault();
+    const text = document.getElementById('question-text').value;
+    const category = document.getElementById('question-category').value;
+
+    // In a real application, you would send this data to the server
+    alert(`Question added: ${category} - ${text}`);
+    showQuestionBank();
+}
+
+// Edit question
+function editQuestion(id) {
+    // In a real application, you would fetch the question's data and populate a form
+    alert(`Editing question with ID: ${id}`);
+}
+
+// ... (continued from previous code.js)
+
+// Delete question
+function deleteQuestion(id) {
+    // In a real application, you would send a request to the server to delete the question
+    if (confirm(`Are you sure you want to delete the question with ID: ${id}?`)) {
+        alert(`Question with ID: ${id} deleted`);
+        showQuestionBank();
     }
 }
 
-// Show a specific section and hide others
-function showSection(sectionId) {
-    const sections = ['login', 'dashboard', 'interview', 'admin'];
-    sections.forEach(id => {
-        const element = document.getElementById(id);
-        if (id === sectionId) {
-            element.classList.remove('hidden');
-        } else {
-            element.classList.add('hidden');
-        }
+// Helper function to make API calls to Google Apps Script
+function callScriptFunction(functionName, params) {
+    return new Promise((resolve, reject) => {
+        google.script.run
+            .withSuccessHandler(resolve)
+            .withFailureHandler(reject)
+            [functionName](params);
     });
+}
 
-    // Update navigation visibility based on user role
-    const adminNavItem = document.querySelector('a[href="#admin"]');
-    if (currentUser && currentUser.role === 'admin') {
-        adminNavItem.classList.remove('hidden');
-    } else {
-        adminNavItem.classList.add('hidden');
+// Function to load data from Google Sheets
+async function loadDataFromSheets() {
+    try {
+        const data = await callScriptFunction('getDataFromSheets');
+        // Process the data as needed
+        console.log('Data loaded from Google Sheets:', data);
+        // Update UI with the loaded data
+        updateUIWithData(data);
+    } catch (error) {
+        console.error('Error loading data from Google Sheets:', error);
+        alert('An error occurred while loading data. Please try again.');
     }
 }
 
-// Initialize the application when the DOM is ready
-document.addEventListener('DOMContentLoaded', init);
-
-// Helper function to format date
-function formatDate(date) {
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return new Date(date).toLocaleDateString(undefined, options);
+// Function to update UI with loaded data
+function updateUIWithData(data) {
+    // Update various sections of the UI based on the loaded data
+    // This is a placeholder function - you'll need to implement the actual UI updates
+    console.log('Updating UI with data:', data);
+    // Example: Update dashboard stats
+    if (data.dashboardStats) {
+        document.getElementById('total-applicants').textContent = data.dashboardStats.totalApplicants;
+        document.getElementById('interviews-scheduled').textContent = data.dashboardStats.interviewsScheduled;
+        document.getElementById('interviews-completed').textContent = data.dashboardStats.interviewsCompleted;
+    }
+    // Add more UI updates as needed
 }
 
-// Helper function to format time
-function formatTime(time) {
-    const options = { hour: '2-digit', minute: '2-digit' };
-    return new Date(`2000-01-01T${time}`).toLocaleTimeString(undefined, options);
+// Function to save data to Google Sheets
+async function saveDataToSheets(data) {
+    try {
+        await callScriptFunction('saveDataToSheets', data);
+        console.log('Data saved to Google Sheets:', data);
+        alert('Data saved successfully!');
+    } catch (error) {
+        console.error('Error saving data to Google Sheets:', error);
+        alert('An error occurred while saving data. Please try again.');
+    }
 }
 
-// Helper function to generate a unique ID
-function generateUniqueId() {
-    return Date.now().toString(36) + Math.random().toString(36).substr(2);
-}
-
-// Error handling function
-function handleError(error) {
-    console.error('An error occurred:', error);
-    alert('An error occurred. Please try again later.');
-}
-
-// Function to update Google Sheets
-function updateGoogleSheet(range, values) {
-    return gapi.client.sheets.spreadsheets.values.update({
-        spreadsheetId: 'YOUR_SPREADSHEET_ID',
-        range: range,
-        valueInputOption: 'USER_ENTERED',
-        resource: {
-            values: values
-        }
-    }).then(response => {
-        console.log('Google Sheet updated successfully');
-    }, error => {
-        handleError(error);
-    });
-}
-
-// Function to append data to Google Sheets
-function appendToGoogleSheet(range, values) {
-    return gapi.client.sheets.spreadsheets.values.append({
-        spreadsheetId: 'YOUR_SPREADSHEET_ID',
-        range: range,
-        valueInputOption: 'USER_ENTERED',
-        insertDataOption: 'INSERT_ROWS',
-        resource: {
-            values: values
-        }
-    }).then(response => {
-        console.log('Data appended to Google Sheet successfully');
-    }, error => {
-        handleError(error);
-    });
-}
-
-// Function to validate email
-function validateEmail(email) {
-    const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(String(email).toLowerCase());
-}
-
-// Function to validate password strength
-function validatePassword(password) {
-    // Require at least 8 characters, one uppercase letter, one lowercase letter, and one number
-    const re = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
-    return re.test(password);
-}
-
-// Function to sanitize input
-function sanitizeInput(input) {
-    const map = {
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#x27;',
-        "/": '&#x2F;',
+// Example function to save an interview note
+async function saveInterviewNote(intervieweeId, note) {
+    const data = {
+        intervieweeId: intervieweeId,
+        note: note,
+        timestamp: new Date().toISOString()
     };
-    const reg = /[&<>"'/]/ig;
-    return input.replace(reg, (match)=>(map[match]));
+    await saveDataToSheets(data);
 }
 
-// Initialize the application when the DOM is ready
-document.addEventListener('DOMContentLoaded', init);
+// Function to handle interview note submission
+function handleInterviewNoteSubmit(e) {
+    e.preventDefault();
+    const noteText = document.getElementById('interview-notes').value;
+    const intervieweeId = getCurrentIntervieweeId(); // You'll need to implement this function
+    saveInterviewNote(intervieweeId, noteText);
+}
+
+// Add event listener for interview note form
+document.getElementById('notes-form').addEventListener('submit', handleInterviewNoteSubmit);
+
+// Function to get current interviewee ID (placeholder)
+function getCurrentIntervieweeId() {
+    // In a real application, you would get this from the current state or URL
+    return '12345'; // Placeholder ID
+}
+
+// Function to load interview questions
+async function loadInterviewQuestions() {
+    try {
+        const questions = await callScriptFunction('getInterviewQuestions');
+        renderInterviewQuestions(questions);
+    } catch (error) {
+        console.error('Error loading interview questions:', error);
+        alert('An error occurred while loading interview questions. Please try again.');
+    }
+}
+
+// Function to render interview questions
+function renderInterviewQuestions(questions) {
+    const questionList = document.getElementById('question-list');
+    questionList.innerHTML = questions.map(q => `
+        <li>
+            <p>${q.text}</p>
+            <textarea class="question-notes" rows="2" placeholder="Enter notes here..."></textarea>
+        </li>
+    `).join('');
+}
+
+// Function to handle applicant search
+async function handleApplicantSearch(searchTerm) {
+    try {
+        const results = await callScriptFunction('searchApplicants', searchTerm);
+        displaySearchResults(results);
+    } catch (error) {
+        console.error('Error searching applicants:', error);
+        alert('An error occurred while searching applicants. Please try again.');
+    }
+}
+
+// Function to display search results
+function displaySearchResults(results) {
+    const searchResultsContainer = document.getElementById('search-results');
+    searchResultsContainer.innerHTML = results.map(applicant => `
+        <div class="applicant-card">
+            <h4>${applicant.name}</h4>
+            <p>Email: ${applicant.email}</p>
+            <p>University: ${applicant.university}</p>
+            <button onclick="viewApplicantProfile('${applicant.id}')">View Profile</button>
+        </div>
+    `).join('');
+}
+
+// Function to view applicant profile
+async function viewApplicantProfile(applicantId) {
+    try {
+        const profile = await callScriptFunction('getApplicantProfile', applicantId);
+        renderApplicantProfile(profile);
+    } catch (error) {
+        console.error('Error loading applicant profile:', error);
+        alert('An error occurred while loading the applicant profile. Please try again.');
+    }
+}
+
+// Function to render applicant profile
+function renderApplicantProfile(profile) {
+    const profileContent = document.getElementById('profile-content');
+    profileContent.innerHTML = `
+        <h3>${profile.name}</h3>
+        <p><strong>Email:</strong> ${profile.email}</p>
+        <p><strong>Phone:</strong> ${profile.phone}</p>
+        <p><strong>University:</strong> ${profile.university}</p>
+        <p><strong>Major:</strong> ${profile.major}</p>
+        <p><strong>Graduation Year:</strong> ${profile.graduationYear}</p>
+        <p><strong>Skills:</strong> ${profile.skills.join(', ')}</p>
+        <p><strong>Experience:</strong> ${profile.experience}</p>
+    `;
+}
+
+// Function to schedule an interview
+async function scheduleInterview(applicantId, interviewerId, dateTime) {
+    try {
+        await callScriptFunction('scheduleInterview', { applicantId, interviewerId, dateTime });
+        alert('Interview scheduled successfully!');
+        // Refresh the interview schedule display
+        showInterviewSchedule();
+    } catch (error) {
+        console.error('Error scheduling interview:', error);
+        alert('An error occurred while scheduling the interview. Please try again.');
+    }
+}
+
+// Function to generate reports
+async function generateReport(reportType) {
+    try {
+        const reportData = await callScriptFunction('generateReport', reportType);
+        displayReport(reportType, reportData);
+    } catch (error) {
+        console.error('Error generating report:', error);
+        alert('An error occurred while generating the report. Please try again.');
+    }
+}
+
+// Function to display generated report
+function displayReport(reportType, reportData) {
+    const reportContainer = document.getElementById('report-container');
+    // Clear previous report
+    reportContainer.innerHTML = '';
+
+    // Create report based on type
+    switch (reportType) {
+        case 'applicantSummary':
+            createApplicantSummaryReport(reportData);
+            break;
+        case 'interviewStatistics':
+            createInterviewStatisticsReport(reportData);
+            break;
+        // Add more report types as needed
+    }
+}
+
+// Function to create applicant summary report
+function createApplicantSummaryReport(data) {
+    const reportContainer = document.getElementById('report-container');
+    reportContainer.innerHTML = `
+        <h3>Applicant Summary Report</h3>
+        <p>Total Applicants: ${data.totalApplicants}</p>
+        <p>Shortlisted: ${data.shortlisted}</p>
+        <p>Interviewed: ${data.interviewed}</p>
+        <p>Accepted: ${data.accepted}</p>
+        <p>Rejected: ${data.rejected}</p>
+        <canvas id="applicant-summary-chart"></canvas>
+    `;
+
+    // Create chart using Chart.js
+    const ctx = document.getElementById('applicant-summary-chart').getContext('2d');
+    new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ['Shortlisted', 'Interviewed', 'Accepted', 'Rejected'],
+            datasets: [{
+                data: [data.shortlisted, data.interviewed, data.accepted, data.rejected],
+                backgroundColor: [
+                    'rgba(255, 206, 86, 0.6)',
+                    'rgba(75, 192, 192, 0.6)',
+                    'rgba(54, 162, 235, 0.6)',
+                    'rgba(255, 99, 132, 0.6)'
+                ]
+            }]
+        }
+    });
+}
+
+// Function to create interview statistics report
+function createInterviewStatisticsReport(data) {
+    const reportContainer = document.getElementById('report-container');
+    reportContainer.innerHTML = `
+        <h3>Interview Statistics Report</h3>
+        <p>Total Interviews: ${data.totalInterviews}</p>
+        <p>Average Interview Duration: ${data.averageDuration} minutes</p>
+        <p>Highest Rated Skill: ${data.highestRatedSkill}</p>
+        <p>Lowest Rated Skill: ${data.lowestRatedSkill}</p>
+        <canvas id="interview-statistics-chart"></canvas>
+    `;
+
+    // Create chart using Chart.js
+    const ctx = document.getElementById('interview-statistics-chart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: Object.keys(data.skillRatings),
+            datasets: [{
+                label: 'Average Skill Ratings',
+                data: Object.values(data.skillRatings),
+                backgroundColor: 'rgba(75, 192, 192, 0.6)'
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 5
+                }
+            }
+        }
+    });
+}
+
+// Initialize the application when the DOM is fully loaded
+document.addEventListener('DOMContentLoaded', initApp);
