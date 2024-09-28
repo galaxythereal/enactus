@@ -3,448 +3,810 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enactus Menoufia Interview System</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <title>Enactus Menoufia Professional Interviewing System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
     <style>
-        /* Insert this in the <style> tag */
-body, html {
-    margin: 0;
-    padding: 0;
-    font-family: 'Roboto', sans-serif;
-    background-color: #f5f5f5;
-}
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --background-color: #f4f6f9;
+            --text-color: #333;
+            --card-bg: #fff;
+            --border-color: #e0e0e0;
+        }
 
-header {
-    background-color: #1976d2;
-    color: white;
-    padding: 1rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-h1 {
-    margin: 0;
-    font-size: 1.5rem;
-}
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
 
-nav {
-    margin-top: 1rem;
-}
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
 
-.nav-btn {
-    background-color: transparent;
-    border: none;
-    color: white;
-    padding: 0.5rem 1rem;
-    margin-right: 0.5rem;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s;
-}
+        .sidebar {
+            width: 250px;
+            background-color: var(--primary-color);
+            color: #fff;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
 
-.nav-btn:hover, .nav-btn.active {
-    background-color: rgba(255,255,255,0.2);
-}
+        .sidebar.collapsed {
+            width: 80px;
+        }
 
-main {
-    padding: 2rem;
-    max-width: 1200px;
-    margin: 0 auto;
-}
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            text-align: center;
+        }
 
-.card {
-    background-color: white;
-    border-radius: 4px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
-    padding: 1rem;
-    margin-bottom: 1rem;
-}
+        .nav-item {
+            margin-bottom: 15px;
+        }
 
-.card h2 {
-    margin-top: 0;
-    color: #1976d2;
-}
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            color: #fff;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
+        .nav-link:hover, .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+        }
 
-th, td {
-    text-align: left;
-    padding: 0.5rem;
-    border-bottom: 1px solid #e0e0e0;
-}
+        .nav-link i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
 
-th {
-    background-color: #f5f5f5;
-    font-weight: 500;
-}
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            transition: all 0.3s ease;
+        }
 
-.btn {
-    background-color: #1976d2;
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s;
-}
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
 
-.btn:hover {
-    background-color: #1565c0;
-}
+        .toggle-sidebar {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            font-size: 24px;
+            cursor: pointer;
+        }
 
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.4);
-}
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background-color: var(--card-bg);
+            border-radius: 25px;
+            padding: 5px 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
 
-.modal-content {
-    background-color: #fefefe;
-    margin: 15% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-    max-width: 500px;
-    border-radius: 4px;
-}
+        .search-bar input {
+            border: none;
+            outline: none;
+            padding: 8px;
+            font-size: 16px;
+            width: 300px;
+        }
 
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-}
+        .search-bar i {
+            color: var(--primary-color);
+        }
 
-.close:hover,
-.close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-}
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
 
-.form-group {
-    margin-bottom: 1rem;
-}
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
 
-label {
-    display: block;
-    margin-bottom: 0.5rem;
-}
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
 
-input[type="text"],
-input[type="email"],
-input[type="date"],
-select {
-    width: 100%;
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 1rem;
-}
+        .btn {
+            background-color: var(--primary-color);
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #2980b9;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+
+        .status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status.pending {
+            background-color: #ffeeba;
+            color: #856404;
+        }
+
+        .status.scheduled {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status.completed {
+            background-color: #cce5ff;
+            color: #004085;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 50%;
+            max-width: 500px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+
+            .main-content {
+                padding: 20px;
+            }
+
+            .search-bar input {
+                width: 200px;
+            }
+
+            .modal-content {
+                width: 90%;
+            }
+        }
     </style>
 </head>
 <body>
-    <header>
-        <h1>Enactus Menoufia Interview System</h1>
-        <nav>
-            <button id="dashboard-btn" class="nav-btn active">Dashboard</button>
-            <button id="schedule-btn" class="nav-btn">Schedule</button>
-            <button id="applicants-btn" class="nav-btn">Applicants</button>
-            <button id="reports-btn" class="nav-btn">Reports</button>
-        </nav>
-    </header>
-    
-    <main id="main-content">
-        <!-- Content will be dynamically inserted here -->
-    </main>
+    <div class="container">
+        <aside class="sidebar" id="sidebar">
+            <div class="logo">EMS</div>
+            <nav>
+                <div class="nav-item">
+                    <a href="#" class="nav-link active" data-page="dashboard">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link" data-page="applicants">
+                        <i class="fas fa-users"></i>
+                        <span>Applicants</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link" data-page="interviews">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Interviews</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link" data-page="reports">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Reports</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link" data-page="settings">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+        <main class="main-content" id="main-content">
+            <header class="header">
+                <button class="toggle-sidebar" id="toggle-sidebar">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search...">
+                </div>
+            </header>
+            <div id="page-content"></div>
+        </main>
+    </div>
 
     <script>
-        // Insert this in the <script> tag
-// Mock data (replace with actual data from Google Sheets)
-const applicants = [
-    { id: 1, name: 'John Doe', email: 'john@example.com', college: 'Engineering', status: 'Scheduled' },
-    { id: 2, name: 'Jane Smith', email: 'jane@example.com', college: 'Business', status: 'Pending' },
-    // Add more applicants here
-];
+        // Add this to the <script> tag
+document.addEventListener('DOMContentLoaded', function() {
+    const sidebar = document.getElementById('sidebar');
+    const toggleSidebar = document.getElementById('toggle-sidebar');
+    const navLinks = document.querySelectorAll('.nav-link');
+    const pageContent = document.getElementById('page-content');
 
-const interviews = [
-    { id: 1, applicantId: 1, date: '2024-10-01', time: '10:00 AM', interviewer: 'Alice' },
-    // Add more interviews here
-];
-
-// Navigation
-const navButtons = document.querySelectorAll('.nav-btn');
-const mainContent = document.getElementById('main-content');
-
-navButtons.forEach(button => {
-    button.addEventListener('click', () => {
-        navButtons.forEach(btn => btn.classList.remove('active'));
-        button.classList.add('active');
-        loadContent(button.id);
+    // Toggle sidebar
+    toggleSidebar.addEventListener('click', function() {
+        sidebar.classList.toggle('collapsed');
     });
-});
 
-function loadContent(buttonId) {
-    switch(buttonId) {
-        case 'dashboard-btn':
-            showDashboard();
-            break;
-        case 'schedule-btn':
-            showSchedule();
-            break;
-        case 'applicants-btn':
-            showApplicants();
-            break;
-        case 'reports-btn':
-            showReports();
-            break;
+    // Navigation
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            navLinks.forEach(l => l.classList.remove('active'));
+            this.classList.add('active');
+            loadPage(this.dataset.page);
+        });
+    });
+
+    // Load page content
+    function loadPage(page) {
+        switch(page) {
+            case 'dashboard':
+                showDashboard();
+                break;
+            case 'applicants':
+                showApplicants();
+                break;
+            case 'interviews':
+                showInterviews();
+                break;
+            case 'reports':
+                showReports();
+                break;
+            case 'settings':
+                showSettings();
+                break;
+            default:
+                showDashboard();
+        }
     }
-}
 
-function showDashboard() {
-    mainContent.innerHTML = `
-        <div class="card">
-            <h2>Dashboard</h2>
-            <p>Welcome to the Enactus Menoufia Interview System</p>
-            <p>Total Applicants: ${applicants.length}</p>
-            <p>Scheduled Interviews: ${interviews.length}</p>
-        </div>
-    `;
-}
+    // Mock data (replace with actual data from Google Sheets)
+    const applicants = [
+        { id: 1, name: 'John Doe', email: 'john@example.com', college: 'Engineering', status: 'Pending' },
+        { id: 2, name: 'Jane Smith', email: 'jane@example.com', college: 'Business', status: 'Scheduled' },
+        { id: 3, name: 'Bob Johnson', email: 'bob@example.com', college: 'Science', status: 'Completed' },
+    ];
 
-function showSchedule() {
-    let scheduleHTML = `
-        <div class="card">
-            <h2>Interview Schedule</h2>
-            <table>
-                <tr>
-                    <th>Date</th>
-                    <th>Time</th>
-                    <th>Applicant</th>
-                    <th>Interviewer</th>
-                </tr>
-    `;
+    const interviews = [
+        { id: 1, applicantId: 2, date: '2024-10-01', time: '10:00 AM', interviewer: 'Alice Brown' },
+        { id: 2, applicantId: 3, date: '2024-09-30', time: '2:00 PM', interviewer: 'Charlie Davis' },
+    ];
 
-    interviews.forEach(interview => {
-        const applicant = applicants.find(a => a.id === interview.applicantId);
-        scheduleHTML += `
-            <tr>
-                <td>${interview.date}</td>
-                <td>${interview.time}</td>
-                <td>${applicant ? applicant.name : 'N/A'}</td>
-                <td>${interview.interviewer}</td>
-            </tr>
+    function showDashboard() {
+        const totalApplicants = applicants.length;
+        const scheduledInterviews = interviews.length;
+        const pendingApplicants = applicants.filter(a => a.status === 'Pending').length;
+
+        pageContent.innerHTML = `
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Dashboard</h2>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <div style="text-align: center; padding: 20px;">
+                        <h3>${totalApplicants}</h3>
+                        <p>Total Applicants</p>
+                    </div>
+                    <div style="text-align: center; padding: 20px;">
+                        <h3>${scheduledInterviews}</h3>
+                        <p>Scheduled Interviews</p>
+                    </div>
+                    <div style="text-align: center; padding: 20px;">
+                        <h3>${pendingApplicants}</h3>
+                        <p>Pending Applicants</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Recent Activities</h2>
+                </div>
+                <ul>
+                    <li>New applicant: John Doe</li>
+                    <li>Interview scheduled: Jane Smith</li>
+                    <li>Interview completed: Bob Johnson</li>
+                </ul>
+            </div>
         `;
-    });
+    }
 
-    scheduleHTML += `
-            </table>
-        </div>
-        <button id="add-interview-btn" class="btn">Add Interview</button>
-    `;
+    function showApplicants() {
+        let applicantsHTML = `
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Applicants</h2>
+                    <button class="btn" onclick="showAddApplicantModal()">Add Applicant</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>College</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        `;
 
-    mainContent.innerHTML = scheduleHTML;
-
-    document.getElementById('add-interview-btn').addEventListener('click', showAddInterviewModal);
-}
-
-function showApplicants() {
-    let applicantsHTML = `
-        <div class="card">
-            <h2>Applicants</h2>
-            <table>
+        applicants.forEach(applicant => {
+            applicantsHTML += `
                 <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>College</th>
-                    <th>Status</th>
-                    <th>Action</th>
+                    <td>${applicant.name}</td>
+                    <td>${applicant.email}</td>
+                    <td>${applicant.college}</td>
+                    <td><span class="status ${applicant.status.toLowerCase()}">${applicant.status}</span></td>
+                    <td>
+                        <button class="action-btn" onclick="editApplicant(${applicant.id})"><i class="fas fa-edit"></i></button>
+                        <button class="action-btn" onclick="deleteApplicant(${applicant.id})"><i class="fas fa-trash"></i></button>
+                    </td>
                 </tr>
-    `;
+            `;
+        });
 
-    applicants.forEach(applicant => {
         applicantsHTML += `
-            <tr>
-                <td>${applicant.name}</td>
-                <td>${applicant.email}</td>
-                <td>${applicant.college}</td>
-                <td>${applicant.status}</td>
-                <td><button class="btn" onclick="editApplicant(${applicant.id})">Edit</button></td>
-            </tr>
+                    </tbody>
+                </table>
+            </div>
         `;
-    });
 
-    applicantsHTML += `
-            </table>
-        </div>
-        <button id="add-applicant-btn" class="btn">Add Applicant</button>
-    `;
+        pageContent.innerHTML = applicantsHTML;
+    }
 
-    mainContent.innerHTML = applicantsHTML;
-
-    document.getElementById('add-applicant-btn').addEventListener('click', showAddApplicantModal);
-}
-
-function showReports() {
-    mainContent.innerHTML = `
-        <div class="card">
-            <h2>Reports</h2>
-            <p>Generate reports and analytics here.</p>
-            <button class="btn">Generate Report</button>
-        </div>
-    `;
-}
-
-function showAddInterviewModal() {
-    const modal = document.createElement('div');
-    modal.className = 'modal';
-    modal.innerHTML = `
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Add Interview</h2>
-            <form id="add-interview-form">
-                <div class="form-group">
-                    <label for="applicant">Applicant:</label>
-                    <select id="applicant" required>
-                        ${applicants.map(a => `<option value="${a.id}">${a.name}</option>`).join('')}
-                    </select>
+    function showInterviews() {
+        let interviewsHTML = `
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Interviews</h2>
+                    <button class="btn" onclick="showAddInterviewModal()">Schedule Interview</button>
                 </div>
-                <div class="form-group">
-                    <label for="date">Date:</label>
-                    <input type="date" id="date" required>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Applicant</th>
+                            <th>Interviewer</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        `;
+
+        interviews.forEach(interview => {
+            const applicant = applicants.find(a => a.id === interview.applicantId);
+            interviewsHTML += `
+                <tr>
+                    <td>${interview.date}</td>
+                    <td>${interview.time}</td>
+                    <td>${applicant ? applicant.name : 'N/A'}</td>
+                    <td>${interview.interviewer}</td>
+                    <td>
+                        <button class="action-btn" onclick="editInterview(${interview.id})"><i class="fas fa-edit"></i></button>
+                        <button class="action-btn" onclick="deleteInterview(${interview.id})"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+            `;
+        });
+
+        interviewsHTML += `
+                    </tbody>
+                </table>
+            </div>
+        `;
+
+        pageContent.innerHTML = interviewsHTML;
+    }
+
+    function showReports() {
+        pageContent.innerHTML = `
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Reports</h2>
                 </div>
-                <div class="form-group">
-                    <label for="time">Time:</label>
-                    <input type="time" id="time" required>
+                <div style="display: flex; justify-content: space-around; margin-top: 20px;">
+                    <button class="btn" onclick="generateReport('applicants')">Applicant Report</button>
+                    <button class="btn" onclick="generateReport('interviews')">Interview Report</button>
+                    <button class="btn" onclick="generateReport('performance')">Performance Report</button>
                 </div>
-                <div class="form-group">
-                    <label for="interviewer">Interviewer:</label>
-                    <input type="text" id="interviewer" required>
+                <div id="report-content" style="margin-top: 20px;"></div>
+            </div>
+        `;
+    }
+
+    function showSettings() {
+        pageContent.innerHTML = `
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Settings</h2>
                 </div>
-                <button type="submit" class="btn">Add Interview</button>
-            </form>
-        </div>
-    `;
+                <form id="settings-form">
+                    <div class="form-group">
+                        <label for="company-name">Company Name</label>
+                        <input type="text" id="company-name" value="Enactus Menoufia">
+                    </div>
+                    <div class="form-group">
+                        <label for="email-notifications">Email Notifications</label>
+                        <select id="email-notifications">
+                            <option value="all">All</option>
+                            <option value="important">Important Only</option>
+                            <option value="none">None</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="default-interview-duration">Default Interview Duration (minutes)</label>
+                        <input type="number" id="default-interview-duration" value="30">
+                    </div>
+                    <button type="submit" class="btn">Save Settings</button>
+                </form>
+            </div>
+        `;
 
-    document.body.appendChild(modal);
-    modal.style.display = 'block';
+        document.getElementById('settings-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Save settings logic here
+            alert('Settings saved successfully!');
+        });
+    }
 
-    modal.querySelector('.close').onclick = () => {
-        document.body.removeChild(modal);
-    };
+    function showAddApplicantModal() {
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Add New Applicant</h2>
+                <form id="add-applicant-form">
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="college">College</label>
+                        <input type="text" id="college" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="status">Status</label>
+                        <select id="status">
+                            <option value="Pending">Pending</option>
+                            <option value="Scheduled">Scheduled</option>
+                            <option value="Completed">Completed</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn">Add Applicant</button>
+                </form>
+            </div>
+        `;
 
-    modal.querySelector('#add-interview-form').onsubmit = (e) => {
-        e.preventDefault();
-        // Add interview logic here
-        document.body.removeChild(modal);
-        showSchedule(); // Refresh the schedule view
-    };
-}
+        document.body.appendChild(modal);
+        modal.style.display = 'block';
 
-function showAddApplicantModal() {
-    const modal = document.createElement('div');
-    modal.className = 'modal';
-    modal.innerHTML = `
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Add Applicant</h2>
-            <form id="add-applicant-form">
-                <div class="form-group">
-                    <label for="name">Name:</label>
-                    <input type="text" id="name" required>
-                </div>
-                <div class="form-group">
-                    <label for="email">Email:</label>
-                    <input type="email" id="email" required>
-                </div>
-                <div class="form-group">
-                    <label for="college">College:</label>
-                    <input type="text" id="college" required>
-                </div>
-                <button type="submit" class="btn">Add Applicant</button>
-            </form>
-        </div>
-    `;
+        modal.querySelector('.close').onclick = () => {
+            document.body.removeChild(modal);
+        };
 
-    document.body.appendChild(modal);
-    modal.style.display = 'block';
+        modal.querySelector('#add-applicant-form').onsubmit = (e) => {
+            e.preventDefault();
+            // Add applicant logic here
+            document.body.removeChild(modal);
+            showApplicants(); // Refresh the applicants view
+        };
+    }
 
-    modal.querySelector('.close').onclick = () => {
-        document.body.removeChild(modal);
-    };
+    function showAddInterviewModal() {
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Schedule New Interview</h2>
+                <form id="add-interview-form">
+                    <div class="form-group">
+                        <label for="applicant">Applicant</label>
+                        <select id="applicant" required>
+                            ${applicants.map(a => `<option value="${a.id}">${a.name}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="date">Date</label>
+                        <input type="date" id="date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="time">Time</label>
+                        <input type="time" id="time" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="interviewer">Interviewer</label>
+                        <input type="text" id="interviewer" required>
+                    </div>
+                    <button type="submit" class="btn">Schedule Interview</button>
+                </form>
+            </div>
+        `;
 
-    modal.querySelector('#add-applicant-form').onsubmit = (e) => {
-        e.preventDefault();
-        // Add applicant logic here
-        document.body.removeChild(modal);
-        showApplicants(); // Refresh the applicants view
-    };
-}
+        document.body.appendChild(modal);
+        modal.style.display = 'block';
 
-function editApplicant(id) {
-    const applicant = applicants.find(a => a.id === id);
-    if (!applicant) return;
+        modal.querySelector('.close').onclick = () => {
+            document.body.removeChild(modal);
+        };
 
-    const modal = document.createElement('div');
-    modal.className = 'modal';
-    modal.innerHTML = `
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Edit Applicant</h2>
-            <form id="edit-applicant-form">
-                <div class="form-group">
-                    <label for="name">Name:</label>
-                    <input type="text" id="name" value="${applicant.name}" required>
-                </div>
-                <div class="form-group">
-                    <label for="email">Email:</label>
-                    <input type="email" id="email" value="${applicant.email}" required>
-                </div>
-                <div class="form-group">
-                    <label for="college">College:</label>
-                    <input type="text" id="college" value="${applicant.college}" required>
-                </div>
-                <div class="form-group">
-                    <label for="status">Status:</label>
-                    <select id="status">
-                        <option value="Pending" ${applicant.status === 'Pending' ? 'selected' : ''}>Pending</option>
-                        <option value="Scheduled" ${applicant.status === 'Scheduled' ? 'selected' : ''}>Scheduled</option>
-                        <option value="Interviewed" ${applicant.status === 'Interviewed' ? 'selected' : ''}>Interviewed</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn">Update Applicant</button>
-            </form>
-        </div>
-    `;
+        modal.querySelector('#add-interview-form').onsubmit = (e) => {
+            e.preventDefault();
+            // Add interview logic here
+            document.body.removeChild(modal);
+            showInterviews(); // Refresh the interviews view
+        };
+    }
 
-    document.body.appendChild(modal);
-    modal.style.display = 'block';
+    function editApplicant(id) {
+        const applicant = applicants.find(a => a.id === id);
+        if (!applicant) return;
 
-    modal.querySelector('.close').onclick = () => {
-        document.body.removeChild(modal);
-    };
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Edit Applicant</h2>
+                <form id="edit-applicant-form">
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" value="${applicant.name}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" value="${applicant.email}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="college">College</label>
+                        <input type="text" id="college" value="${applicant.college}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="status">Status</label>
+                        <select id="status">
+                            <option value="Pending" ${applicant.status === 'Pending' ? 'selected' : ''}>Pending</option>
+                            <option value="Scheduled" ${applicant.status === 'Scheduled' ? 'selected' : ''}>Scheduled</option>
+                            <option value="Completed" ${applicant.status === 'Completed' ? 'selected' : ''}>Completed</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn">Update Applicant</button>
+                </form>
+            </div>
+        `;
 
-    modal.querySelector('#edit-applicant-form').onsubmit = (e) => {
-        e.preventDefault();
-        // Update applicant logic here
-        document.body.removeChild(modal);
-        showApplicants(); // Refresh the applicants view
-    };
-}
+        document.body.appendChild(modal);
+        modal.style.display = 'block';
 
-// Initialize the dashboard view
-showDashboard();
+        modal.querySelector('.close').onclick = () => {
+            document.body.removeChild(modal);
+        };
+
+        modal.querySelector('#edit-applicant-form').onsubmit = (e) => {
+            e.preventDefault();
+            // Update applicant logic here
+            document.body.removeChild(modal);
+            showApplicants(); // Refresh the applicants view
+        };
+    }
+
+    function deleteApplicant(id) {
+        if (confirm('Are you sure you want to delete this applicant?')) {
+            // Delete applicant logic here
+            showApplicants(); // Refresh the applicants view
+        }
+    }
+
+    function editInterview(id) {
+        const interview = interviews.find(i => i.id === id);
+        if (!interview) return;
+
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Edit Interview</h2>
+                <form id="edit-interview-form">
+                    <div class="form-group">
+                        <label for="applicant">Applicant</label>
+                        <select id="applicant" required>
+                            ${applicants.map(a => `<option value="${a.id}" ${a.id === interview.applicantId ? 'selected' : ''}>${a.name}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="date">Date</label>
+                        <input type="date" id="date" value="${interview.date}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="time">Time</label>
+                        <input type="time" id="time" value="${interview.time}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="interviewer">Interviewer</label>
+                        <input type="text" id="interviewer" value="${interview.interviewer}" required>
+                    </div>
+                    <button type="submit" class="btn">Update Interview</button>
+                </form>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+        modal.style.display = 'block';
+
+        modal.querySelector('.close').onclick = () => {
+            document.body.removeChild(modal);
+        };
+
+        modal.querySelector('#edit-interview-form').onsubmit = (e) => {
+            e.preventDefault();
+            // Update interview logic here
+            document.body.removeChild(modal);
+            showInterviews(); // Refresh the interviews view
+        };
+    }
+
+    function deleteInterview(id) {
+        if (confirm('Are you sure you want to delete this interview?')) {
+            // Delete interview logic here
+            showInterviews(); // Refresh the interviews view
+        }
+    }
+
+    function generateReport(type) {
+        let reportContent = '';
+        switch(type) {
+            case 'applicants':
+                reportContent = `
+                    <h3>Applicant Report</h3>
+                    <p>Total Applicants: ${applicants.length}</p>
+                    <p>Pending: ${applicants.filter(a => a.status === 'Pending').length}</p>
+                    <p>Scheduled: ${applicants.filter(a => a.status === 'Scheduled').length}</p>
+                    <p>Completed: ${applicants.filter(a => a.status === 'Completed').length}</p>
+                `;
+                break;
+            case 'interviews':
+                reportContent = `
+                    <h3>Interview Report</h3>
+                    <p>Total Interviews: ${interviews.length}</p>
+                    <p>Upcoming Interviews: ${interviews.filter(i => new Date(i.date) > new Date()).length}</p>
+                    <p>Completed Interviews: ${interviews.filter(i => new Date(i.date) <= new Date()).length}</p>
+                `;
+                break;
+            case 'performance':
+                reportContent = `
+                    <h3>Performance Report</h3>
+                    <p>This is a placeholder for the performance report. In a real system, this would include metrics such as interview completion rate, average scores, etc.</p>
+                `;
+                break;
+        }
+        document.getElementById('report-content').innerHTML = reportContent;
+    }
+
+    // Initialize the dashboard view
+    showDashboard();
+});
     </script>
 </body>
 </html>
