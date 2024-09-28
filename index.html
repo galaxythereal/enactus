@@ -3,131 +3,197 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enactus Menoufia Interviewing System</title>
+    <title>Enactus Menoufia Interview System</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
-    <script src="https://apis.google.com/js/api.js"></script>
 </head>
 <body>
     <div id="app">
-        <header>
-            <nav>
-                <div class="logo">
-                    <img src="enactus-logo.png" alt="Enactus Menoufia Logo">
-                    <span>Enactus Menoufia</span>
-                </div>
-                <ul>
-                    <li><a href="#" id="nav-home"><i class="fas fa-home"></i> Home</a></li>
-                    <li><a href="#" id="nav-dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                    <li><a href="#" id="nav-logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
-                </ul>
-            </nav>
-        </header>
+        <nav id="sidebar" class="sidebar">
+            <div class="sidebar-header">
+                <img src="enactus-logo.png" alt="Enactus Menoufia Logo" class="logo">
+                <h2>Enactus Menoufia</h2>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="#dashboard" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="#interviews"><i class="fas fa-calendar-check"></i> Interviews</a></li>
+                <li><a href="#applicants"><i class="fas fa-users"></i> Applicants</a></li>
+                <li><a href="#reports"><i class="fas fa-chart-bar"></i> Reports</a></li>
+                <li><a href="#settings"><i class="fas fa-cog"></i> Settings</a></li>
+            </ul>
+            <div class="sidebar-footer">
+                <a href="#" id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+        </nav>
 
-        <main>
-            <section id="login-section" class="section">
-                <div class="container">
-                    <h2><i class="fas fa-user-lock"></i> Login</h2>
-                    <form id="login-form">
-                        <div class="form-group">
-                            <label for="login-email">Email</label>
-                            <input type="email" id="login-email" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="login-password">Password</label>
-                            <input type="password" id="login-password" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Login</button>
-                    </form>
+        <main class="content">
+            <header class="top-bar">
+                <button id="sidebar-toggle" class="sidebar-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="search-bar">
+                    <input type="text" placeholder="Search...">
+                    <button><i class="fas fa-search"></i></button>
                 </div>
-            </section>
+                <div class="user-info">
+                    <img src="user-avatar.jpg" alt="User Avatar" class="avatar">
+                    <span>John Doe</span>
+                </div>
+            </header>
 
-            <section id="dashboard-section" class="section hidden">
-                <div class="container">
-                    <h2><i class="fas fa-tachometer-alt"></i> Dashboard</h2>
-                    <div class="dashboard-grid">
-                        <div class="dashboard-card" id="user-info">
-                            <h3>User Information</h3>
-                            <div id="user-details"></div>
+            <div id="main-content">
+                <!-- Dashboard Section -->
+                <section id="dashboard" class="section active">
+                    <h1>Dashboard</h1>
+                    <div class="dashboard-stats">
+                        <div class="stat-card">
+                            <i class="fas fa-user-plus"></i>
+                            <h3>Total Applicants</h3>
+                            <p id="total-applicants">0</p>
                         </div>
-                        <div class="dashboard-card" id="interview-schedule">
-                            <h3>Upcoming Interviews</h3>
-                            <div id="schedule-list"></div>
+                        <div class="stat-card">
+                            <i class="fas fa-calendar-day"></i>
+                            <h3>Pending Interviews</h3>
+                            <p id="pending-interviews">0</p>
                         </div>
-                        <div class="dashboard-card" id="quick-stats">
-                            <h3>Quick Stats</h3>
-                            <div id="stats-display"></div>
+                        <div class="stat-card">
+                            <i class="fas fa-check-circle"></i>
+                            <h3>Completed Interviews</h3>
+                            <p id="completed-interviews">0</p>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-star"></i>
+                            <h3>Average Rating</h3>
+                            <p id="average-rating">0.0</p>
                         </div>
                     </div>
-                </div>
-            </section>
-
-            <section id="interviewee-section" class="section hidden">
-                <div class="container">
-                    <h2><i class="fas fa-user-tie"></i> Interviewee Profile</h2>
-                    <div class="profile-grid">
-                        <div class="profile-card" id="interviewee-info">
-                            <h3>Applicant Information</h3>
-                            <div id="applicant-details"></div>
+                    <div class="dashboard-charts">
+                        <div class="chart-container">
+                            <h3>Applicant Pipeline</h3>
+                            <canvas id="applicant-pipeline-chart"></canvas>
                         </div>
-                        <div class="profile-card" id="question-set">
-                            <h3>Interview Questions</h3>
-                            <div id="question-list"></div>
-                        </div>
-                        <div class="profile-card" id="notes-area">
-                            <h3>Interview Notes</h3>
-                            <textarea id="interview-notes" placeholder="Take notes here..."></textarea>
-                        </div>
-                        <div class="profile-card" id="rating-area">
-                            <h3>Candidate Rating</h3>
-                            <div id="rating-stars"></div>
-                            <button id="submit-rating" class="btn btn-primary">Submit Rating</button>
+                        <div class="chart-container">
+                            <h3>Interview Outcomes</h3>
+                            <canvas id="interview-outcomes-chart"></canvas>
                         </div>
                     </div>
-                </div>
-            </section>
-
-            <section id="admin-section" class="section hidden">
-                <div class="container">
-                    <h2><i class="fas fa-user-cog"></i> Admin Dashboard</h2>
-                    <div class="admin-grid">
-                        <div class="admin-card" id="applicant-overview">
-                            <h3>Applicant Overview</h3>
-                            <div id="applicant-list"></div>
-                        </div>
-                        <div class="admin-card" id="interviewer-management">
-                            <h3>Interviewer Management</h3>
-                            <div id="interviewer-list"></div>
-                        </div>
-                        <div class="admin-card" id="question-management">
-                            <h3>Question Management</h3>
-                            <div id="question-bank"></div>
-                        </div>
+                    <div class="quick-actions">
+                        <button id="schedule-interview-btn" class="btn-primary">
+                            <i class="fas fa-plus"></i> Schedule Interview
+                        </button>
+                        <button id="add-applicant-btn" class="btn-secondary">
+                            <i class="fas fa-user-plus"></i> Add Applicant
+                        </button>
                     </div>
-                </div>
-            </section>
+                </section>
 
-            <section id="reports-section" class="section hidden">
-                <div class="container">
-                    <h2><i class="fas fa-chart-bar"></i> Reports and Analytics</h2>
-                    <div id="report-filters">
+                <!-- Interviews Section -->
+                <section id="interviews" class="section">
+                    <h1>Upcoming Interviews</h1>
+                    <div class="interviews-calendar">
+                        <!-- Calendar component will be inserted here -->
+                    </div>
+                    <div class="interviews-list">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Applicant Name</th>
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                    <th>Interviewer</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="interviews-table-body">
+                                <!-- Interview rows will be dynamically added here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Applicants Section -->
+                <section id="applicants" class="section">
+                    <h1>Applicants</h1>
+                    <div class="applicants-filters">
+                        <input type="text" id="applicant-search" placeholder="Search applicants...">
+                        <select id="applicant-status-filter">
+                            <option value="all">All Statuses</option>
+                            <option value="new">New</option>
+                            <option value="in-progress">In Progress</option>
+                            <option value="interviewed">Interviewed</option>
+                            <option value="accepted">Accepted</option>
+                            <option value="rejected">Rejected</option>
+                        </select>
+                        <button id="apply-filters-btn" class="btn-primary">Apply Filters</button>
+                    </div>
+                    <div class="applicants-list">
+                        <!-- Applicant cards will be dynamically added here -->
+                    </div>
+                    <div class="pagination">
+                        <button id="prev-page-btn" class="btn-secondary"><i class="fas fa-chevron-left"></i> Previous</button>
+                        <span id="page-info">Page 1 of 1</span>
+                        <button id="next-page-btn" class="btn-secondary">Next <i class="fas fa-chevron-right"></i></button>
+                    </div>
+                </section>
+
+                <!-- Reports Section -->
+                <section id="reports" class="section">
+                    <h1>Reports and Analytics</h1>
+                    <div class="report-filters">
                         <select id="report-type">
                             <option value="applicant-pipeline">Applicant Pipeline</option>
                             <option value="interview-outcomes">Interview Outcomes</option>
                             <option value="interviewer-performance">Interviewer Performance</option>
                         </select>
-                        <button id="generate-report" class="btn btn-primary">Generate Report</button>
+                        <input type="date" id="report-start-date">
+                        <input type="date" id="report-end-date">
+                        <button id="generate-report-btn" class="btn-primary">Generate Report</button>
                     </div>
-                    <div id="report-content"></div>
-                </div>
-            </section>
-        </main>
+                    <div id="report-container">
+                        <!-- Report visualizations will be dynamically added here -->
+                    </div>
+                </section>
 
-        <footer>
-            <p>&copy; 2024 Enactus Menoufia. All rights reserved.</p>
-        </footer>
+                <!-- Settings Section -->
+                <section id="settings" class="section">
+                    <h1>System Settings</h1>
+                    <div class="settings-tabs">
+                        <button class="tab-btn active" data-tab="general">General</button>
+                        <button class="tab-btn" data-tab="interview-stages">Interview Stages</button>
+                        <button class="tab-btn" data-tab="evaluation-criteria">Evaluation Criteria</button>
+                        <button class="tab-btn" data-tab="email-templates">Email Templates</button>
+                    </div>
+                    <div class="settings-content">
+                        <div id="general-settings" class="tab-content active">
+                            <!-- General settings form -->
+                        </div>
+                        <div id="interview-stages" class="tab-content">
+                            <!-- Interview stages management -->
+                        </div>
+                        <div id="evaluation-criteria" class="tab-content">
+                            <!-- Evaluation criteria management -->
+                        </div>
+                        <div id="email-templates" class="tab-content">
+                            <!-- Email templates management -->
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
     </div>
 
+    <!-- Modals -->
+    <div id="modal-overlay" class="modal-overlay"></div>
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 id="modal-title"></h2>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
     <script src="code.js"></script>
 </body>
 </html>
