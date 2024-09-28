@@ -3,50 +3,448 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enactus Menoufia Members Portal</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://apis.google.com/js/api.js"></script>
+    <title>Enactus Menoufia Interview System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        /* Insert this in the <style> tag */
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+    background-color: #f5f5f5;
+}
+
+header {
+    background-color: #1976d2;
+    color: white;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+h1 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+nav {
+    margin-top: 1rem;
+}
+
+.nav-btn {
+    background-color: transparent;
+    border: none;
+    color: white;
+    padding: 0.5rem 1rem;
+    margin-right: 0.5rem;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+}
+
+.nav-btn:hover, .nav-btn.active {
+    background-color: rgba(255,255,255,0.2);
+}
+
+main {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.card {
+    background-color: white;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.card h2 {
+    margin-top: 0;
+    color: #1976d2;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    text-align: left;
+    padding: 0.5rem;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+th {
+    background-color: #f5f5f5;
+    font-weight: 500;
+}
+
+.btn {
+    background-color: #1976d2;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+}
+
+.btn:hover {
+    background-color: #1565c0;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    border-radius: 4px;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="date"],
+select {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+    </style>
 </head>
 <body>
     <header>
+        <h1>Enactus Menoufia Interview System</h1>
         <nav>
-            <div class="logo">
-                <img src="path/to/logo.png" alt="Enactus Menoufia Logo">
-                <h1>Enactus Menoufia</h1>
-            </div>
-            <ul class="nav-links">
-                <li><a href="#" data-page="dashboard">Dashboard</a></li>
-                <li><a href="#" data-page="projects">Projects</a></li>
-                <li><a href="#" data-page="events">Events</a></li>
-                <li><a href="#" data-page="resources">Resources</a></li>
-                <li><a href="#" data-page="profile">Profile</a></li>
-            </ul>
-            <div class="user-menu">
-                <span class="username"></span>
-                <button id="logout-btn">Logout</button>
-            </div>
+            <button id="dashboard-btn" class="nav-btn active">Dashboard</button>
+            <button id="schedule-btn" class="nav-btn">Schedule</button>
+            <button id="applicants-btn" class="nav-btn">Applicants</button>
+            <button id="reports-btn" class="nav-btn">Reports</button>
         </nav>
     </header>
-
-    <main id="content">
-        <!-- Content will be dynamically loaded here -->
+    
+    <main id="main-content">
+        <!-- Content will be dynamically inserted here -->
     </main>
 
-    <footer>
-        <p>&copy; 2024 Enactus Menoufia. All rights reserved.</p>
-    </footer>
+    <script>
+        // Insert this in the <script> tag
+// Mock data (replace with actual data from Google Sheets)
+const applicants = [
+    { id: 1, name: 'John Doe', email: 'john@example.com', college: 'Engineering', status: 'Scheduled' },
+    { id: 2, name: 'Jane Smith', email: 'jane@example.com', college: 'Business', status: 'Pending' },
+    // Add more applicants here
+];
 
-    <div id="login-modal" class="modal">
+const interviews = [
+    { id: 1, applicantId: 1, date: '2024-10-01', time: '10:00 AM', interviewer: 'Alice' },
+    // Add more interviews here
+];
+
+// Navigation
+const navButtons = document.querySelectorAll('.nav-btn');
+const mainContent = document.getElementById('main-content');
+
+navButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        navButtons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+        loadContent(button.id);
+    });
+});
+
+function loadContent(buttonId) {
+    switch(buttonId) {
+        case 'dashboard-btn':
+            showDashboard();
+            break;
+        case 'schedule-btn':
+            showSchedule();
+            break;
+        case 'applicants-btn':
+            showApplicants();
+            break;
+        case 'reports-btn':
+            showReports();
+            break;
+    }
+}
+
+function showDashboard() {
+    mainContent.innerHTML = `
+        <div class="card">
+            <h2>Dashboard</h2>
+            <p>Welcome to the Enactus Menoufia Interview System</p>
+            <p>Total Applicants: ${applicants.length}</p>
+            <p>Scheduled Interviews: ${interviews.length}</p>
+        </div>
+    `;
+}
+
+function showSchedule() {
+    let scheduleHTML = `
+        <div class="card">
+            <h2>Interview Schedule</h2>
+            <table>
+                <tr>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Applicant</th>
+                    <th>Interviewer</th>
+                </tr>
+    `;
+
+    interviews.forEach(interview => {
+        const applicant = applicants.find(a => a.id === interview.applicantId);
+        scheduleHTML += `
+            <tr>
+                <td>${interview.date}</td>
+                <td>${interview.time}</td>
+                <td>${applicant ? applicant.name : 'N/A'}</td>
+                <td>${interview.interviewer}</td>
+            </tr>
+        `;
+    });
+
+    scheduleHTML += `
+            </table>
+        </div>
+        <button id="add-interview-btn" class="btn">Add Interview</button>
+    `;
+
+    mainContent.innerHTML = scheduleHTML;
+
+    document.getElementById('add-interview-btn').addEventListener('click', showAddInterviewModal);
+}
+
+function showApplicants() {
+    let applicantsHTML = `
+        <div class="card">
+            <h2>Applicants</h2>
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>College</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+    `;
+
+    applicants.forEach(applicant => {
+        applicantsHTML += `
+            <tr>
+                <td>${applicant.name}</td>
+                <td>${applicant.email}</td>
+                <td>${applicant.college}</td>
+                <td>${applicant.status}</td>
+                <td><button class="btn" onclick="editApplicant(${applicant.id})">Edit</button></td>
+            </tr>
+        `;
+    });
+
+    applicantsHTML += `
+            </table>
+        </div>
+        <button id="add-applicant-btn" class="btn">Add Applicant</button>
+    `;
+
+    mainContent.innerHTML = applicantsHTML;
+
+    document.getElementById('add-applicant-btn').addEventListener('click', showAddApplicantModal);
+}
+
+function showReports() {
+    mainContent.innerHTML = `
+        <div class="card">
+            <h2>Reports</h2>
+            <p>Generate reports and analytics here.</p>
+            <button class="btn">Generate Report</button>
+        </div>
+    `;
+}
+
+function showAddInterviewModal() {
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.innerHTML = `
         <div class="modal-content">
-            <h2>Login</h2>
-            <form id="login-form">
-                <input type="email" id="email" placeholder="Email" required>
-                <input type="password" id="password" placeholder="Password" required>
-                <button type="submit">Login</button>
+            <span class="close">&times;</span>
+            <h2>Add Interview</h2>
+            <form id="add-interview-form">
+                <div class="form-group">
+                    <label for="applicant">Applicant:</label>
+                    <select id="applicant" required>
+                        ${applicants.map(a => `<option value="${a.id}">${a.name}</option>`).join('')}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="date">Date:</label>
+                    <input type="date" id="date" required>
+                </div>
+                <div class="form-group">
+                    <label for="time">Time:</label>
+                    <input type="time" id="time" required>
+                </div>
+                <div class="form-group">
+                    <label for="interviewer">Interviewer:</label>
+                    <input type="text" id="interviewer" required>
+                </div>
+                <button type="submit" class="btn">Add Interview</button>
             </form>
         </div>
-    </div>
+    `;
 
-    <script src="script.js"></script>
+    document.body.appendChild(modal);
+    modal.style.display = 'block';
+
+    modal.querySelector('.close').onclick = () => {
+        document.body.removeChild(modal);
+    };
+
+    modal.querySelector('#add-interview-form').onsubmit = (e) => {
+        e.preventDefault();
+        // Add interview logic here
+        document.body.removeChild(modal);
+        showSchedule(); // Refresh the schedule view
+    };
+}
+
+function showAddApplicantModal() {
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.innerHTML = `
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Add Applicant</h2>
+            <form id="add-applicant-form">
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="college">College:</label>
+                    <input type="text" id="college" required>
+                </div>
+                <button type="submit" class="btn">Add Applicant</button>
+            </form>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+    modal.style.display = 'block';
+
+    modal.querySelector('.close').onclick = () => {
+        document.body.removeChild(modal);
+    };
+
+    modal.querySelector('#add-applicant-form').onsubmit = (e) => {
+        e.preventDefault();
+        // Add applicant logic here
+        document.body.removeChild(modal);
+        showApplicants(); // Refresh the applicants view
+    };
+}
+
+function editApplicant(id) {
+    const applicant = applicants.find(a => a.id === id);
+    if (!applicant) return;
+
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.innerHTML = `
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Edit Applicant</h2>
+            <form id="edit-applicant-form">
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" value="${applicant.name}" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" value="${applicant.email}" required>
+                </div>
+                <div class="form-group">
+                    <label for="college">College:</label>
+                    <input type="text" id="college" value="${applicant.college}" required>
+                </div>
+                <div class="form-group">
+                    <label for="status">Status:</label>
+                    <select id="status">
+                        <option value="Pending" ${applicant.status === 'Pending' ? 'selected' : ''}>Pending</option>
+                        <option value="Scheduled" ${applicant.status === 'Scheduled' ? 'selected' : ''}>Scheduled</option>
+                        <option value="Interviewed" ${applicant.status === 'Interviewed' ? 'selected' : ''}>Interviewed</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn">Update Applicant</button>
+            </form>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+    modal.style.display = 'block';
+
+    modal.querySelector('.close').onclick = () => {
+        document.body.removeChild(modal);
+    };
+
+    modal.querySelector('#edit-applicant-form').onsubmit = (e) => {
+        e.preventDefault();
+        // Update applicant logic here
+        document.body.removeChild(modal);
+        showApplicants(); // Refresh the applicants view
+    };
+}
+
+// Initialize the dashboard view
+showDashboard();
+    </script>
 </body>
 </html>
