@@ -3,23 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enactus Menoufia Dashboard</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.10.2/main.min.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.10.2/main.min.css" rel="stylesheet">
+    <title>Enactus Menoufia - Next-Gen Enterprise Platform</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
     <style>
         :root {
-            --primary-color: #1e3a8a;
-            --secondary-color: #3b82f6;
-            --accent-color: #60a5fa;
-            --background-color: #f3f4f6;
-            --text-color: #1f2937;
-            --sidebar-width: 280px;
+            --primary: #6200ee;
+            --secondary: #03dac6;
+            --background: #121212;
+            --surface: #1e1e1e;
+            --on-background: #ffffff;
+            --on-surface: #ffffff;
+            --error: #cf6679;
+            --success: #00c853;
+            --warning: #ffd600;
+            --info: #2196f3;
+            --sidebar-width: 300px;
             --header-height: 70px;
-            --card-bg: #ffffff;
-            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            --transition-speed: 0.3s;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * {
@@ -29,131 +32,122 @@
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--background-color);
-            color: var(--text-color);
-            line-height: 1.5;
+            font-family: 'Roboto', 'Segoe UI', Arial, sans-serif;
+            background-color: var(--background);
+            color: var(--on-background);
+            line-height: 1.6;
+            overflow-x: hidden;
         }
 
         .container {
-            display: flex;
+            display: grid;
+            grid-template-columns: auto 1fr;
+            grid-template-rows: auto 1fr;
             min-height: 100vh;
         }
 
         .sidebar {
+            grid-column: 1;
+            grid-row: 1 / span 2;
             width: var(--sidebar-width);
-            background-color: var(--primary-color);
-            color: white;
-            padding: 20px;
-            transition: all var(--transition-speed) ease;
-            overflow-y: auto;
-            position: fixed;
-            top: 0;
-            bottom: 0;
-            left: 0;
+            background-color: var(--surface);
+            transition: var(--transition);
+            overflow-x: hidden;
             z-index: 1000;
+            box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
         }
 
         .sidebar.collapsed {
-            width: 80px;
+            width: 70px;
         }
 
         .logo {
             display: flex;
             align-items: center;
-            margin-bottom: 30px;
-            padding: 10px;
+            justify-content: center;
+            height: var(--header-height);
+            padding: 0 20px;
+            background-color: var(--primary);
         }
 
         .logo img {
-            width: 50px;
-            height: 50px;
-            margin-right: 15px;
-            transition: all var(--transition-speed) ease;
+            height: 40px;
+            transition: var(--transition);
         }
 
-        .logo span {
-            font-size: 1.4em;
-            font-weight: bold;
-            white-space: nowrap;
-            opacity: 1;
-            transition: all var(--transition-speed) ease;
+        .sidebar.collapsed .logo img {
+            height: 30px;
         }
 
-        .sidebar.collapsed .logo span {
-            opacity: 0;
-            width: 0;
+        .nav-links {
+            list-style: none;
+            padding: 20px 0;
+        }
+
+        .nav-item {
+            margin-bottom: 10px;
         }
 
         .nav-link {
             display: flex;
             align-items: center;
-            padding: 15px;
-            color: white;
+            padding: 12px 20px;
+            color: var(--on-surface);
             text-decoration: none;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            transition: all var(--transition-speed) ease;
+            transition: var(--transition);
         }
 
-        .nav-link:hover, .nav-link.active {
-            background-color: var(--secondary-color);
+        .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
         }
 
         .nav-link i {
-            font-size: 1.2em;
             margin-right: 15px;
-            transition: all var(--transition-speed) ease;
-        }
-
-        .nav-link span {
-            opacity: 1;
-            transition: all var(--transition-speed) ease;
+            font-size: 20px;
         }
 
         .sidebar.collapsed .nav-link span {
-            opacity: 0;
-            width: 0;
+            display: none;
         }
 
         .main-content {
-            flex-grow: 1;
-            margin-left: var(--sidebar-width);
+            grid-column: 2;
+            grid-row: 2;
             padding: 20px;
-            transition: all var(--transition-speed) ease;
-        }
-
-        .sidebar.collapsed + .main-content {
-            margin-left: 80px;
+            overflow-y: auto;
         }
 
         .header {
+            grid-column: 2;
+            grid-row: 1;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 0 20px;
             height: var(--header-height);
-            background-color: var(--card-bg);
-            padding: 0 30px;
-            box-shadow: var(--card-shadow);
-            margin-bottom: 30px;
-            border-radius: 12px;
+            background-color: var(--surface);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
         .search-bar {
             display: flex;
             align-items: center;
-            background-color: var(--background-color);
+            background-color: rgba(255, 255, 255, 0.1);
             border-radius: 20px;
-            padding: 8px 15px;
-            width: 300px;
+            padding: 5px 15px;
         }
 
         .search-bar input {
+            background: none;
             border: none;
-            background: transparent;
-            margin-left: 10px;
-            flex-grow: 1;
-            font-size: 0.9em;
+            color: var(--on-surface);
+            padding: 5px;
+            font-size: 16px;
+        }
+
+        .search-bar i {
+            color: var(--on-surface);
+            margin-right: 10px;
         }
 
         .user-profile {
@@ -168,58 +162,101 @@
             margin-right: 10px;
         }
 
-        .grid {
+        .dashboard-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-bottom: 30px;
+            gap: 20px;
+            margin-top: 20px;
         }
 
         .card {
-            background-color: var(--card-bg);
-            border-radius: 12px;
+            background-color: var(--surface);
+            border-radius: 10px;
             padding: 20px;
-            box-shadow: var(--card-shadow);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
         }
 
         .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: var(--secondary);
         }
 
-        .card-title {
-            font-size: 1.2em;
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
             font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
         }
 
         .chart-container {
-            height: 300px;
+            height: 200px;
         }
 
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
+        .tasks {
+            list-style: none;
         }
 
-        .data-table th, .data-table td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #e5e7eb;
+        .task-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .data-table th {
-            background-color: #f9fafb;
-            font-weight: 600;
+        .task-item:last-child {
+            border-bottom: none;
         }
 
-        .data-table tr:hover {
-            background-color: #f9fafb;
+        .task-name {
+            display: flex;
+            align-items: center;
         }
 
-        .calendar {
-            height: 400px;
+        .task-status {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .status-ongoing {
+            background-color: var(--warning);
+        }
+
+        .status-completed {
+            background-color: var(--success);
+        }
+
+        .status-pending {
+            background-color: var(--error);
+        }
+
+        .task-due {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
         }
 
         .modal {
@@ -230,119 +267,194 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.5);
+            background-color: rgba(0, 0, 0, 0.5);
         }
 
         .modal-content {
-            background-color: var(--card-bg);
+            background-color: var(--surface);
             margin: 10% auto;
             padding: 20px;
-            border-radius: 12px;
+            border-radius: 10px;
             width: 50%;
             max-width: 500px;
-            box-shadow: var(--card-shadow);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         .close {
-            color: #aaa;
+            color: var(--on-surface);
             float: right;
             font-size: 28px;
             font-weight: bold;
             cursor: pointer;
         }
 
-        .close:hover,
-        .close:focus {
-            color: #000;
-            text-decoration: none;
-            cursor: pointer;
+        .close:hover {
+            color: var(--error);
         }
 
         .notification {
             position: fixed;
-            top: 20px;
+            bottom: 20px;
             right: 20px;
-            background-color: var(--accent-color);
-            color: white;
-            padding: 15px 20px;
-            border-radius: 8px;
-            box-shadow: var(--card-shadow);
+            background-color: var(--success);
+            color: var(--on-surface);
+            padding: 10px 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
             display: none;
-            z-index: 3000;
+            z-index: 1500;
+        }
+
+        #three-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.1;
         }
 
         @media (max-width: 768px) {
-            .sidebar {
-                width: 80px;
-            }
-
-            .sidebar .logo span,
-            .sidebar .nav-link span {
-                display: none;
-            }
-
-            .main-content {
-                margin-left: 80px;
-            }
-
-            .grid {
+            .container {
                 grid-template-columns: 1fr;
             }
 
-            .modal-content {
-                width: 90%;
+            .sidebar {
+                position: fixed;
+                left: -var(--sidebar-width);
+            }
+
+            .sidebar.collapsed {
+                left: 0;
+            }
+
+            .main-content {
+                grid-column: 1;
+            }
+
+            .header {
+                grid-column: 1;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <aside class="sidebar">
+        <nav class="sidebar">
             <div class="logo">
-                <img src="https://via.placeholder.com/50" alt="Enactus Menoufia Logo">
-                <span>Enactus Menoufia</span>
+                <img src="/api/placeholder/200/80" alt="Enactus Menoufia Logo">
             </div>
-            <nav>
-                <a href="#dashboard" class="nav-link active" data-section="dashboard">
-                    <i class="fas fa-tachometer-alt"></i>
-                    <span>Dashboard</span>
-                </a>
-                <a href="#events" class="nav-link" data-section="events">
-                    <i class="fas fa-calendar-alt"></i>
-                    <span>Events</span>
-                </a>
-                <a href="#members" class="nav-link" data-section="members">
-                    <i class="fas fa-users"></i>
-                    <span>Members</span>
-                </a>
-                <a href="#projects" class="nav-link" data-section="projects">
-                    <i class="fas fa-project-diagram"></i>
-                    <span>Projects</span>
-                </a>
-                <a href="#reports" class="nav-link" data-section="reports">
-                    <i class="fas fa-chart-bar"></i>
-                    <span>Reports</span>
-                </a>
-                <a href="#settings" class="nav-link" data-section="settings">
-                    <i class="fas fa-cog"></i>
-                    <span>Settings</span>
-                </a>
-            </nav>
-        </aside>
-
+            <ul class="nav-links">
+                <li class="nav-item">
+                    <a href="#dashboard" class="nav-link active">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#projects" class="nav-link">
+                        <i class="fas fa-project-diagram"></i>
+                        <span>Projects</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#events" class="nav-link">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Events</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#members" class="nav-link">
+                        <i class="fas fa-users"></i>
+                        <span>Members</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#reports" class="nav-link">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Reports</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#settings" class="nav-link">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <header class="header">
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search...">
+            </div>
+            <div class="user-profile">
+                <img src="/api/placeholder/80/80" alt="User Avatar">
+                <span>John Doe</span>
+            </div>
+        </header>
         <main class="main-content">
-            <header class="header">
-                <div class="search-bar">
-                    <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Search...">
+            <div class="dashboard-grid">
+                <div class="card">
+                    <div class="card-header">Project Overview</div>
+                    <div class="stats">
+                        <div class="stat-item">
+                            <div class="stat-value">12</div>
+                            <div class="stat-label">Active</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">5</div>
+                            <div class="stat-label">Completed</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">3</div>
+                            <div class="stat-label">Pending</div>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="projectChart"></canvas>
+                    </div>
                 </div>
-                <div class="user-profile">
-                    <img src="https://via.placeholder.com/40" alt="User Avatar">
-                    <span>John Doe</span>
+                <div class="card">
+                    <div class="card-header">Upcoming Events</div>
+                    <ul class="tasks">
+                        <li class="task-item">
+                            <div class="task-name">
+                                <div class="task-status status-ongoing"></div>
+                                Annual Conference
+                            </div>
+                            <div class="task-due">Oct 15</div>
+                        </li>
+                        <li class="task-item">
+                            <div class="task-name">
+                                <div class="task-status status-pending"></div>
+                                Workshop Series
+                            </div>
+                            <div class="task-due">Nov 5</div>
+                        </li>
+                        <li class="task-item">
+                            <div class="task-name">
+                                <div class="task-status status-completed"></div>
+                                Team Building
+                            </div>
+                            <div class="task-due">Completed</div>
+                        </li>
+                    </ul>
                 </div>
-            </header>
-
-            <div id="content"></div>
+                <div class="card">
+                    <div class="card-header">Member Activity</div>
+                    <div class="chart-container">
+                        <canvas id="memberChart"></canvas>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">Quick Actions</div>
+                    <button id="newProjectBtn" class="btn">New Project</button>
+                    <button id="scheduleEventBtn" class="btn">Schedule Event</button>
+                    <button id="generateReportBtn" class="btn">Generate Report</button>
+                </div>
+            </div>
         </main>
     </div>
 
@@ -356,769 +468,236 @@
 
     <div id="notification" class="notification"></div>
 
+    <div id="three-container"></div>
+
     <script>
-        // Dashboard data and charts
-        const projectData = [
-            { name: 'Project A', progress: 75 },
-            { name: 'Project B', progress: 45 },
-            { name: 'Project C', progress: 90 },
-            { name: 'Project D', progress: 60 },
-        ];
-
-        const membershipData = {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-            datasets: [{
-                label: 'New Members',
-                data: [12, 19, 3, 5, 2, 3],
-                borderColor: 'rgb(75, 192, 192)',
-                tension: 0.1
-            }]
-        };
-
-        const eventData = [
-            { title: 'Team Meeting', start: '2024-09-30T10:00:00', end: '2024-09-30T11:30:00' },
-            { title: 'Project Presentation', start: '2024-10-02T14:00:00', end: '2024-10-02T16:00:00' },
-            { title: 'Fundraising Event', start: '2024-10-05', end: '2024-10-07' },
-        ];
-
-        // Render dashboard content
-        function renderDashboard() {
-            const content = document.getElementById('content');
-            content.innerHTML = `
-                <div class="grid">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Project Progress</h3>
-                        </div>
-                        <div class="chart-container">
-                            <canvas id="projectChart"></canvas>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Membership Growth</h3>
-                        </div>
-                        <div class="chart-container">
-                            <canvas id="membershipChart"></canvas>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Upcoming Events</h3>
-                        </div>
-                        <div id="calendar" class="calendar"></div>
-                    </div>
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Recent Activities</h3>
-                        </div>
-                        <ul id="activityFeed"></ul>
-                    </div>
-                </div>
-            `;
-
-            // Initialize charts
-            const projectCtx = document.getElementById('projectChart').getContext('2d');
-            new Chart(projectCtx, {
-                type: 'bar',
-                data: {
-                    labels: projectData.map(p => p.name),
-                    datasets: [{
-                        label: 'Project Progress',
-                        data: projectData.map(p => p.progress),
-                        backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                        borderColor: 'rgb(75, 192, 192)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 100
-                        }
+        // Initialize charts
+        const projectChart = new Chart(document.getElementById('projectChart').getContext('2d'), {
+            type: 'doughnut',
+            labels: ['Active', 'Completed', 'Pending'],
+                datasets: [{
+                    data: [12, 5, 3],
+                    backgroundColor: ['#ffd600', '#00c853', '#cf6679']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        fontColor: 'white'
                     }
                 }
-            });
-
-            const membershipCtx = document.getElementById('membershipChart').getContext('2d');
-            new Chart(membershipCtx, {
-                type: 'line',
-                data: membershipData,
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-
-            // Initialize calendar
-            const calendarEl = document.getElementById('calendar');
-            const calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
-                events: eventData,
-                headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
-                }
-            });
-            calendar.render();
-
-            // Populate activity feed
-            const activityFeed = document.getElementById('activityFeed');
-            const recentActivities = [
-                { type: 'project', message: 'Project A reached 75% completion', time: '2 hours ago' },
-                { type: 'member', message: 'New member John Smith joined the team', time: '1 day ago' },
-                { type: 'event', message: 'Upcoming event: Team Meeting on Sep 30', time: '3 days ago' },
-                { type: 'report', message: 'Monthly report for August has been generated', time: '1 week ago' }
-            ];
-
-            recentActivities.forEach(activity => {
-                const li = document.createElement('li');
-                li.innerHTML = `
-                    <i class="fas fa-${getActivityIcon(activity.type)}"></i>
-                    <div>
-                        <p>${activity.message}</p>
-                        <small>${activity.time}</small>
-                    </div>
-                `;
-                activityFeed.appendChild(li);
-            });
-        }
-
-        function getActivityIcon(type) {
-            switch(type) {
-                case 'project': return 'tasks';
-                case 'member': return 'user-plus';
-                case 'event': return 'calendar-check';
-                case 'report': return 'file-alt';
-                default: return 'info-circle';
             }
-        }
+        });
 
-        // Render events page
-        function renderEvents() {
-            const content = document.getElementById('content');
-            content.innerHTML = `
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="card-title">Upcoming Events</h2>
-                        <button id="addEventBtn" class="btn btn-primary">Add Event</button>
-                    </div>
-                    <div id="eventsCalendar" class="calendar"></div>
-                </div>
-            `;
-
-            const calendarEl = document.getElementById('eventsCalendar');
-            const calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
-                events: eventData,
-                headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
-                },
-                eventClick: function(info) {
-                    showEventDetails(info.event);
-                }
-            });
-            calendar.render();
-
-            document.getElementById('addEventBtn').addEventListener('click', showAddEventModal);
-        }
-
-        function showEventDetails(event) {
-            const modal = document.getElementById('modal');
-            const modalTitle = document.getElementById('modal-title');
-            const modalBody = document.getElementById('modal-body');
-
-            modalTitle.textContent = event.title;
-            modalBody.innerHTML = `
-                <p><strong>Start:</strong> ${event.start.toLocaleString()}</p>
-                <p><strong>End:</strong> ${event.end ? event.end.toLocaleString() : 'N/A'}</p>
-                <p><strong>Description:</strong> ${event.extendedProps.description || 'No description available.'}</p>
-            `;
-
-            modal.style.display = 'block';
-        }
-
-        function showAddEventModal() {
-            const modal = document.getElementById('modal');
-            const modalTitle = document.getElementById('modal-title');
-            const modalBody = document.getElementById('modal-body');
-
-            modalTitle.textContent = 'Add New Event';
-            modalBody.innerHTML = `
-                <form id="addEventForm">
-                    <div class="form-group">
-                        <label for="eventTitle">Event Title</label>
-                        <input type="text" id="eventTitle" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="eventStart">Start Date</label>
-                        <input type="datetime-local" id="eventStart" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="eventEnd">End Date</label>
-                        <input type="datetime-local" id="eventEnd">
-                    </div>
-                    <div class="form-group">
-                        <label for="eventDescription">Description</label>
-                        <textarea id="eventDescription"></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Add Event</button>
-                </form>
-            `;
-
-            modal.style.display = 'block';
-
-            document.getElementById('addEventForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                addNewEvent();
-            });
-        }
-
-        function addNewEvent() {
-            const title = document.getElementById('eventTitle').value;
-            const start = document.getElementById('eventStart').value;
-            const end = document.getElementById('eventEnd').value;
-            const description = document.getElementById('eventDescription').value;
-
-            const newEvent = {
-                title: title,
-                start: start,
-                end: end,
-                description: description
-            };
-
-            eventData.push(newEvent);
-            closeModal();
-            renderEvents(); // Re-render events page to show the new event
-            showNotification('New event added successfully!');
-        }
-
-        // Render members page
-        function renderMembers() {
-            const content = document.getElementById('content');
-            content.innerHTML = `
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="card-title">Team Members</h2>
-                        <button id="addMemberBtn" class="btn btn-primary">Add Member</button>
-                    </div>
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Role</th>
-                                <th>Email</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="membersTableBody"></tbody>
-                    </table>
-                </div>
-            `;
-
-            const membersData = [
-                { id: 1, name: 'John Doe', role: 'President', email: 'john@example.com' },
-                { id: 2, name: 'Jane Smith', role: 'Vice President', email: 'jane@example.com' },
-                { id: 3, name: 'Mike Johnson', role: 'Treasurer', email: 'mike@example.com' },
-            ];
-
-            const tableBody = document.getElementById('membersTableBody');
-            membersData.forEach(member => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${member.name}</td>
-                    <td>${member.role}</td>
-                    <td>${member.email}</td>
-                    <td>
-                        <button class="btn btn-sm btn-edit" data-id="${member.id}">Edit</button>
-                        <button class="btn btn-sm btn-delete" data-id="${member.id}">Delete</button>
-                    </td>
-                `;
-                tableBody.appendChild(row);
-            });
-
-            document.getElementById('addMemberBtn').addEventListener('click', showAddMemberModal);
-            document.querySelectorAll('.btn-edit').forEach(btn => {
-                btn.addEventListener('click', () => editMember(btn.dataset.id));
-            });
-            document.querySelectorAll('.btn-delete').forEach(btn => {
-                btn.addEventListener('click', () => deleteMember(btn.dataset.id));
-            });
-        }
-
-        function showAddMemberModal() {
-            const modal = document.getElementById('modal');
-            const modalTitle = document.getElementById('modal-title');
-            const modalBody = document.getElementById('modal-body');
-
-            modalTitle.textContent = 'Add New Member';
-            modalBody.innerHTML = `
-                <form id="addMemberForm">
-                    <div class="form-group">
-                        <label for="memberName">Name</label>
-                        <input type="text" id="memberName" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="memberRole">Role</label>
-                        <input type="text" id="memberRole" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="memberEmail">Email</label>
-                        <input type="email" id="memberEmail" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Add Member</button>
-                </form>
-            `;
-
-            modal.style.display = 'block';
-
-            document.getElementById('addMemberForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                addNewMember();
-            });
-        }
-
-        function addNewMember() {
-            const name = document.getElementById('memberName').value;
-            const role = document.getElementById('memberRole').value;
-            const email = document.getElementById('memberEmail').value;
-
-            // Add new member logic here
-            closeModal();
-            renderMembers(); // Re-render members page
-            showNotification('New member added successfully!');
-        }
-
-        function editMember(id) {
-            // Edit member logic here
-            showNotification('Member updated successfully!');
-        }
-
-        function deleteMember(id) {
-            // Delete member logic here
-            showNotification('Member deleted successfully!');
-        }
-
-        // Render projects page
-        function renderProjects() {
-            const content = document.getElementById('content');
-            content.innerHTML = `
-                <div class="grid">
-                    <div class="card">
-                        <div class="card-header">
-                            <h2 class="card-title">Active Projects</h2>
-                            <button id="addProjectBtn" class="btn btn-primary">Add Project</button>
-                        </div>
-                        <div id="projectList"></div>
-                    </div>
-                    <div class="card">
-                        <div class="card-header">
-                            <h2 class="card-title">Project Progress Overview</h2>
-                        </div>
-                        <div class="chart-container">
-                            <canvas id="projectOverviewChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            const projectList = document.getElementById('projectList');
-            projectData.forEach(project => {
-                const projectCard = document.createElement('div');
-                projectCard.className = 'project-card';
-                projectCard.innerHTML = `
-                    <h3>${project.name}</h3>
-                    <div class="progress-bar">
-                        <div class="progress" style="width: ${project.progress}%"></div>
-                    </div>
-                    <p>${project.progress}% Complete</p>
-                    <button class="btn btn-sm btn-edit" data-id="${project.name}">Edit</button>
-                `;
-                projectList.appendChild(projectCard);
-            });
-
-            const ctx = document.getElementById('projectOverviewChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: projectData.map(p => p.name),
-                    datasets: [{
-                        data: projectData.map(p => p.progress),
-                        backgroundColor: [
-                            'rgba(255, 99, 132, 0.8)',
-                            'rgba(54, 162, 235, 0.8)',
-                            'rgba(255, 206, 86, 0.8)',
-                            'rgba(75, 192, 192, 0.8)'
-                        ]
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'right',
+        const memberChart = new Chart(document.getElementById('memberChart').getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'Active Members',
+                    data: [65, 72, 78, 85, 92, 100],
+                    borderColor: '#03dac6',
+                    backgroundColor: 'rgba(3, 218, 198, 0.1)',
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
                         },
-                        title: {
-                            display: true,
-                            text: 'Project Progress'
-                        }
-                    }
-                }
-            });
-
-            document.getElementById('addProjectBtn').addEventListener('click', showAddProjectModal);
-            document.querySelectorAll('.btn-edit').forEach(btn => {
-                btn.addEventListener('click', () => editProject(btn.dataset.id));
-            });
-        }
-
-        function showAddProjectModal() {
-            const modal = document.getElementById('modal');
-            const modalTitle = document.getElementById('modal-title');
-            const modalBody = document.getElementById('modal-body');
-
-            modalTitle.textContent = 'Add New Project';
-            modalBody.innerHTML = `
-                <form id="addProjectForm">
-                    <div class="form-group">
-                        <label for="projectName">Project Name</label>
-                        <input type="text" id="projectName" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="projectDescription">Description</label>
-                        <textarea id="projectDescription"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="projectProgress">Initial Progress (%)</label>
-                        <input type="number" id="projectProgress" min="0" max="100" value="0">
-                    </div>
-                    <button type="submit" class="btn btn-primary">Add Project</button>
-                </form>
-            `;
-
-            modal.style.display = 'block';
-
-            document.getElementById('addProjectForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                addNewProject();
-            });
-        }
-
-        function addNewProject() {
-            const name = document.getElementById('projectName').value;
-            const description = document.getElementById('projectDescription').value;
-            const progress = parseInt(document.getElementById('projectProgress').value);
-
-            projectData.push({ name, progress });
-            closeModal();
-            renderProjects(); // Re-render projects page
-            showNotification('New project added successfully!');
-        }
-
-        function editProject(name) {
-            // Edit project logic here
-            showNotification('Project updated successfully!');
-        }
-
-        // Render reports page
-        function renderReports() {
-            const content = document.getElementById('content');
-            content.innerHTML = `
-                <div class="grid">
-                    <div class="card">
-                        <div class="card-header">
-                            <h2 class="card-title">Financial Overview</h2>
-                        </div>
-                        <div class="chart-container">
-                            <canvas id="financialChart"></canvas>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-header">
-                            <h2 class="card-title">Impact Metrics</h2>
-                        </div>
-                        <div class="chart-container">
-                            <canvas id="impactChart"></canvas>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-header">
-                            <h2 class="card-title">Recent Reports</h2>
-                        </div>
-                        <ul id="recentReports"></ul>
-                    </div>
-                </div>
-            `;
-
-            // Financial Overview Chart
-            const financialCtx = document.getElementById('financialChart').getContext('2d');
-            new Chart(financialCtx, {
-                type: 'bar',
-                data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                    datasets: [{
-                        label: 'Income',
-                        data: [12000, 19000, 3000, 5000, 2000, 3000],
-                        backgroundColor: 'rgba(75, 192, 192, 0.6)'
-                    }, {
-                        label: 'Expenses',
-                        data: [8000, 12000, 2000, 4000, 1500, 2500],
-                        backgroundColor: 'rgba(255, 99, 132, 0.6)'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Amount ($)'
-                            }
+                        ticks: {
+                            color: 'white'
                         }
                     },
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Financial Overview'
+                    y: {
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: 'white'
                         }
                     }
-                }
-            });
-
-            // Impact Metrics Chart
-            const impactCtx = document.getElementById('impactChart').getContext('2d');
-            new Chart(impactCtx, {
-                type: 'radar',
-                data: {
-                    labels: ['Community Impact', 'Sustainability', 'Innovation', 'Fundraising', 'Member Engagement'],
-                    datasets: [{
-                        label: 'Current Year',
-                        data: [80, 70, 90, 65, 85],
-                        fill: true,
-                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                        borderColor: 'rgb(54, 162, 235)',
-                        pointBackgroundColor: 'rgb(54, 162, 235)',
-                        pointBorderColor: '#fff',
-                        pointHoverBackgroundColor: '#fff',
-                        pointHoverBorderColor: 'rgb(54, 162, 235)'
-                    }, {
-                        label: 'Previous Year',
-                        data: [65, 60, 75, 55, 70],
-                        fill: true,
-                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                        borderColor: 'rgb(255, 99, 132)',
-                        pointBackgroundColor: 'rgb(255, 99, 132)',
-                        pointBorderColor: '#fff',
-                        pointHoverBackgroundColor: '#fff',
-                        pointHoverBorderColor: 'rgb(255, 99, 132)'
-                    }]
                 },
-                options: {
-                    elements: {
-                        line: {
-                            borderWidth: 3
-                        }
-                    },
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Impact Metrics'
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: 'white'
                         }
                     }
                 }
-            });
-
-            // Recent Reports List
-            const recentReports = [
-                { title: 'Annual Financial Report 2023', date: '2023-12-31' },
-                { title: 'Q3 Project Impact Analysis', date: '2023-09-30' },
-                { title: 'Membership Growth Strategy', date: '2023-08-15' },
-                { title: 'Sustainability Initiative Results', date: '2023-07-01' }
-            ];
-
-            const recentReportsList = document.getElementById('recentReports');
-            recentReports.forEach(report => {
-                const li = document.createElement('li');
-                li.innerHTML = `
-                    <a href="#" class="report-link" data-title="${report.title}">
-                        <strong>${report.title}</strong>
-                        <span>${report.date}</span>
-                    </a>
-                `;
-                recentReportsList.appendChild(li);
-            });
-
-            // Add event listeners for report links
-            document.querySelectorAll('.report-link').forEach(link => {
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    showReportDetails(link.dataset.title);
-                });
-            });
-        }
-
-        function showReportDetails(title) {
-            const modal = document.getElementById('modal');
-            const modalTitle = document.getElementById('modal-title');
-            const modalBody = document.getElementById('modal-body');
-
-            modalTitle.textContent = title;
-            modalBody.innerHTML = `
-                <p>This is a placeholder for the ${title} content.</p>
-                <p>In a real-world application, this would contain the full report details, potentially with embedded charts, tables, and downloadable attachments.</p>
-            `;
-
-            modal.style.display = 'block';
-        }
-
-        // Render settings page
-        function renderSettings() {
-            const content = document.getElementById('content');
-            content.innerHTML = `
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="card-title">Account Settings</h2>
-                    </div>
-                    <form id="settingsForm">
-                        <div class="form-group">
-                            <label for="userName">Name</label>
-                            <input type="text" id="userName" value="John Doe" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="userEmail">Email</label>
-                            <input type="email" id="userEmail" value="john@example.com" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="userPassword">New Password</label>
-                            <input type="password" id="userPassword">
-                        </div>
-                        <div class="form-group">
-                            <label for="userPasswordConfirm">Confirm New Password</label>
-                            <input type="password" id="userPasswordConfirm">
-                        </div>
-                        <div class="form-group">
-                            <label for="userNotifications">Email Notifications</label>
-                            <select id="userNotifications">
-                                <option value="all">All</option>
-                                <option value="important">Important Only</option>
-                                <option value="none">None</option>
-                            </select>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Save Changes</button>
-                    </form>
-                </div>
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="card-title">Theme Settings</h2>
-                    </div>
-                    <div class="theme-options">
-                        <button id="lightTheme" class="btn btn-theme">Light Theme</button>
-                        <button id="darkTheme" class="btn btn-theme">Dark Theme</button>
-                    </div>
-                </div>
-            `;
-
-            document.getElementById('settingsForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                saveSettings();
-            });
-
-            document.getElementById('lightTheme').addEventListener('click', () => changeTheme('light'));
-            document.getElementById('darkTheme').addEventListener('click', () => changeTheme('dark'));
-        }
-
-        function saveSettings() {
-            const name = document.getElementById('userName').value;
-            const email = document.getElementById('userEmail').value;
-            const password = document.getElementById('userPassword').value;
-            const passwordConfirm = document.getElementById('userPasswordConfirm').value;
-            const notifications = document.getElementById('userNotifications').value;
-
-            if (password !== passwordConfirm) {
-                showNotification('Passwords do not match!', 'error');
-                return;
             }
+        });
 
-            // Here you would typically send this data to a server
-            // For this example, we'll just show a success message
-            showNotification('Settings saved successfully!');
+        // Sidebar toggle
+        const sidebar = document.querySelector('.sidebar');
+        const toggleBtn = document.createElement('button');
+        toggleBtn.innerHTML = '<i class="fas fa-bars"></i>';
+        toggleBtn.classList.add('toggle-btn');
+        document.querySelector('.header').prepend(toggleBtn);
+
+        toggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+        });
+
+        // Modal functionality
+        const modal = document.getElementById('modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalBody = document.getElementById('modal-body');
+        const closeBtn = document.getElementsByClassName('close')[0];
+
+        function openModal(title, content) {
+            modalTitle.textContent = title;
+            modalBody.innerHTML = content;
+            modal.style.display = 'block';
+            gsap.from(modal, {opacity: 0, scale: 0.8, duration: 0.3, ease: 'power2.out'});
         }
 
-        function changeTheme(theme) {
-            document.body.className = theme === 'dark' ? 'dark-theme' : '';
-            showNotification(`${theme.charAt(0).toUpperCase() + theme.slice(1)} theme applied!`);
+        closeBtn.onclick = () => {
+            gsap.to(modal, {opacity: 0, scale: 0.8, duration: 0.3, ease: 'power2.in', onComplete: () => {
+                modal.style.display = 'none';
+            }});
         }
 
-        // Utility functions
-        function closeModal() {
-            document.getElementById('modal').style.display = 'none';
+        window.onclick = (event) => {
+            if (event.target == modal) {
+                gsap.to(modal, {opacity: 0, scale: 0.8, duration: 0.3, ease: 'power2.in', onComplete: () => {
+                    modal.style.display = 'none';
+                }});
+            }
         }
 
-        function showNotification(message, type = 'success') {
+        // Quick action buttons
+        document.getElementById('newProjectBtn').addEventListener('click', () => {
+            openModal('New Project', `
+                <form id="newProjectForm">
+                    <input type="text" placeholder="Project Name" required>
+                    <textarea placeholder="Project Description" required></textarea>
+                    <input type="date" placeholder="Start Date" required>
+                    <button type="submit">Create Project</button>
+                </form>
+            `);
+
+            document.getElementById('newProjectForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                // Here you would typically send the form data to a server
+                showNotification('New project created successfully!');
+                modal.style.display = 'none';
+            });
+        });
+
+        document.getElementById('scheduleEventBtn').addEventListener('click', () => {
+            openModal('Schedule Event', `
+                <form id="scheduleEventForm">
+                    <input type="text" placeholder="Event Name" required>
+                    <input type="datetime-local" required>
+                    <input type="text" placeholder="Location" required>
+                    <button type="submit">Schedule Event</button>
+                </form>
+            `);
+
+            document.getElementById('scheduleEventForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                // Here you would typically send the form data to a server
+                showNotification('Event scheduled successfully!');
+                modal.style.display = 'none';
+            });
+        });
+
+        document.getElementById('generateReportBtn').addEventListener('click', () => {
+            openModal('Generate Report', `
+                <form id="generateReportForm">
+                    <select required>
+                        <option value="">Select Report Type</option>
+                        <option value="project">Project Report</option>
+                        <option value="financial">Financial Report</option>
+                        <option value="member">Member Activity Report</option>
+                    </select>
+                    <input type="date" placeholder="Start Date" required>
+                    <input type="date" placeholder="End Date" required>
+                    <button type="submit">Generate Report</button>
+                </form>
+            `);
+
+            document.getElementById('generateReportForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                // Here you would typically send the form data to a server and receive a report
+                showNotification('Report generated successfully!');
+                modal.style.display = 'none';
+            });
+        });
+
+        // Notification function
+        function showNotification(message) {
             const notification = document.getElementById('notification');
             notification.textContent = message;
-            notification.className = `notification ${type}`;
             notification.style.display = 'block';
+            gsap.from(notification, {y: 50, opacity: 0, duration: 0.5, ease: 'power2.out'});
             setTimeout(() => {
-                notification.style.display = 'none';
+                gsap.to(notification, {y: 50, opacity: 0, duration: 0.5, ease: 'power2.in', onComplete: () => {
+                    notification.style.display = 'none';
+                }});
             }, 3000);
         }
 
-        // Navigation and initialization
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', function(e) {
+        // 3D background effect
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({alpha: true, antialias: true});
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById('three-container').appendChild(renderer.domElement);
+
+        const geometry = new THREE.TorusKnotGeometry(10, 3, 100, 16);
+        const material = new THREE.MeshBasicMaterial({color: 0x6200ee, wireframe: true});
+        const torusKnot = new THREE.Mesh(geometry, material);
+        scene.add(torusKnot);
+
+        camera.position.z = 30;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            torusKnot.rotation.x += 0.01;
+            torusKnot.rotation.y += 0.01;
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Dynamic content loading
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
                 e.preventDefault();
-                document.querySelector('.nav-link.active').classList.remove('active');
-                this.classList.add('active');
-                const section = this.getAttribute('data-section');
-                switch(section) {
-                    case 'dashboard':
-                        renderDashboard();
-                        break;
-                    case 'events':
-                        renderEvents();
-                        break;
-                    case 'members':
-                        renderMembers();
-                        break;
-                    case 'projects':
-                        renderProjects();
-                        break;
-                    case 'reports':
-                        renderReports();
-                        break;
-                    case 'settings':
-                        renderSettings();
-                        break;
-                }
+                const section = e.target.closest('a').getAttribute('href').slice(1);
+                loadSection(section);
             });
         });
 
-        // Close modal when clicking outside of it
-        window.onclick = function(event) {
-            const modal = document.getElementById('modal');
-            if (event.target == modal) {
-                closeModal();
-            }
+        function loadSection(section) {
+            // Here you would typically fetch content from a server
+            const content = `<h2>${section.charAt(0).toUpperCase() + section.slice(1)}</h2>
+                             <p>This is the ${section} section. Content is loading dynamically.</p>`;
+            document.querySelector('.main-content').innerHTML = content;
+            
+            // Update active nav link
+            navLinks.forEach(link => link.classList.remove('active'));
+            document.querySelector(`[href="#${section}"]`).classList.add('active');
         }
 
-        // Initialize dashboard on load
-        renderDashboard();
+        // Initialize dashboard
+        loadSection('dashboard');
 
-        // Add this at the end of your script to enable sidebar collapse functionality
-        document.querySelector('.logo').addEventListener('click', function() {
-            document.querySelector('.sidebar').classList.toggle('collapsed');
-            document.querySelector('.main-content').classList.toggle('expanded');
-        });
     </script>
 </body>
 </html>
