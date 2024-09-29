@@ -3,19 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enactus Menoufia Portal</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <title>Enactus Menoufia Dashboard</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.10.2/main.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.10.2/main.min.css" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #3498db;
-            --secondary-color: #2ecc71;
-            --accent-color: #e74c3c;
-            --text-color: #34495e;
-            --bg-color: #ecf0f1;
+            --primary-color: #1e3a8a;
+            --secondary-color: #3b82f6;
+            --accent-color: #60a5fa;
+            --background-color: #f3f4f6;
+            --text-color: #1f2937;
+            --sidebar-width: 280px;
+            --header-height: 70px;
             --card-bg: #ffffff;
-            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            --transition: all 0.3s ease;
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --transition-speed: 0.3s;
         }
 
         * {
@@ -25,104 +29,131 @@
         }
 
         body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--bg-color);
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background-color);
             color: var(--text-color);
-            line-height: 1.6;
+            line-height: 1.5;
         }
 
         .container {
-            display: grid;
-            grid-template-columns: 250px 1fr;
-            height: 100vh;
-            transition: var(--transition);
+            display: flex;
+            min-height: 100vh;
         }
 
         .sidebar {
+            width: var(--sidebar-width);
             background-color: var(--primary-color);
             color: white;
             padding: 20px;
-            transition: var(--transition);
+            transition: all var(--transition-speed) ease;
             overflow-y: auto;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 1000;
         }
 
         .sidebar.collapsed {
-            transform: translateX(-250px);
+            width: 80px;
         }
 
         .logo {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 30px;
             display: flex;
             align-items: center;
+            margin-bottom: 30px;
+            padding: 10px;
         }
 
         .logo img {
-            width: 40px;
-            margin-right: 10px;
+            width: 50px;
+            height: 50px;
+            margin-right: 15px;
+            transition: all var(--transition-speed) ease;
         }
 
-        .nav-menu {
-            list-style-type: none;
+        .logo span {
+            font-size: 1.4em;
+            font-weight: bold;
+            white-space: nowrap;
+            opacity: 1;
+            transition: all var(--transition-speed) ease;
         }
 
-        .nav-item {
-            margin-bottom: 15px;
+        .sidebar.collapsed .logo span {
+            opacity: 0;
+            width: 0;
         }
 
         .nav-link {
-            color: white;
-            text-decoration: none;
             display: flex;
             align-items: center;
-            padding: 10px;
-            border-radius: 5px;
-            transition: var(--transition);
+            padding: 15px;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            transition: all var(--transition-speed) ease;
         }
 
         .nav-link:hover, .nav-link.active {
-            background-color: rgba(255, 255, 255, 0.1);
-            transform: translateX(5px);
+            background-color: var(--secondary-color);
         }
 
         .nav-link i {
-            margin-right: 10px;
+            font-size: 1.2em;
+            margin-right: 15px;
+            transition: all var(--transition-speed) ease;
+        }
+
+        .nav-link span {
+            opacity: 1;
+            transition: all var(--transition-speed) ease;
+        }
+
+        .sidebar.collapsed .nav-link span {
+            opacity: 0;
+            width: 0;
         }
 
         .main-content {
+            flex-grow: 1;
+            margin-left: var(--sidebar-width);
             padding: 20px;
-            overflow-y: auto;
+            transition: all var(--transition-speed) ease;
+        }
+
+        .sidebar.collapsed + .main-content {
+            margin-left: 80px;
         }
 
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            height: var(--header-height);
             background-color: var(--card-bg);
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: var(--shadow);
+            padding: 0 30px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 30px;
+            border-radius: 12px;
         }
 
         .search-bar {
             display: flex;
             align-items: center;
-            background-color: var(--bg-color);
+            background-color: var(--background-color);
             border-radius: 20px;
-            padding: 5px 15px;
-            flex-grow: 1;
-            margin-right: 20px;
+            padding: 8px 15px;
+            width: 300px;
         }
 
         .search-bar input {
             border: none;
-            outline: none;
-            padding: 5px;
-            font-size: 16px;
-            background-color: transparent;
-            width: 100%;
+            background: transparent;
+            margin-left: 10px;
+            flex-grow: 1;
+            font-size: 0.9em;
         }
 
         .user-profile {
@@ -137,91 +168,79 @@
             margin-right: 10px;
         }
 
-        .dashboard {
+        .grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
+            gap: 30px;
+            margin-bottom: 30px;
         }
 
         .card {
             background-color: var(--card-bg);
-            border-radius: 10px;
+            border-radius: 12px;
             padding: 20px;
-            box-shadow: var(--shadow);
-            transition: var(--transition);
+            box-shadow: var(--card-shadow);
         }
 
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
         }
 
-        .card h2 {
-            margin-bottom: 15px;
-            color: var(--primary-color);
-            font-size: 1.5rem;
+        .card-title {
+            font-size: 1.2em;
+            font-weight: bold;
         }
 
-        .card-content {
-            font-size: 14px;
+        .chart-container {
+            height: 300px;
         }
 
-        .btn {
-            background-color: var(--secondary-color);
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: var(--transition);
-            font-size: 14px;
-            font-weight: 500;
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
         }
 
-        .btn:hover {
-            background-color: #27ae60;
-            transform: translateY(-2px);
+        .data-table th, .data-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
         }
 
-        .btn-danger {
-            background-color: var(--accent-color);
+        .data-table th {
+            background-color: #f9fafb;
+            font-weight: 600;
         }
 
-        .btn-danger:hover {
-            background-color: #c0392b;
+        .data-table tr:hover {
+            background-color: #f9fafb;
+        }
+
+        .calendar {
+            height: 400px;
         }
 
         .modal {
             display: none;
             position: fixed;
-            z-index: 1;
+            z-index: 2000;
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.4);
-            animation: fadeIn 0.3s;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            background-color: rgba(0,0,0,0.5);
         }
 
         .modal-content {
             background-color: var(--card-bg);
             margin: 10% auto;
             padding: 20px;
-            border-radius: 10px;
+            border-radius: 12px;
             width: 50%;
-            box-shadow: var(--shadow);
-            animation: slideIn 0.3s;
-        }
-
-        @keyframes slideIn {
-            from { transform: translateY(-50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+            max-width: 500px;
+            box-shadow: var(--card-shadow);
         }
 
         .close {
@@ -230,91 +249,44 @@
             font-size: 28px;
             font-weight: bold;
             cursor: pointer;
-            transition: var(--transition);
         }
 
         .close:hover,
         .close:focus {
-            color: var(--text-color);
-        }
-
-        #chart-container {
-            width: 100%;
-            height: 300px;
-        }
-
-        form {
-            display: flex;
-            flex-direction: column;
-        }
-
-        form label {
-            margin-top: 10px;
-            font-weight: 500;
-        }
-
-        form input, form select {
-            margin-top: 5px;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 14px;
-        }
-
-        form button {
-            margin-top: 20px;
-        }
-
-        .progress-bar {
-            width: 100%;
-            background-color: #e0e0e0;
-            border-radius: 5px;
-            overflow: hidden;
-        }
-
-        .progress {
-            height: 10px;
-            background-color: var(--secondary-color);
-            transition: width 0.5s ease-in-out;
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
         }
 
         .notification {
             position: fixed;
             top: 20px;
             right: 20px;
-            background-color: var(--secondary-color);
+            background-color: var(--accent-color);
             color: white;
-            padding: 15px;
-            border-radius: 5px;
-            box-shadow: var(--shadow);
-            opacity: 0;
-            transition: opacity 0.3s ease-in-out;
-        }
-
-        .notification.show {
-            opacity: 1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: var(--card-shadow);
+            display: none;
+            z-index: 3000;
         }
 
         @media (max-width: 768px) {
-            .container {
-                grid-template-columns: 1fr;
-            }
-
             .sidebar {
-                position: fixed;
-                top: 0;
-                left: 0;
-                height: 100%;
-                z-index: 1000;
-                transform: translateX(-100%);
+                width: 80px;
             }
 
-            .sidebar.show {
-                transform: translateX(0);
+            .sidebar .logo span,
+            .sidebar .nav-link span {
+                display: none;
             }
 
             .main-content {
-                margin-left: 0;
+                margin-left: 80px;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
             }
 
             .modal-content {
@@ -325,34 +297,52 @@
 </head>
 <body>
     <div class="container">
-        <aside class="sidebar" id="sidebar">
+        <aside class="sidebar">
             <div class="logo">
-                <img src="https://via.placeholder.com/40" alt="Logo">
+                <img src="https://via.placeholder.com/50" alt="Enactus Menoufia Logo">
                 <span>Enactus Menoufia</span>
             </div>
-            <ul class="nav-menu">
-                <li class="nav-item"><a href="#" class="nav-link active" data-section="dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
-                <li class="nav-item"><a href="#" class="nav-link" data-section="events"><i class="fas fa-calendar-alt"></i> Events</a></li>
-                <li class="nav-item"><a href="#" class="nav-link" data-section="members"><i class="fas fa-users"></i> Members</a></li>
-                <li class="nav-item"><a href="#" class="nav-link" data-section="projects"><i class="fas fa-project-diagram"></i> Projects</a></li>
-                <li class="nav-item"><a href="#" class="nav-link" data-section="reports"><i class="fas fa-chart-bar"></i> Reports</a></li>
-                <li class="nav-item"><a href="#" class="nav-link" data-section="settings"><i class="fas fa-cog"></i> Settings</a></li>
-            </ul>
+            <nav>
+                <a href="#dashboard" class="nav-link active" data-section="dashboard">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#events" class="nav-link" data-section="events">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Events</span>
+                </a>
+                <a href="#members" class="nav-link" data-section="members">
+                    <i class="fas fa-users"></i>
+                    <span>Members</span>
+                </a>
+                <a href="#projects" class="nav-link" data-section="projects">
+                    <i class="fas fa-project-diagram"></i>
+                    <span>Projects</span>
+                </a>
+                <a href="#reports" class="nav-link" data-section="reports">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Reports</span>
+                </a>
+                <a href="#settings" class="nav-link" data-section="settings">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </nav>
         </aside>
+
         <main class="main-content">
             <header class="header">
                 <div class="search-bar">
                     <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Search..." id="search-input">
+                    <input type="text" placeholder="Search...">
                 </div>
                 <div class="user-profile">
                     <img src="https://via.placeholder.com/40" alt="User Avatar">
                     <span>John Doe</span>
                 </div>
             </header>
-            <div id="content">
-                <!-- Content will be dynamically loaded here -->
-            </div>
+
+            <div id="content"></div>
         </main>
     </div>
 
@@ -366,270 +356,78 @@
 
     <div id="notification" class="notification"></div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <script>
-        // Sample data
-        let events = [
-            { id: 1, name: 'Annual Conference', date: '2024-10-15', description: 'Our annual gathering of members and partners.' },
-            { id: 2, name: 'Project Kickoff', date: '2024-11-01', description: 'Launching our new community initiative.' },
-            { id: 3, name: 'Team Building Workshop', date: '2024-11-10', description: 'A day of activities to strengthen our team bonds.' }
+        // Dashboard data and charts
+        const projectData = [
+            { name: 'Project A', progress: 75 },
+            { name: 'Project B', progress: 45 },
+            { name: 'Project C', progress: 90 },
+            { name: 'Project D', progress: 60 },
         ];
 
-        let projects = [
-            { id: 1, name: 'Community Outreach', status: 'In Progress', completion: 65, description: 'Engaging with local communities to identify needs and opportunities.' },
-            { id: 2, name: 'Sustainable Energy', status: 'Planning', completion: 20, description: 'Developing renewable energy solutions for rural areas.' },
-            { id: 3, name: 'Education Initiative', status: 'Completed', completion: 100, description: 'Improving access to quality education in underserved areas.' }
+        const membershipData = {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            datasets: [{
+                label: 'New Members',
+                data: [12, 19, 3, 5, 2, 3],
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.1
+            }]
+        };
+
+        const eventData = [
+            { title: 'Team Meeting', start: '2024-09-30T10:00:00', end: '2024-09-30T11:30:00' },
+            { title: 'Project Presentation', start: '2024-10-02T14:00:00', end: '2024-10-02T16:00:00' },
+            { title: 'Fundraising Event', start: '2024-10-05', end: '2024-10-07' },
         ];
 
-        let teamPerformance = [
-            { name: 'Marketing', score: 85 },
-            { name: 'Development', score: 92 },
-            { name: 'Finance', score: 78 },
-            { name: 'Operations', score: 88 }
-        ];
-
-        let members = [
-            { id: 1, name: 'Alice Johnson', role: 'President', email: 'alice@example.com' },
-            { id: 2, name: 'Bob Smith', role: 'Vice President', email: 'bob@example.com' },
-            { id: 3, name: 'Charlie Brown', role: 'Treasurer', email: 'charlie@example.com' },
-            { id: 4, name: 'Diana Ross', role: 'Secretary', email: 'diana@example.com' }
-        ];
-
-        // DOM Elements
-        const content = document.getElementById('content');
-        const sidebar = document.getElementById('sidebar');
-        const navLinks = document.querySelectorAll('.nav-link');
-        const modal = document.getElementById('modal');
-        const modalTitle = document.getElementById('modal-title');
-        const modalBody = document.getElementById('modal-body');
-        const closeModal = document.querySelector('.close');
-        const searchInput = document.getElementById('search-input');
-        const notification = document.getElementById('notification');
-
-        // Navigation
-        navLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                navLinks.forEach(l => l.classList.remove('active'));
-                link.classList.add('active');
-                loadSection(link.dataset.section);
-            });
-        });
-
-        function loadSection(section) {
-            switch(section) {
-                case 'dashboard':
-                    renderDashboard();
-                    break;
-                case 'events':
-                    renderEvents();
-                    break;
-                case 'members':
-                    renderMembers();
-                    break;
-                case 'projects':
-                    renderProjects();
-                    break;
-                case 'reports':
-                    renderReports();
-                    break;
-                case 'settings':
-                    renderSettings();
-                    break;
-            }
-        }
-
+        // Render dashboard content
         function renderDashboard() {
+            const content = document.getElementById('content');
             content.innerHTML = `
-                <div class="dashboard">
+                <div class="grid">
                     <div class="card">
-                        <h2>Upcoming Events</h2>
-                        <div class="card-content" id="events-list"></div>
-                    </div>
-                    <div class="card">
-                        <h2>Project Status</h2>
-                        <div class="card-content" id="project-status"></div>
-                    </div>
-                    <div class="card">
-                        <h2>Team Performance</h2>
-                        <div class="card-content" id="team-performance"></div>
-                    </div>
-                    <div class="card">
-                        <h2>Quick Actions</h2>
-                        <div class="card-content">
-                            <button class="btn" id="create-event-btn">Create Event</button>
-                            <button class="btn" id="add-member-btn">Add Member</button>
-                            <button class="btn" id="generate-report-btn">Generate Report</button>
+                        <div class="card-header">
+                            <h3 class="card-title">Project Progress</h3>
                         </div>
-                    </div>`;
-
-                      // Populate upcoming events
-            const eventsList = document.getElementById('events-list');
-            events.slice(0, 3).forEach(event => {
-                const eventElement = document.createElement('div');
-                eventElement.innerHTML = `
-                    <h3>${event.name}</h3>
-                    <p>${moment(event.date).format('MMMM D, YYYY')}</p>
-                `;
-                eventsList.appendChild(eventElement);
-            });
-
-            // Populate project status
-            const projectStatus = document.getElementById('project-status');
-            projects.forEach(project => {
-                const projectElement = document.createElement('div');
-                projectElement.innerHTML = `
-                    <h3>${project.name}</h3>
-                    <p>${project.status}</p>
-                    <div class="progress-bar">
-                        <div class="progress" style="width: ${project.completion}%"></div>
+                        <div class="chart-container">
+                            <canvas id="projectChart"></canvas>
+                        </div>
                     </div>
-                `;
-                projectStatus.appendChild(projectElement);
-            });
-
-            // Populate team performance
-            const teamPerformanceElement = document.getElementById('team-performance');
-            const ctx = document.createElement('canvas');
-            teamPerformanceElement.appendChild(ctx);
-            new Chart(ctx, {
-                type: 'radar',
-                data: {
-                    labels: teamPerformance.map(team => team.name),
-                    datasets: [{
-                        label: 'Performance Score',
-                        data: teamPerformance.map(team => team.score),
-                        fill: true,
-                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                        borderColor: 'rgb(54, 162, 235)',
-                        pointBackgroundColor: 'rgb(54, 162, 235)',
-                        pointBorderColor: '#fff',
-                        pointHoverBackgroundColor: '#fff',
-                        pointHoverBorderColor: 'rgb(54, 162, 235)'
-                    }]
-                },
-                options: {
-                    elements: {
-                        line: {
-                            borderWidth: 3
-                        }
-                    },
-                    scale: {
-                        ticks: {
-                            beginAtZero: true,
-                            max: 100
-                        }
-                    }
-                }
-            });
-
-            // Event listeners for buttons
-            document.getElementById('create-event-btn').addEventListener('click', showCreateEventModal);
-            document.getElementById('add-member-btn').addEventListener('click', showAddMemberModal);
-            document.getElementById('generate-report-btn').addEventListener('click', showGenerateReportModal);
-        }
-
-        function renderEvents() {
-            content.innerHTML = `
-                <h1>Events</h1>
-                <button class="btn" id="add-event-btn">Add New Event</button>
-                <div id="events-list"></div>
-            `;
-
-            const eventsList = document.getElementById('events-list');
-            events.forEach(event => {
-                const eventElement = document.createElement('div');
-                eventElement.classList.add('card');
-                eventElement.innerHTML = `
-                    <h3>${event.name}</h3>
-                    <p>Date: ${moment(event.date).format('MMMM D, YYYY')}</p>
-                    <p>${event.description}</p>
-                    <button class="btn" onclick="editEvent(${event.id})">Edit</button>
-                    <button class="btn btn-danger" onclick="deleteEvent(${event.id})">Delete</button>
-                `;
-                eventsList.appendChild(eventElement);
-            });
-
-            document.getElementById('add-event-btn').addEventListener('click', showCreateEventModal);
-        }
-
-        function renderMembers() {
-            content.innerHTML = `
-                <h1>Members</h1>
-                <button class="btn" id="add-member-btn">Add New Member</button>
-                <div id="members-list"></div>
-            `;
-
-            const membersList = document.getElementById('members-list');
-            members.forEach(member => {
-                const memberElement = document.createElement('div');
-                memberElement.classList.add('card');
-                memberElement.innerHTML = `
-                    <h3>${member.name}</h3>
-                    <p>Role: ${member.role}</p>
-                    <p>Email: ${member.email}</p>
-                    <button class="btn" onclick="editMember(${member.id})">Edit</button>
-                    <button class="btn btn-danger" onclick="deleteMember(${member.id})">Delete</button>
-                `;
-                membersList.appendChild(memberElement);
-            });
-
-            document.getElementById('add-member-btn').addEventListener('click', showAddMemberModal);
-        }
-
-        function renderProjects() {
-            content.innerHTML = `
-                <h1>Projects</h1>
-                <button class="btn" id="add-project-btn">Add New Project</button>
-                <div id="projects-list"></div>
-            `;
-
-            const projectsList = document.getElementById('projects-list');
-            projects.forEach(project => {
-                const projectElement = document.createElement('div');
-                projectElement.classList.add('card');
-                projectElement.innerHTML = `
-                    <h3>${project.name}</h3>
-                    <p>Status: ${project.status}</p>
-                    <p>${project.description}</p>
-                    <div class="progress-bar">
-                        <div class="progress" style="width: ${project.completion}%"></div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Membership Growth</h3>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="membershipChart"></canvas>
+                        </div>
                     </div>
-                    <p>Completion: ${project.completion}%</p>
-                    <button class="btn" onclick="editProject(${project.id})">Edit</button>
-                    <button class="btn btn-danger" onclick="deleteProject(${project.id})">Delete</button>
-                `;
-                projectsList.appendChild(projectElement);
-            });
-
-            document.getElementById('add-project-btn').addEventListener('click', showAddProjectModal);
-        }
-
-        function renderReports() {
-            content.innerHTML = `
-                <h1>Reports</h1>
-                <div class="card">
-                    <h2>Team Performance Overview</h2>
-                    <canvas id="team-performance-chart"></canvas>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Upcoming Events</h3>
+                        </div>
+                        <div id="calendar" class="calendar"></div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Recent Activities</h3>
+                        </div>
+                        <ul id="activityFeed"></ul>
+                    </div>
                 </div>
-                <div class="card">
-                    <h2>Project Completion Status</h2>
-                    <canvas id="project-completion-chart"></canvas>
-                </div>
-                <button class="btn" id="generate-report-btn">Generate New Report</button>
             `;
 
-            const teamCtx = document.getElementById('team-performance-chart').getContext('2d');
-            new Chart(teamCtx, {
+            // Initialize charts
+            const projectCtx = document.getElementById('projectChart').getContext('2d');
+            new Chart(projectCtx, {
                 type: 'bar',
                 data: {
-                    labels: teamPerformance.map(team => team.name),
+                    labels: projectData.map(p => p.name),
                     datasets: [{
-                        label: 'Performance Score',
-                        data: teamPerformance.map(team => team.score),
-                        backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                        borderColor: 'rgb(54, 162, 235)',
+                        label: 'Project Progress',
+                        data: projectData.map(p => p.progress),
+                        backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                        borderColor: 'rgb(75, 192, 192)',
                         borderWidth: 1
                     }]
                 },
@@ -643,295 +441,684 @@
                 }
             });
 
-            const projectCtx = document.getElementById('project-completion-chart').getContext('2d');
-            new Chart(projectCtx, {
+            const membershipCtx = document.getElementById('membershipChart').getContext('2d');
+            new Chart(membershipCtx, {
+                type: 'line',
+                data: membershipData,
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // Initialize calendar
+            const calendarEl = document.getElementById('calendar');
+            const calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                events: eventData,
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                }
+            });
+            calendar.render();
+
+            // Populate activity feed
+            const activityFeed = document.getElementById('activityFeed');
+            const recentActivities = [
+                { type: 'project', message: 'Project A reached 75% completion', time: '2 hours ago' },
+                { type: 'member', message: 'New member John Smith joined the team', time: '1 day ago' },
+                { type: 'event', message: 'Upcoming event: Team Meeting on Sep 30', time: '3 days ago' },
+                { type: 'report', message: 'Monthly report for August has been generated', time: '1 week ago' }
+            ];
+
+            recentActivities.forEach(activity => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <i class="fas fa-${getActivityIcon(activity.type)}"></i>
+                    <div>
+                        <p>${activity.message}</p>
+                        <small>${activity.time}</small>
+                    </div>
+                `;
+                activityFeed.appendChild(li);
+            });
+        }
+
+        function getActivityIcon(type) {
+            switch(type) {
+                case 'project': return 'tasks';
+                case 'member': return 'user-plus';
+                case 'event': return 'calendar-check';
+                case 'report': return 'file-alt';
+                default: return 'info-circle';
+            }
+        }
+
+        // Render events page
+        function renderEvents() {
+            const content = document.getElementById('content');
+            content.innerHTML = `
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Upcoming Events</h2>
+                        <button id="addEventBtn" class="btn btn-primary">Add Event</button>
+                    </div>
+                    <div id="eventsCalendar" class="calendar"></div>
+                </div>
+            `;
+
+            const calendarEl = document.getElementById('eventsCalendar');
+            const calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                events: eventData,
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
+                },
+                eventClick: function(info) {
+                    showEventDetails(info.event);
+                }
+            });
+            calendar.render();
+
+            document.getElementById('addEventBtn').addEventListener('click', showAddEventModal);
+        }
+
+        function showEventDetails(event) {
+            const modal = document.getElementById('modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalBody = document.getElementById('modal-body');
+
+            modalTitle.textContent = event.title;
+            modalBody.innerHTML = `
+                <p><strong>Start:</strong> ${event.start.toLocaleString()}</p>
+                <p><strong>End:</strong> ${event.end ? event.end.toLocaleString() : 'N/A'}</p>
+                <p><strong>Description:</strong> ${event.extendedProps.description || 'No description available.'}</p>
+            `;
+
+            modal.style.display = 'block';
+        }
+
+        function showAddEventModal() {
+            const modal = document.getElementById('modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalBody = document.getElementById('modal-body');
+
+            modalTitle.textContent = 'Add New Event';
+            modalBody.innerHTML = `
+                <form id="addEventForm">
+                    <div class="form-group">
+                        <label for="eventTitle">Event Title</label>
+                        <input type="text" id="eventTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="eventStart">Start Date</label>
+                        <input type="datetime-local" id="eventStart" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="eventEnd">End Date</label>
+                        <input type="datetime-local" id="eventEnd">
+                    </div>
+                    <div class="form-group">
+                        <label for="eventDescription">Description</label>
+                        <textarea id="eventDescription"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Event</button>
+                </form>
+            `;
+
+            modal.style.display = 'block';
+
+            document.getElementById('addEventForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                addNewEvent();
+            });
+        }
+
+        function addNewEvent() {
+            const title = document.getElementById('eventTitle').value;
+            const start = document.getElementById('eventStart').value;
+            const end = document.getElementById('eventEnd').value;
+            const description = document.getElementById('eventDescription').value;
+
+            const newEvent = {
+                title: title,
+                start: start,
+                end: end,
+                description: description
+            };
+
+            eventData.push(newEvent);
+            closeModal();
+            renderEvents(); // Re-render events page to show the new event
+            showNotification('New event added successfully!');
+        }
+
+        // Render members page
+        function renderMembers() {
+            const content = document.getElementById('content');
+            content.innerHTML = `
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Team Members</h2>
+                        <button id="addMemberBtn" class="btn btn-primary">Add Member</button>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Email</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="membersTableBody"></tbody>
+                    </table>
+                </div>
+            `;
+
+            const membersData = [
+                { id: 1, name: 'John Doe', role: 'President', email: 'john@example.com' },
+                { id: 2, name: 'Jane Smith', role: 'Vice President', email: 'jane@example.com' },
+                { id: 3, name: 'Mike Johnson', role: 'Treasurer', email: 'mike@example.com' },
+            ];
+
+            const tableBody = document.getElementById('membersTableBody');
+            membersData.forEach(member => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${member.name}</td>
+                    <td>${member.role}</td>
+                    <td>${member.email}</td>
+                    <td>
+                        <button class="btn btn-sm btn-edit" data-id="${member.id}">Edit</button>
+                        <button class="btn btn-sm btn-delete" data-id="${member.id}">Delete</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            document.getElementById('addMemberBtn').addEventListener('click', showAddMemberModal);
+            document.querySelectorAll('.btn-edit').forEach(btn => {
+                btn.addEventListener('click', () => editMember(btn.dataset.id));
+            });
+            document.querySelectorAll('.btn-delete').forEach(btn => {
+                btn.addEventListener('click', () => deleteMember(btn.dataset.id));
+            });
+        }
+
+        function showAddMemberModal() {
+            const modal = document.getElementById('modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalBody = document.getElementById('modal-body');
+
+            modalTitle.textContent = 'Add New Member';
+            modalBody.innerHTML = `
+                <form id="addMemberForm">
+                    <div class="form-group">
+                        <label for="memberName">Name</label>
+                        <input type="text" id="memberName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="memberRole">Role</label>
+                        <input type="text" id="memberRole" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="memberEmail">Email</label>
+                        <input type="email" id="memberEmail" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Member</button>
+                </form>
+            `;
+
+            modal.style.display = 'block';
+
+            document.getElementById('addMemberForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                addNewMember();
+            });
+        }
+
+        function addNewMember() {
+            const name = document.getElementById('memberName').value;
+            const role = document.getElementById('memberRole').value;
+            const email = document.getElementById('memberEmail').value;
+
+            // Add new member logic here
+            closeModal();
+            renderMembers(); // Re-render members page
+            showNotification('New member added successfully!');
+        }
+
+        function editMember(id) {
+            // Edit member logic here
+            showNotification('Member updated successfully!');
+        }
+
+        function deleteMember(id) {
+            // Delete member logic here
+            showNotification('Member deleted successfully!');
+        }
+
+        // Render projects page
+        function renderProjects() {
+            const content = document.getElementById('content');
+            content.innerHTML = `
+                <div class="grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Active Projects</h2>
+                            <button id="addProjectBtn" class="btn btn-primary">Add Project</button>
+                        </div>
+                        <div id="projectList"></div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Project Progress Overview</h2>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="projectOverviewChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            const projectList = document.getElementById('projectList');
+            projectData.forEach(project => {
+                const projectCard = document.createElement('div');
+                projectCard.className = 'project-card';
+                projectCard.innerHTML = `
+                    <h3>${project.name}</h3>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: ${project.progress}%"></div>
+                    </div>
+                    <p>${project.progress}% Complete</p>
+                    <button class="btn btn-sm btn-edit" data-id="${project.name}">Edit</button>
+                `;
+                projectList.appendChild(projectCard);
+            });
+
+            const ctx = document.getElementById('projectOverviewChart').getContext('2d');
+            new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: projects.map(project => project.name),
+                    labels: projectData.map(p => p.name),
                     datasets: [{
-                        data: projects.map(project => project.completion),
+                        data: projectData.map(p => p.progress),
                         backgroundColor: [
-                            'rgba(255, 99, 132, 0.5)',
-                            'rgba(54, 162, 235, 0.5)',
-                            'rgba(255, 206, 86, 0.5)',
-                        ],
-                        borderColor: [
-                            'rgba(255, 99, 132, 1)',
-                            'rgba(54, 162, 235, 1)',
-                            'rgba(255, 206, 86, 1)',
-                        ],
-                        borderWidth: 1
+                            'rgba(255, 99, 132, 0.8)',
+                            'rgba(54, 162, 235, 0.8)',
+                            'rgba(255, 206, 86, 0.8)',
+                            'rgba(75, 192, 192, 0.8)'
+                        ]
                     }]
                 },
                 options: {
                     responsive: true,
                     plugins: {
                         legend: {
-                            position: 'top',
+                            position: 'right',
                         },
                         title: {
                             display: true,
-                            text: 'Project Completion'
+                            text: 'Project Progress'
                         }
                     }
                 }
             });
 
-            document.getElementById('generate-report-btn').addEventListener('click', showGenerateReportModal);
-        }
-
-        function renderSettings() {
-            content.innerHTML = `
-                <h1>Settings</h1>
-                <div class="card">
-                    <h2>User Preferences</h2>
-                    <form id="settings-form">
-                        <label for="theme">Theme:</label>
-                        <select id="theme" name="theme">
-                            <option value="light">Light</option>
-                            <option value="dark">Dark</option>
-                        </select>
-                        <label for="notifications">Email Notifications:</label>
-                        <input type="checkbox" id="notifications" name="notifications">
-                        <button type="submit" class="btn">Save Settings</button>
-                    </form>
-                </div>
-            `;
-
-            document.getElementById('settings-form').addEventListener('submit', function(e) {
-                e.preventDefault();
-                const theme = document.getElementById('theme').value;
-                const notifications = document.getElementById('notifications').checked;
-                // Here you would typically save the settings to a backend
-                showNotification('Settings saved successfully!');
-            });
-        }
-
-        // Modal functions
-        function showModal(title, content) {
-            modalTitle.textContent = title;
-            modalBody.innerHTML = content;
-            modal.style.display = 'block';
-        }
-
-        function hideModal() {
-            modal.style.display = 'none';
-        }
-
-        closeModal.onclick = hideModal;
-
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                hideModal();
-            }
-        }
-
-        function showCreateEventModal() {
-            showModal('Create New Event', `
-                <form id="create-event-form">
-                    <label for="event-name">Event Name:</label>
-                    <input type="text" id="event-name" required>
-                    <label for="event-date">Event Date:</label>
-                    <input type="date" id="event-date" required>
-                    <label for="event-description">Description:</label>
-                    <textarea id="event-description" required></textarea>
-                    <button type="submit" class="btn">Create Event</button>
-                </form>
-            `);
-
-            document.getElementById('create-event-form').addEventListener('submit', function(e) {
-                e.preventDefault();
-                const name = document.getElementById('event-name').value;
-                const date = document.getElementById('event-date').value;
-                const description = document.getElementById('event-description').value;
-                events.push({ id: events.length + 1, name, date, description });
-                hideModal();
-                loadSection('events');
-                showNotification('Event created successfully!');
-            });
-        }
-
-        function showAddMemberModal() {
-            showModal('Add New Member', `
-                <form id="add-member-form">
-                    <label for="member-name">Name:</label>
-                    <input type="text" id="member-name" required>
-                    <label for="member-role">Role:</label>
-                    <input type="text" id="member-role" required>
-                    <label for="member-email">Email:</label>
-                    <input type="email" id="member-email" required>
-                    <button type="submit" class="btn">Add Member</button>
-                </form>
-            `);
-
-            document.getElementById('add-member-form').addEventListener('submit', function(e) {
-                e.preventDefault();
-                const name = document.getElementById('member-name').value;
-                const role = document.getElementById('member-role').value;
-                const email = document.getElementById('member-email').value;
-                members.push({ id: members.length + 1, name, role, email });
-                hideModal();
-                loadSection('members');
-                showNotification('Member added successfully!');
+            document.getElementById('addProjectBtn').addEventListener('click', showAddProjectModal);
+            document.querySelectorAll('.btn-edit').forEach(btn => {
+                btn.addEventListener('click', () => editProject(btn.dataset.id));
             });
         }
 
         function showAddProjectModal() {
-            showModal('Add New Project', `
-                <form id="add-project-form">
-                    <label for="project-name">Project Name:</label>
-                    <input type="text" id="project-name" required>
-                    <label for="project-status">Status:</label>
-                    <select id="project-status" required>
-                        <option value="Planning">Planning</option>
-                        <option value="In Progress">In Progress</option>
-                        <option value="Completed">Completed</option>
-                    </select>
-                    <label for="project-completion">Completion (%):</label>
-                    <input type="number" id="project-completion" min="0" max="100" required>
-                    <label for="project-description">Description:</label>
-                    <textarea id="project-description" required></textarea>
-                    <button type="submit" class="btn">Add Project</button>
-                </form>
-            `);
+            const modal = document.getElementById('modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalBody = document.getElementById('modal-body');
 
-            document.getElementById('add-project-form').addEventListener('submit', function(e) {
+            modalTitle.textContent = 'Add New Project';
+            modalBody.innerHTML = `
+                <form id="addProjectForm">
+                    <div class="form-group">
+                        <label for="projectName">Project Name</label>
+                        <input type="text" id="projectName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="projectDescription">Description</label>
+                        <textarea id="projectDescription"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="projectProgress">Initial Progress (%)</label>
+                        <input type="number" id="projectProgress" min="0" max="100" value="0">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Project</button>
+                </form>
+            `;
+
+            modal.style.display = 'block';
+
+            document.getElementById('addProjectForm').addEventListener('submit', function(e) {
                 e.preventDefault();
-                const name = document.getElementById('project-name').value;
-                const status = document.getElementById('project-status').value;
-                const completion = document.getElementById('project-completion').value;
-                const description = document.getElementById('project-description').value;
-                projects.push({ id: projects.length + 1, name, status, completion, description });
-                hideModal();
-                loadSection('projects');
-                showNotification('Project added successfully!');
+                addNewProject();
             });
         }
 
-        function showGenerateReportModal() {
-            showModal('Generate Report', `
-                <form id="generate-report-form">
-                    <label for="report-type">Report Type:</label>
-                    <select id="report-type" required>
-                        <option value="team-performance">Team Performance</option>
-                        <option value="project-status">Project Status</option>
-                        <option value="event-summary">Event Summary</option>
-                    </select>
-                    <label for="report-period">Report Period:</label>
-                    <select id="report-period" required>
-                        <option value="last-month">Last Month</option>
-                        <option value="last-quarter">Last Quarter</option>
-                        <option value="last-year">Last Year</option>
-                    </select>
-                    <button type="submit" class="btn">Generate Report</button>
-                </form>
-            `);
+        function addNewProject() {
+            const name = document.getElementById('projectName').value;
+            const description = document.getElementById('projectDescription').value;
+            const progress = parseInt(document.getElementById('projectProgress').value);
 
-            document.getElementById('generate-report-form').addEventListener('submit', function(e) {
-                e.preventDefault();
-                // Here you would typically generate the report based on the selected options
-                hideModal();
-                showNotification('Report generated successfully!');
+            projectData.push({ name, progress });
+            closeModal();
+            renderProjects(); // Re-render projects page
+            showNotification('New project added successfully!');
+        }
+
+        function editProject(name) {
+            // Edit project logic here
+            showNotification('Project updated successfully!');
+        }
+
+        // Render reports page
+        function renderReports() {
+            const content = document.getElementById('content');
+            content.innerHTML = `
+                <div class="grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Financial Overview</h2>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="financialChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Impact Metrics</h2>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="impactChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Recent Reports</h2>
+                        </div>
+                        <ul id="recentReports"></ul>
+                    </div>
+                </div>
+            `;
+
+            // Financial Overview Chart
+            const financialCtx = document.getElementById('financialChart').getContext('2d');
+            new Chart(financialCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Income',
+                        data: [12000, 19000, 3000, 5000, 2000, 3000],
+                        backgroundColor: 'rgba(75, 192, 192, 0.6)'
+                    }, {
+                        label: 'Expenses',
+                        data: [8000, 12000, 2000, 4000, 1500, 2500],
+                        backgroundColor: 'rgba(255, 99, 132, 0.6)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Amount ($)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Financial Overview'
+                        }
+                    }
+                }
+            });
+
+            // Impact Metrics Chart
+            const impactCtx = document.getElementById('impactChart').getContext('2d');
+            new Chart(impactCtx, {
+                type: 'radar',
+                data: {
+                    labels: ['Community Impact', 'Sustainability', 'Innovation', 'Fundraising', 'Member Engagement'],
+                    datasets: [{
+                        label: 'Current Year',
+                        data: [80, 70, 90, 65, 85],
+                        fill: true,
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgb(54, 162, 235)',
+                        pointBackgroundColor: 'rgb(54, 162, 235)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgb(54, 162, 235)'
+                    }, {
+                        label: 'Previous Year',
+                        data: [65, 60, 75, 55, 70],
+                        fill: true,
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderColor: 'rgb(255, 99, 132)',
+                        pointBackgroundColor: 'rgb(255, 99, 132)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgb(255, 99, 132)'
+                    }]
+                },
+                options: {
+                    elements: {
+                        line: {
+                            borderWidth: 3
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Impact Metrics'
+                        }
+                    }
+                }
+            });
+
+            // Recent Reports List
+            const recentReports = [
+                { title: 'Annual Financial Report 2023', date: '2023-12-31' },
+                { title: 'Q3 Project Impact Analysis', date: '2023-09-30' },
+                { title: 'Membership Growth Strategy', date: '2023-08-15' },
+                { title: 'Sustainability Initiative Results', date: '2023-07-01' }
+            ];
+
+            const recentReportsList = document.getElementById('recentReports');
+            recentReports.forEach(report => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <a href="#" class="report-link" data-title="${report.title}">
+                        <strong>${report.title}</strong>
+                        <span>${report.date}</span>
+                    </a>
+                `;
+                recentReportsList.appendChild(li);
+            });
+
+            // Add event listeners for report links
+            document.querySelectorAll('.report-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    showReportDetails(link.dataset.title);
+                });
             });
         }
 
-        function editEvent(id) {
-            const event = events.find(e => e.id === id);
-            showModal('Edit Event', `
-                <form id="edit-event-form">
-                    <label for="event-name">Event Name:</label>
-                    <input type="text" id="event-name" value="${event.name}" required>
-                    <label for="event-date">Event Date:</label>
-                    <input type="date" id="event-date" value="${event.date}" required>
-                    <label for="event-description">Description:</label>
-                    <textarea id="event-description" required>${event.description}</textarea>
-                    <button type="submit" class="btn">Update Event</button>
-                </form>
-            `);
+        function showReportDetails(title) {
+            const modal = document.getElementById('modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalBody = document.getElementById('modal-body');
 
-            document.getElementById('edit-event-form').addEventListener('submit', function(e) {
-                e.preventDefault();
-                event.name = document.getElementById('event-name').value;
-                event.date = document.getElementById('event-date').value;
-                event.description = document.getElementById('event-description').value;
-                hideModal();
-                loadSection('events');
-                showNotification('Event updated successfully!');
-            });
+            modalTitle.textContent = title;
+            modalBody.innerHTML = `
+                <p>This is a placeholder for the ${title} content.</p>
+                <p>In a real-world application, this would contain the full report details, potentially with embedded charts, tables, and downloadable attachments.</p>
+            `;
+
+            modal.style.display = 'block';
         }
 
-        function deleteEvent(id) {
-            if (confirm('Are you sure you want to delete this event?')) {
-                events = events.filter(e => e.id !== id);
-                loadSection('events');
+        // Render settings page
+        function renderSettings() {
+            const content = document.getElementById('content');
+            content.innerHTML = `
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Account Settings</h2>
+                    </div>
+                    <form id="settingsForm">
+                        <div class="form-group">
+                            <label for="userName">Name</label>
+                            <input type="text" id="userName" value="John Doe" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="userEmail">Email</label>
+                            <input type="email" id="userEmail" value="john@example.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="userPassword">New Password</label>
+                            <input type="password" id="userPassword">
+                        </div>
+                        <div class="form-group">
+                            <label for="userPasswordConfirm">Confirm New Password</label>
+                            <input type="password" id="userPasswordConfirm">
+                        </div>
+                        <div class="form-group">
+                            <label for="userNotifications">Email Notifications</label>
+                            <select id="userNotifications">
+                                <option value="all">All</option>
+                                <option value="important">Important Only</option>
+                                <option value="none">None</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </form>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Theme Settings</h2>
+                    </div>
+                    <div class="theme-options">
+                        <button id="lightTheme" class="btn btn-theme">Light Theme</button>
+                        <button id="darkTheme" class="btn btn-theme">Dark Theme</button>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('settingsForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveSettings();
+            });
+
+            document.getElementById('lightTheme').addEventListener('click', () => changeTheme('light'));
+            document.getElementById('darkTheme').addEventListener('click', () => changeTheme('dark'));
+        }
+
+        function saveSettings() {
+            const name = document.getElementById('userName').value;
+            const email = document.getElementById('userEmail').value;
+            const password = document.getElementById('userPassword').value;
+            const passwordConfirm = document.getElementById('userPasswordConfirm').value;
+            const notifications = document.getElementById('userNotifications').value;
+
+            if (password !== passwordConfirm) {
+                showNotification('Passwords do not match!', 'error');
+                return;
+            }
+
+            // Here you would typically send this data to a server
+            // For this example, we'll just show a success message
+            showNotification('Settings saved successfully!');
+        }
+
+        function changeTheme(theme) {
+            document.body.className = theme === 'dark' ? 'dark-theme' : '';
+            showNotification(`${theme.charAt(0).toUpperCase() + theme.slice(1)} theme applied!`);
+        }
+
+        // Utility functions
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.style.display = 'block';
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+
+        // Navigation and initialization
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector('.nav-link.active').classList.remove('active');
+                this.classList.add('active');
+                const section = this.getAttribute('data-section');
+                switch(section) {
+                    case 'dashboard':
+                        renderDashboard();
+                        break;
+                    case 'events':
+                        renderEvents();
+                        break;
+                    case 'members':
+                        renderMembers();
+                        break;
+                    case 'projects':
+                        renderProjects();
+                        break;
+                    case 'reports':
+                        renderReports();
+                        break;
+                    case 'settings':
+                        renderSettings();
+                        break;
+                }
+            });
+        });
+
+        // Close modal when clicking outside of it
+        window.onclick = function(event) {
+            const modal = document.getElementById('modal');
+            if (event.target == modal) {
+                closeModal();
             }
         }
 
-        function editMember(id) {
-            const member = members.find(m => m.id === id);
-            showModal('Edit Member', `
-                <form id="edit-member-form">
-                    <label for="member-name">Name:</label>
-                    <input type="text" id="member-name" value="${member.name}" required>
-                    <label for="member-role">Role:</label>
-                    <input type="text" id="member-role" value="${member.role}" required>
-                    <button type="submit" class="btn">Update Member</button>
-                </form>
-            `);
+        // Initialize dashboard on load
+        renderDashboard();
 
-            document.getElementById('edit-member-form').addEventListener('submit', function(e) {
-                e.preventDefault();
-                member.name = document.getElementById('member-name').value;
-                member.role = document.getElementById('member-role').value;
-                hideModal();
-                loadSection('members');
-            });
-        }
-
-        function deleteMember(id) {
-            if (confirm('Are you sure you want to delete this member?')) {
-                members = members.filter(m => m.id !== id);
-                loadSection('members');
-            }
-        }
-
-        function editProject(id) {
-            const project = projects.find(p => p.id === id);
-            showModal('Edit Project', `
-                <form id="edit-project-form">
-                    <label for="project-name">Project Name:</label>
-                    <input type="text" id="project-name" value="${project.name}" required>
-                    <label for="project-status">Status:</label>
-                    <select id="project-status" required>
-                        <option value="Planning" ${project.status === 'Planning' ? 'selected' : ''}>Planning</option>
-                        <option value="In Progress" ${project.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
-                        <option value="Completed" ${project.status === 'Completed' ? 'selected' : ''}>Completed</option>
-                    </select>
-                    <label for="project-completion">Completion (%):</label>
-                    <input type="number" id="project-completion" min="0" max="100" value="${project.completion}" required>
-                    <button type="submit" class="btn">Update Project</button>
-                </form>
-            `);
-
-            document.getElementById('edit-project-form').addEventListener('submit', function(e) {
-                e.preventDefault();
-                project.name = document.getElementById('project-name').value;
-                project.status = document.getElementById('project-status').value;
-                project.completion = document.getElementById('project-completion').value;
-                hideModal();
-                loadSection('projects');
-            });
-        }
-
-        function deleteProject(id) {
-            if (confirm('Are you sure you want to delete this project?')) {
-                projects = projects.filter(p => p.id !== id);
-                loadSection('projects');
-            }
-        }
-
-        // Initialize the dashboard on load
-        loadSection('dashboard');
+        // Add this at the end of your script to enable sidebar collapse functionality
+        document.querySelector('.logo').addEventListener('click', function() {
+            document.querySelector('.sidebar').classList.toggle('collapsed');
+            document.querySelector('.main-content').classList.toggle('expanded');
+        });
     </script>
 </body>
 </html>
