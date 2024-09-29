@@ -4,16 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Enactus Menoufia Portal</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <style>
         :root {
-            --primary-color: #0077c2;
-            --secondary-color: #40c4ff;
-            --text-color: #333;
-            --bg-color: #f5f5f5;
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --accent-color: #e74c3c;
+            --text-color: #34495e;
+            --bg-color: #ecf0f1;
             --card-bg: #ffffff;
             --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
         }
 
         * {
@@ -23,22 +25,25 @@
         }
 
         body {
-            font-family: 'Roboto', sans-serif;
+            font-family: 'Poppins', sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
+            line-height: 1.6;
         }
 
         .container {
             display: grid;
             grid-template-columns: 250px 1fr;
             height: 100vh;
+            transition: var(--transition);
         }
 
         .sidebar {
             background-color: var(--primary-color);
             color: white;
             padding: 20px;
-            transition: transform 0.3s ease-in-out;
+            transition: var(--transition);
+            overflow-y: auto;
         }
 
         .sidebar.collapsed {
@@ -49,6 +54,13 @@
             font-size: 24px;
             font-weight: 700;
             margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo img {
+            width: 40px;
+            margin-right: 10px;
         }
 
         .nav-menu {
@@ -66,11 +78,12 @@
             align-items: center;
             padding: 10px;
             border-radius: 5px;
-            transition: background-color 0.3s;
+            transition: var(--transition);
         }
 
         .nav-link:hover, .nav-link.active {
             background-color: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
         }
 
         .nav-link i {
@@ -87,15 +100,20 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
+            background-color: var(--card-bg);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
         }
 
         .search-bar {
             display: flex;
             align-items: center;
-            background-color: var(--card-bg);
+            background-color: var(--bg-color);
             border-radius: 20px;
             padding: 5px 15px;
-            box-shadow: var(--shadow);
+            flex-grow: 1;
+            margin-right: 20px;
         }
 
         .search-bar input {
@@ -103,6 +121,8 @@
             outline: none;
             padding: 5px;
             font-size: 16px;
+            background-color: transparent;
+            width: 100%;
         }
 
         .user-profile {
@@ -128,11 +148,18 @@
             border-radius: 10px;
             padding: 20px;
             box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
         }
 
         .card h2 {
             margin-bottom: 15px;
             color: var(--primary-color);
+            font-size: 1.5rem;
         }
 
         .card-content {
@@ -146,11 +173,22 @@
             padding: 10px 15px;
             border-radius: 5px;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: var(--transition);
+            font-size: 14px;
+            font-weight: 500;
         }
 
         .btn:hover {
-            background-color: #00b0ff;
+            background-color: #27ae60;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background-color: var(--accent-color);
+        }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
         }
 
         .modal {
@@ -163,15 +201,27 @@
             height: 100%;
             overflow: auto;
             background-color: rgba(0,0,0,0.4);
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         .modal-content {
             background-color: var(--card-bg);
-            margin: 15% auto;
+            margin: 10% auto;
             padding: 20px;
             border-radius: 10px;
             width: 50%;
             box-shadow: var(--shadow);
+            animation: slideIn 0.3s;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
 
         .close {
@@ -180,18 +230,69 @@
             font-size: 28px;
             font-weight: bold;
             cursor: pointer;
+            transition: var(--transition);
         }
 
         .close:hover,
         .close:focus {
-            color: #000;
-            text-decoration: none;
-            cursor: pointer;
+            color: var(--text-color);
         }
 
         #chart-container {
             width: 100%;
             height: 300px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        form label {
+            margin-top: 10px;
+            font-weight: 500;
+        }
+
+        form input, form select {
+            margin-top: 5px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        form button {
+            margin-top: 20px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 10px;
+            background-color: var(--secondary-color);
+            transition: width 0.5s ease-in-out;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: var(--shadow);
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .notification.show {
+            opacity: 1;
         }
 
         @media (max-width: 768px) {
@@ -205,10 +306,19 @@
                 left: 0;
                 height: 100%;
                 z-index: 1000;
+                transform: translateX(-100%);
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
             }
 
             .main-content {
                 margin-left: 0;
+            }
+
+            .modal-content {
+                width: 90%;
             }
         }
     </style>
@@ -216,7 +326,10 @@
 <body>
     <div class="container">
         <aside class="sidebar" id="sidebar">
-            <div class="logo">Enactus Menoufia</div>
+            <div class="logo">
+                <img src="https://via.placeholder.com/40" alt="Logo">
+                <span>Enactus Menoufia</span>
+            </div>
             <ul class="nav-menu">
                 <li class="nav-item"><a href="#" class="nav-link active" data-section="dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
                 <li class="nav-item"><a href="#" class="nav-link" data-section="events"><i class="fas fa-calendar-alt"></i> Events</a></li>
@@ -230,7 +343,7 @@
             <header class="header">
                 <div class="search-bar">
                     <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Search...">
+                    <input type="text" placeholder="Search..." id="search-input">
                 </div>
                 <div class="user-profile">
                     <img src="https://via.placeholder.com/40" alt="User Avatar">
@@ -251,31 +364,36 @@
         </div>
     </div>
 
+    <div id="notification" class="notification"></div>
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <script>
         // Sample data
-        const events = [
-            { id: 1, name: 'Annual Conference', date: '2024-10-15' },
-            { id: 2, name: 'Project Kickoff', date: '2024-11-01' },
-            { id: 3, name: 'Team Building Workshop', date: '2024-11-10' }
+        let events = [
+            { id: 1, name: 'Annual Conference', date: '2024-10-15', description: 'Our annual gathering of members and partners.' },
+            { id: 2, name: 'Project Kickoff', date: '2024-11-01', description: 'Launching our new community initiative.' },
+            { id: 3, name: 'Team Building Workshop', date: '2024-11-10', description: 'A day of activities to strengthen our team bonds.' }
         ];
 
-        const projects = [
-            { id: 1, name: 'Community Outreach', status: 'In Progress', completion: 65 },
-            { id: 2, name: 'Sustainable Energy', status: 'Planning', completion: 20 },
-            { id: 3, name: 'Education Initiative', status: 'Completed', completion: 100 }
+        let projects = [
+            { id: 1, name: 'Community Outreach', status: 'In Progress', completion: 65, description: 'Engaging with local communities to identify needs and opportunities.' },
+            { id: 2, name: 'Sustainable Energy', status: 'Planning', completion: 20, description: 'Developing renewable energy solutions for rural areas.' },
+            { id: 3, name: 'Education Initiative', status: 'Completed', completion: 100, description: 'Improving access to quality education in underserved areas.' }
         ];
 
-        const teamPerformance = [
+        let teamPerformance = [
             { name: 'Marketing', score: 85 },
             { name: 'Development', score: 92 },
-            { name: 'Finance', score: 78 }
+            { name: 'Finance', score: 78 },
+            { name: 'Operations', score: 88 }
         ];
 
-        const members = [
-            { id: 1, name: 'Alice Johnson', role: 'President' },
-            { id: 2, name: 'Bob Smith', role: 'Vice President' },
-            { id: 3, name: 'Charlie Brown', role: 'Treasurer' }
+        let members = [
+            { id: 1, name: 'Alice Johnson', role: 'President', email: 'alice@example.com' },
+            { id: 2, name: 'Bob Smith', role: 'Vice President', email: 'bob@example.com' },
+            { id: 3, name: 'Charlie Brown', role: 'Treasurer', email: 'charlie@example.com' },
+            { id: 4, name: 'Diana Ross', role: 'Secretary', email: 'diana@example.com' }
         ];
 
         // DOM Elements
@@ -286,6 +404,8 @@
         const modalTitle = document.getElementById('modal-title');
         const modalBody = document.getElementById('modal-body');
         const closeModal = document.querySelector('.close');
+        const searchInput = document.getElementById('search-input');
+        const notification = document.getElementById('notification');
 
         // Navigation
         navLinks.forEach(link => {
@@ -342,15 +462,16 @@
                             <button class="btn" id="add-member-btn">Add Member</button>
                             <button class="btn" id="generate-report-btn">Generate Report</button>
                         </div>
-                    </div>
-                </div>
-            `;
+                    </div>`;
 
-            // Populate events
+                      // Populate upcoming events
             const eventsList = document.getElementById('events-list');
-            events.forEach(event => {
-                const eventElement = document.createElement('p');
-                eventElement.textContent = `${event.name} - ${event.date}`;
+            events.slice(0, 3).forEach(event => {
+                const eventElement = document.createElement('div');
+                eventElement.innerHTML = `
+                    <h3>${event.name}</h3>
+                    <p>${moment(event.date).format('MMMM D, YYYY')}</p>
+                `;
                 eventsList.appendChild(eventElement);
             });
 
@@ -359,18 +480,48 @@
             projects.forEach(project => {
                 const projectElement = document.createElement('div');
                 projectElement.innerHTML = `
-                    <p>${project.name} - ${project.status}</p>
-                    <progress value="${project.completion}" max="100"></progress>
+                    <h3>${project.name}</h3>
+                    <p>${project.status}</p>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: ${project.completion}%"></div>
+                    </div>
                 `;
                 projectStatus.appendChild(projectElement);
             });
 
             // Populate team performance
             const teamPerformanceElement = document.getElementById('team-performance');
-            teamPerformance.forEach(team => {
-                const teamElement = document.createElement('p');
-                teamElement.textContent = `${team.name}: ${team.score}%`;
-                teamPerformanceElement.appendChild(teamElement);
+            const ctx = document.createElement('canvas');
+            teamPerformanceElement.appendChild(ctx);
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: teamPerformance.map(team => team.name),
+                    datasets: [{
+                        label: 'Performance Score',
+                        data: teamPerformance.map(team => team.score),
+                        fill: true,
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgb(54, 162, 235)',
+                        pointBackgroundColor: 'rgb(54, 162, 235)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgb(54, 162, 235)'
+                    }]
+                },
+                options: {
+                    elements: {
+                        line: {
+                            borderWidth: 3
+                        }
+                    },
+                    scale: {
+                        ticks: {
+                            beginAtZero: true,
+                            max: 100
+                        }
+                    }
+                }
             });
 
             // Event listeners for buttons
@@ -392,9 +543,10 @@
                 eventElement.classList.add('card');
                 eventElement.innerHTML = `
                     <h3>${event.name}</h3>
-                    <p>Date: ${event.date}</p>
+                    <p>Date: ${moment(event.date).format('MMMM D, YYYY')}</p>
+                    <p>${event.description}</p>
                     <button class="btn" onclick="editEvent(${event.id})">Edit</button>
-                    <button class="btn" onclick="deleteEvent(${event.id})">Delete</button>
+                    <button class="btn btn-danger" onclick="deleteEvent(${event.id})">Delete</button>
                 `;
                 eventsList.appendChild(eventElement);
             });
@@ -416,8 +568,9 @@
                 memberElement.innerHTML = `
                     <h3>${member.name}</h3>
                     <p>Role: ${member.role}</p>
+                    <p>Email: ${member.email}</p>
                     <button class="btn" onclick="editMember(${member.id})">Edit</button>
-                    <button class="btn" onclick="deleteMember(${member.id})">Delete</button>
+                    <button class="btn btn-danger" onclick="deleteMember(${member.id})">Delete</button>
                 `;
                 membersList.appendChild(memberElement);
             });
@@ -439,11 +592,16 @@
                 projectElement.innerHTML = `
                     <h3>${project.name}</h3>
                     <p>Status: ${project.status}</p>
-                    <progress value="${project.completion}" max="100"></progress>
+                    <p>${project.description}</p>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: ${project.completion}%"></div>
+                    </div>
+                    <p>Completion: ${project.completion}%</p>
                     <button class="btn" onclick="editProject(${project.id})">Edit</button>
-                    <button class="btn" onclick="deleteProject(${project.id})">Delete</button>
+                    <button class="btn btn-danger" onclick="deleteProject(${project.id})">Delete</button>
                 `;
-                projectsList.appendChild(projectElement);});
+                projectsList.appendChild(projectElement);
+            });
 
             document.getElementById('add-project-btn').addEventListener('click', showAddProjectModal);
         }
@@ -453,21 +611,25 @@
                 <h1>Reports</h1>
                 <div class="card">
                     <h2>Team Performance Overview</h2>
-                    <canvas id="chart-container"></canvas>
+                    <canvas id="team-performance-chart"></canvas>
+                </div>
+                <div class="card">
+                    <h2>Project Completion Status</h2>
+                    <canvas id="project-completion-chart"></canvas>
                 </div>
                 <button class="btn" id="generate-report-btn">Generate New Report</button>
             `;
 
-            const ctx = document.getElementById('chart-container').getContext('2d');
-            new Chart(ctx, {
+            const teamCtx = document.getElementById('team-performance-chart').getContext('2d');
+            new Chart(teamCtx, {
                 type: 'bar',
                 data: {
                     labels: teamPerformance.map(team => team.name),
                     datasets: [{
-                        label: 'Team Performance Score',
+                        label: 'Performance Score',
                         data: teamPerformance.map(team => team.score),
-                        backgroundColor: 'rgba(0, 123, 255, 0.5)',
-                        borderColor: 'rgba(0, 123, 255, 1)',
+                        backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                        borderColor: 'rgb(54, 162, 235)',
                         borderWidth: 1
                     }]
                 },
@@ -476,6 +638,40 @@
                         y: {
                             beginAtZero: true,
                             max: 100
+                        }
+                    }
+                }
+            });
+
+            const projectCtx = document.getElementById('project-completion-chart').getContext('2d');
+            new Chart(projectCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: projects.map(project => project.name),
+                    datasets: [{
+                        data: projects.map(project => project.completion),
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.5)',
+                            'rgba(54, 162, 235, 0.5)',
+                            'rgba(255, 206, 86, 0.5)',
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Project Completion'
                         }
                     }
                 }
@@ -504,8 +700,10 @@
 
             document.getElementById('settings-form').addEventListener('submit', function(e) {
                 e.preventDefault();
+                const theme = document.getElementById('theme').value;
+                const notifications = document.getElementById('notifications').checked;
                 // Here you would typically save the settings to a backend
-                alert('Settings saved successfully!');
+                showNotification('Settings saved successfully!');
             });
         }
 
@@ -535,6 +733,8 @@
                     <input type="text" id="event-name" required>
                     <label for="event-date">Event Date:</label>
                     <input type="date" id="event-date" required>
+                    <label for="event-description">Description:</label>
+                    <textarea id="event-description" required></textarea>
                     <button type="submit" class="btn">Create Event</button>
                 </form>
             `);
@@ -543,9 +743,11 @@
                 e.preventDefault();
                 const name = document.getElementById('event-name').value;
                 const date = document.getElementById('event-date').value;
-                events.push({ id: events.length + 1, name, date });
+                const description = document.getElementById('event-description').value;
+                events.push({ id: events.length + 1, name, date, description });
                 hideModal();
                 loadSection('events');
+                showNotification('Event created successfully!');
             });
         }
 
@@ -556,6 +758,8 @@
                     <input type="text" id="member-name" required>
                     <label for="member-role">Role:</label>
                     <input type="text" id="member-role" required>
+                    <label for="member-email">Email:</label>
+                    <input type="email" id="member-email" required>
                     <button type="submit" class="btn">Add Member</button>
                 </form>
             `);
@@ -564,9 +768,11 @@
                 e.preventDefault();
                 const name = document.getElementById('member-name').value;
                 const role = document.getElementById('member-role').value;
-                members.push({ id: members.length + 1, name, role });
+                const email = document.getElementById('member-email').value;
+                members.push({ id: members.length + 1, name, role, email });
                 hideModal();
                 loadSection('members');
+                showNotification('Member added successfully!');
             });
         }
 
@@ -583,6 +789,8 @@
                     </select>
                     <label for="project-completion">Completion (%):</label>
                     <input type="number" id="project-completion" min="0" max="100" required>
+                    <label for="project-description">Description:</label>
+                    <textarea id="project-description" required></textarea>
                     <button type="submit" class="btn">Add Project</button>
                 </form>
             `);
@@ -592,9 +800,11 @@
                 const name = document.getElementById('project-name').value;
                 const status = document.getElementById('project-status').value;
                 const completion = document.getElementById('project-completion').value;
-                projects.push({ id: projects.length + 1, name, status, completion });
+                const description = document.getElementById('project-description').value;
+                projects.push({ id: projects.length + 1, name, status, completion, description });
                 hideModal();
                 loadSection('projects');
+                showNotification('Project added successfully!');
             });
         }
 
@@ -620,8 +830,8 @@
             document.getElementById('generate-report-form').addEventListener('submit', function(e) {
                 e.preventDefault();
                 // Here you would typically generate the report based on the selected options
-                alert('Report generated successfully!');
                 hideModal();
+                showNotification('Report generated successfully!');
             });
         }
 
@@ -633,6 +843,8 @@
                     <input type="text" id="event-name" value="${event.name}" required>
                     <label for="event-date">Event Date:</label>
                     <input type="date" id="event-date" value="${event.date}" required>
+                    <label for="event-description">Description:</label>
+                    <textarea id="event-description" required>${event.description}</textarea>
                     <button type="submit" class="btn">Update Event</button>
                 </form>
             `);
@@ -641,8 +853,10 @@
                 e.preventDefault();
                 event.name = document.getElementById('event-name').value;
                 event.date = document.getElementById('event-date').value;
+                event.description = document.getElementById('event-description').value;
                 hideModal();
                 loadSection('events');
+                showNotification('Event updated successfully!');
             });
         }
 
