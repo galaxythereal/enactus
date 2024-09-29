@@ -3,79 +3,264 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enactus Menoufia Interviewing System</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://apis.google.com/js/api.js"></script>
+    <title>Enactus Menoufia Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #0077c2;
+            --secondary-color: #40c4ff;
+            --text-color: #333;
+            --bg-color: #f5f5f5;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            height: 100vh;
+        }
+
+        .sidebar {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 30px;
+        }
+
+        .nav-menu {
+            list-style-type: none;
+        }
+
+        .nav-item {
+            margin-bottom: 15px;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-link i {
+            margin-right: 10px;
+        }
+
+        .main-content {
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background-color: white;
+            border-radius: 20px;
+            padding: 5px 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-bar input {
+            border: none;
+            outline: none;
+            padding: 5px;
+            font-size: 16px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-profile img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .card h2 {
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        .card-content {
+            font-size: 14px;
+        }
+
+        .btn {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #00b0ff;
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>Enactus Menoufia Interviewing System</h1>
-        <nav>
-            <ul>
-                <li><a href="#" id="home-link">Home</a></li>
-                <li><a href="#" id="dashboard-link">Dashboard</a></li>
-                <li><a href="#" id="profile-link">Profile</a></li>
-                <li><a href="#" id="logout-link">Logout</a></li>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="logo">Enactus Menoufia</div>
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="#" class="nav-link"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li class="nav-item"><a href="#" class="nav-link"><i class="fas fa-calendar-alt"></i> Events</a></li>
+                <li class="nav-item"><a href="#" class="nav-link"><i class="fas fa-users"></i> Members</a></li>
+                <li class="nav-item"><a href="#" class="nav-link"><i class="fas fa-project-diagram"></i> Projects</a></li>
+                <li class="nav-item"><a href="#" class="nav-link"><i class="fas fa-chart-bar"></i> Reports</a></li>
+                <li class="nav-item"><a href="#" class="nav-link"><i class="fas fa-cog"></i> Settings</a></li>
             </ul>
-        </nav>
-    </header>
-
-    <main>
-        <section id="login-section" class="active">
-            <h2>Login</h2>
-            <form id="login-form">
-                <input type="email" id="email" placeholder="Email" required>
-                <input type="password" id="password" placeholder="Password" required>
-                <button type="submit">Login</button>
-            </form>
-        </section>
-
-        <section id="dashboard-section">
-            <h2>Dashboard</h2>
-            <div id="interviewer-dashboard" class="hidden">
-                <h3>Upcoming Interviews</h3>
-                <ul id="upcoming-interviews"></ul>
-                <h3>Assigned Interviewees</h3>
-                <ul id="assigned-interviewees"></ul>
+        </aside>
+        <main class="main-content">
+            <header class="header">
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search...">
+                </div>
+                <div class="user-profile">
+                    <img src="https://via.placeholder.com/40" alt="User Avatar">
+                    <span>John Doe</span>
+                </div>
+            </header>
+            <div class="dashboard">
+                <div class="card">
+                    <h2>Upcoming Events</h2>
+                    <div class="card-content" id="events-list">
+                        <!-- Events will be dynamically added here -->
+                    </div>
+                </div>
+                <div class="card">
+                    <h2>Project Status</h2>
+                    <div class="card-content" id="project-status">
+                        <!-- Project status will be dynamically added here -->
+                    </div>
+                </div>
+                <div class="card">
+                    <h2>Team Performance</h2>
+                    <div class="card-content" id="team-performance">
+                        <!-- Team performance data will be dynamically added here -->
+                    </div>
+                </div>
+                <div class="card">
+                    <h2>Quick Actions</h2>
+                    <div class="card-content">
+                        <button class="btn" id="create-event-btn">Create Event</button>
+                        <button class="btn" id="add-member-btn">Add Member</button>
+                        <button class="btn" id="generate-report-btn">Generate Report</button>
+                    </div>
+                </div>
             </div>
-            <div id="admin-dashboard" class="hidden">
-                <h3>System Overview</h3>
-                <div id="system-stats"></div>
-                <h3>Manage Interviewers</h3>
-                <div id="interviewer-management"></div>
-                <h3>Manage Questions</h3>
-                <div id="question-management"></div>
-            </div>
-        </section>
+        </main>
+    </div>
 
-        <section id="profile-section">
-            <h2>Interviewee Profile</h2>
-            <div id="interviewee-info"></div>
-            <div id="interview-questions"></div>
-            <div id="interview-notes">
-                <h3>Interview Notes</h3>
-                <textarea id="notes-area" rows="5"></textarea>
-                <button id="save-notes">Save Notes</button>
-            </div>
-            <div id="rating-system">
-                <h3>Candidate Rating</h3>
-                <select id="rating-select">
-                    <option value="">Select rating</option>
-                    <option value="5">Excellent</option>
-                    <option value="4">Good</option>
-                    <option value="3">Average</option>
-                    <option value="2">Below Average</option>
-                    <option value="1">Poor</option>
-                </select>
-                <button id="save-rating">Save Rating</button>
-            </div>
-        </section>
-    </main>
+    <script>
+        // Sample data
+        const events = [
+            { id: 1, name: 'Annual Conference', date: '2024-10-15' },
+            { id: 2, name: 'Project Kickoff', date: '2024-11-01' },
+            { id: 3, name: 'Team Building Workshop', date: '2024-11-10' }
+        ];
 
-    <footer>
-        <p>&copy; 2024 Enactus Menoufia. All rights reserved.</p>
-    </footer>
+        const projects = [
+            { id: 1, name: 'Community Outreach', status: 'In Progress', completion: 65 },
+            { id: 2, name: 'Sustainable Energy', status: 'Planning', completion: 20 },
+            { id: 3, name: 'Education Initiative', status: 'Completed', completion: 100 }
+        ];
 
-    <script src="code.js"></script>
+        const teamPerformance = [
+            { name: 'Marketing', score: 85 },
+            { name: 'Development', score: 92 },
+            { name: 'Finance', score: 78 }
+        ];
+
+        // Populate events
+        const eventsList = document.getElementById('events-list');
+        events.forEach(event => {
+            const eventElement = document.createElement('p');
+            eventElement.textContent = `${event.name} - ${event.date}`;
+            eventsList.appendChild(eventElement);
+        });
+
+        // Populate project status
+        const projectStatus = document.getElementById('project-status');
+        projects.forEach(project => {
+            const projectElement = document.createElement('div');
+            projectElement.innerHTML = `
+                <p>${project.name} - ${project.status}</p>
+                <progress value="${project.completion}" max="100"></progress>
+            `;
+            projectStatus.appendChild(projectElement);
+        });
+
+        // Populate team performance
+        const teamPerformanceElement = document.getElementById('team-performance');
+        teamPerformance.forEach(team => {
+            const teamElement = document.createElement('p');
+            teamElement.textContent = `${team.name}: ${team.score}%`;
+            teamPerformanceElement.appendChild(teamElement);
+        });
+
+        // Event listeners for buttons
+        document.getElementById('create-event-btn').addEventListener('click', () => {
+            alert('Create Event functionality to be implemented');
+        });
+
+        document.getElementById('add-member-btn').addEventListener('click', () => {
+            alert('Add Member functionality to be implemented');
+        });
+
+        document.getElementById('generate-report-btn').addEventListener('click', () => {
+            alert('Generate Report functionality to be implemented');
+        });
+    </script>
 </body>
 </html>
