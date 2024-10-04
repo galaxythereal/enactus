@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enactus Interview System - Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <div class="dashboard-container">
+        <div class="user-profile">
+            <div id="userAvatar" class="avatar"></div>
+            <div class="user-info">
+                <h2 id="userName">Loading...</h2>
+                <p>Interviewer</p>
+            </div>
+        </div>
+
+        <nav>
+            <a href="#" class="active">Today's Schedule</a>
+            <a href="#">Past Interviews</a>
+            <a href="#">Analytics</a>
+            <a href="#">Settings</a>
+            <a href="#" id="logoutButton">Logout</a>
+        </nav>
+
+        <main class="main-content">
+            <header>
+                <h1>Today's Schedule</h1>
+                <div id="currentDate" class="date-display"></div>
+            </header>
+
+            <div id="scheduleContainer" class="schedule-grid">
+                <!-- Schedule items will be populated here -->
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const SCRIPT_URL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const sessionToken = localStorage.getItem('sessionToken');
+            if (!sessionToken) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            loadUserInfo();
+            loadSchedule();
+
+            document.getElementById('logoutButton').addEventListener('click', logout);
+        });
+
+        function loadUserInfo() {
+            const userName = localStorage.getItem('userName');
+            document.getElementById('userName').textContent = userName || 'User';
+        }
+
+        function loadSchedule() {
+            const sessionToken = localStorage.getItem('sessionToken');
+            fetch(`${SCRIPT_URL}?action=getSchedule&sessionToken=${sessionToken}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        console.error('Error loading schedule:', data.error);
+                        return;
+                    }
+                    displaySchedule(data.schedule);
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function displaySchedule(schedule) {
+            const container = document.getElementById('scheduleContainer');
+            container.innerHTML = '';
+            schedule.forEach(item => {
+                const itemElement = document.createElement('div');
+                itemElement.className = 'schedule-item';
+                itemElement.innerHTML = `
+                    <h3>${item.recruitName}</h3>
+                    <p>Time: ${item.time}</p>
+                    <p>Position: ${item.position}</p>
+                `;
+                container.appendChild(itemElement);
+            });
+        }
+
+        function logout() {
+            const sessionToken = localStorage.getItem('sessionToken');
+            fetch(`${SCRIPT_URL}?action=logout&sessionToken=${sessionToken}`)
+                .then(() => {
+                    localStorage.removeItem('sessionToken');
+                    localStorage.removeItem('userRole');
+                    localStorage.removeItem('userName');
+                    window.location.href = 'index.html';
+                })
+                .catch(error => console.error('Logout error:', error));
+        }
+    </script>
+</body>
+</html>
