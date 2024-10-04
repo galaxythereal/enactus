@@ -3,602 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enactus Menoufia Interviews</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.31/vue.global.prod.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
-    <style>
-        [v-cloak] { display: none; }
-        .fade-enter-active, .fade-leave-active { transition: opacity 0.5s; }
-        .fade-enter, .fade-leave-to { opacity: 0; }
-        .slide-fade-enter-active { transition: all 0.3s ease; }
-        .slide-fade-leave-active { transition: all 0.8s cubic-bezier(1.0, 0.5, 0.8, 1.0); }
-        .slide-fade-enter, .slide-fade-leave-to { transform: translateX(10px); opacity: 0; }
-    </style>
+    <title>Enactus Interview System - Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body class="bg-gray-100 min-h-screen">
-    <div id="app" v-cloak>
-        <!-- Navigation -->
-        <nav class="bg-blue-600 shadow-lg" v-if="isLoggedIn">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex items-center justify-between h-16">
-                    <div class="flex items-center">
-                        <div class="flex-shrink-0">
-                            <img class="h-8 w-8" src="https://tailwindui.com/img/logos/workflow-mark-indigo-500.svg" alt="Workflow">
-                        </div>
-                        <div class="hidden md:block">
-                            <div class="ml-10 flex items-baseline space-x-4">
-                                <a @click="currentView = 'dashboard'" class="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium cursor-pointer" :class="{'bg-blue-700': currentView === 'dashboard'}">Dashboard</a>
-                                <a @click="currentView = 'schedule'" class="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium cursor-pointer" :class="{'bg-blue-700': currentView === 'schedule'}">Schedule</a>
-                                <a @click="currentView = 'recruits'" class="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium cursor-pointer" :class="{'bg-blue-700': currentView === 'recruits'}">Recruits</a>
-                                <a @click="currentView = 'feedback'" class="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium cursor-pointer" :class="{'bg-blue-700': currentView === 'feedback'}">Feedback</a>
-                                <a v-if="user.role === 'admin'" @click="currentView = 'admin'" class="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium cursor-pointer" :class="{'bg-blue-700': currentView === 'admin'}">Admin</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="hidden md:block">
-                        <div class="ml-4 flex items-center md:ml-6">
-                            <div class="ml-3 relative">
-                                <div>
-                                    <button @click="profileDropdown = !profileDropdown" class="max-w-xs bg-blue-600 rounded-full flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-blue-600 focus:ring-white" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
-                                        <span class="sr-only">Open user menu</span>
-                                        <img class="h-8 w-8 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
-                                    </button>
-                                </div>
-                                <div v-if="profileDropdown" class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
-                                    <a @click="logout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer" role="menuitem" tabindex="-1" id="user-menu-item-2">Sign out</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </nav>
-
-        <!-- Main Content -->
-        <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-            <!-- Login Page -->
-            <div v-if="!isLoggedIn" class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-                <div class="max-w-md w-full space-y-8">
-                    <div>
-                        <img class="mx-auto h-12 w-auto" src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg" alt="Workflow">
-                        <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
-                            Sign in to your account
-                        </h2>
-                    </div>
-                    <form class="mt-8 space-y-6" @submit.prevent="login">
-                        <input type="hidden" name="remember" value="true">
-                        <div class="rounded-md shadow-sm -space-y-px">
-                            <div>
-                                <label for="username" class="sr-only">Username</label>
-                                <input id="username" name="username" type="text" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Username" v-model="loginForm.username">
-                            </div>
-                            <div>
-                                <label for="password" class="sr-only">Password</label>
-                                <input id="password" name="password" type="password" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Password" v-model="loginForm.password">
-                            </div>
-                        </div>
-                        <div>
-                            <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                <span class="absolute left-0 inset-y-0 flex items-center pl-3">
-                                    <svg class="h-5 w-5 text-indigo-500 group-hover:text-indigo-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                        <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
-                                    </svg>
-                                </span>
-                                Sign in
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-            <!-- Dashboard -->
-            <div v-if="isLoggedIn && currentView === 'dashboard'" class="px-4 py-6 sm:px-0">
-                <h1 class="text-3xl font-bold text-gray-900 mb-6">Welcome, {{ user.name }}!</h1>
-                <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                    <!-- Stats cards -->
-                    <div class="bg-white overflow-hidden shadow rounded-lg">
-                        <div class="p-5">
-                            <div class="flex items-center">
-                                <div class="flex-shrink-0">
-                                    <svg class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                                    </svg>
-                                </div>
-                                <div class="ml-5 w-0 flex-1">
-                                    <dl>
-                                        <dt class="text-sm font-medium text-gray-500 truncate">
-                                            Total Interviews
-                                        </dt>
-                                        <dd>
-                                            <div class="text-lg font-medium text-gray-900">
-                                                {{ stats.totalInterviews }}
-                                            </div>
-                                        </dd>
-                                    </dl>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-white overflow-hidden shadow rounded-lg">
-                        <div class="p-5">
-                            <div class="flex items-center">
-                                <div class="flex-shrink-0">
-                                    <svg class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-                                    </svg>
-                                </div>
-                                <div class="ml-5 w-0 flex-1">
-                                    <dl>
-                                        <dt class="text-sm font-medium text-gray-500 truncate">
-                                            Accepted Candidates
-                                        </dt>
-                                        <dd>
-                                            <div class="text-lg font-medium text-gray-900">
-                                                {{ stats.accepted }}
-                                            </div>
-                                        </dd>
-                                    </dl>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-white overflow-hidden shadow rounded-lg">
-                        <div class="p-5">
-                            <div class="flex items-center">
-                                <div class="flex-shrink-0">
-                                    <svg class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                </div>
-                                <div class="ml-5 w-0 flex-1">
-                    <dl>
-                        <dt class="text-sm font-medium text-gray-500 truncate">
-                            Pending Interviews
-                        </dt>
-                        <dd>
-                            <div class="text-lg font-medium text-gray-900">
-                                {{ stats.pending }}
-                            </div>
-                        </dd>
-                    </dl>
-                </div>
-            </div>
+<body class="bg-gray-100 h-screen flex items-center justify-center">
+    <div class="bg-white p-8 rounded-lg shadow-md w-96">
+        <div class="text-center mb-8">
+            <img src="https://www.enactus.org/wp-content/uploads/2019/02/enactus-logo-1.png" alt="Enactus Logo" class="mx-auto w-48">
+            <h1 class="text-2xl font-bold mt-4">Interview System Login</h1>
         </div>
-    </div>
-</div>
-
-<!-- Interview Schedule -->
-<div class="mt-8">
-    <h2 class="text-lg leading-6 font-medium text-gray-900 mb-4">Today's Schedule</h2>
-    <div class="bg-white shadow overflow-hidden sm:rounded-md">
-        <ul class="divide-y divide-gray-200">
-            <li v-for="interview in todaySchedule" :key="interview.recruitId">
-                <a href="#" class="block hover:bg-gray-50">
-                    <div class="px-4 py-4 sm:px-6">
-                        <div class="flex items-center justify-between">
-                            <p class="text-sm font-medium text-indigo-600 truncate">
-                                {{ interview.recruitName }}
-                            </p>
-                            <div class="ml-2 flex-shrink-0 flex">
-                                <p class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                    {{ interview.time }}
-                                </p>
-                            </div>
-                        </div>
-                        <div class="mt-2 sm:flex sm:justify-between">
-                            <div class="sm:flex">
-                                <p class="flex items-center text-sm text-gray-500">
-                                    <svg class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                        <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-                                        <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
-                                    </svg>
-                                    {{ interview.email }}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            </li>
-        </ul>
-    </div>
-</div>
-
-<!-- Charts -->
-<div class="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2">
-    <div class="bg-white overflow-hidden shadow rounded-lg">
-        <div class="p-5">
-            <h3 class="text-lg leading-6 font-medium text-gray-900">Interview Results</h3>
-            <div class="mt-2 h-64">
-                <canvas ref="interviewResultsChart"></canvas>
+        <form id="loginForm" class="space-y-4">
+            <div>
+                <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+                <input type="text" id="username" name="username" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
             </div>
-        </div>
-    </div>
-    <div class="bg-white overflow-hidden shadow rounded-lg">
-        <div class="p-5">
-            <h3 class="text-lg leading-6 font-medium text-gray-900">Recruits by Committee</h3>
-            <div class="mt-2 h-64">
-                <canvas ref="recruitsByCommitteeChart"></canvas>
+            <div>
+                <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                <input type="password" id="password" name="password" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
             </div>
-        </div>
-    </div>
-</div>
-</div>
-
-<!-- Schedule View -->
-<div v-if="isLoggedIn && currentView === 'schedule'" class="px-4 py-6 sm:px-0">
-<h2 class="text-2xl font-bold text-gray-900 mb-4">Interview Schedule</h2>
-<div class="mb-4">
-    <button @click="showScheduleModal = true" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-        Schedule New Interview
-    </button>
-</div>
-<div class="bg-white shadow overflow-hidden sm:rounded-md">
-    <ul class="divide-y divide-gray-200">
-        <li v-for="interview in fullSchedule" :key="interview.recruitId + interview.time">
-            <div class="px-4 py-4 flex items-center sm:px-6">
-                <div class="min-w-0 flex-1 sm:flex sm:items-center sm:justify-between">
-                    <div>
-                        <div class="flex text-sm">
-                            <p class="font-medium text-indigo-600 truncate">{{ interview.recruitName }}</p>
-                            <p class="ml-1 flex-shrink-0 font-normal text-gray-500">
-                                in {{ interview.committee }}
-                            </p>
-                        </div>
-                        <div class="mt-2 flex">
-                            <div class="flex items-center text-sm text-gray-500">
-                                <svg class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
-                                </svg>
-                                {{ formatDate(interview.time) }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="ml-5 flex-shrink-0">
-                    <button @click="deleteInterview(interview)" class="text-red-600 hover:text-red-900">Delete</button>
-                </div>
+            <div>
+              <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Log In
+                </button>
             </div>
-        </li>
-    </ul>
-</div>
-
-<!-- Schedule Modal -->
-<div v-if="showScheduleModal" class="fixed z-10 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
-        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-        <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                <div class="sm:flex sm:items-start">
-                    <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                        <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
-                            Schedule New Interview
-                        </h3>
-                        <div class="mt-2">
-                            <form @submit.prevent="scheduleInterview">
-                                <div class="mb-4">
-                                    <label for="recruit" class="block text-sm font-medium text-gray-700">Recruit</label>
-                                    <select id="recruit" v-model="newInterview.recruitId" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                                        <option v-for="recruit in recruits" :key="recruit.id" :value="recruit.id">
-                                            {{ recruit.name }} ({{ recruit.committee }})
-                                        </option>
-                                    </select>
-                                </div>
-                                <div class="mb-4">
-                                    <label for="date" class="block text-sm font-medium text-gray-700">Date</label>
-                                    <input type="date" id="date" v-model="newInterview.date" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                                </div>
-                                <div class="mb-4">
-                                    <label for="time" class="block text-sm font-medium text-gray-700">Time</label>
-                                    <input type="time" id="time" v-model="newInterview.time" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                                </div>
-                                <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
-                                    <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
-                                        Schedule
-                                    </button>
-                                    <button type="button" @click="showScheduleModal = false" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm">
-                                        Cancel
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-</div>
-
-<!-- Recruits View -->
-<div v-if="isLoggedIn && currentView === 'recruits'" class="px-4 py-6 sm:px-0">
-<h2 class="text-2xl font-bold text-gray-900 mb-4">Recruits</h2>
-<div class="mb-4">
-    <button @click="showRecruitModal = true" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-        Add New Recruit
-    </button>
-</div>
-<div class="flex flex-col">
-    <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-        <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-            <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Name
-                            </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Email
-                            </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Phone
-                            </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Committee
-                            </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Status
-                            </th>
-                            <th scope="col" class="relative px-6 py-3">
-                                <span class="sr-only">Edit</span>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        <tr v-for="recruit in recruits" :key="recruit.id">
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm font-medium text-gray-900">
-                                    {{ recruit.name }}
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900">{{ recruit.email }}</div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900">{{ recruit.phone }}</div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900">{{ recruit.committee }}</div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
-                                      :class="{
-                                          'bg-green-100 text-green-800': recruit.status === 'Accepted',
-                                          'bg-red-100 text-red-800': recruit.status === 'Rejected',
-                                          'bg-yellow-100 text-yellow-800': recruit.status === 'Pending'
-                                      }">
-                                    {{ recruit.status }}
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <a href="#" @click.prevent="editRecruit(recruit)" class="text-indigo-600 hover:text-indigo-900">Edit</a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Add/Edit Recruit Modal -->
-<div v-if="showRecruitModal" class="fixed z-10 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
-        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-        <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                <div class="sm:flex sm:items-start">
-                    <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
-                        <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
-                            {{ editingRecruit ? 'Edit Recruit' : 'Add New Recruit' }}
-                        </h3>
-                        <div class="mt-2">
-                            <form @submit.prevent="saveRecruit">
-                                <div class="mb-4">
-                                    <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
-                                    <input type="text" id="name" v-model="currentRecruit.name" required class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                                </div>
-                                <div class="mb-4">
-                                    <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-                                    <input type="email" id="email" v-model="currentRecruit.email" required class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                                </div>
-                                <div class="mb-4">
-                                    <label for="phone" class="block text-sm font-medium text-gray-700">Phone</label>
-                                    <input type="tel" id="phone" v-model="currentRecruit.phone" required class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                                </div>
-                                <div class="mb-4">
-                                    <label for="committee" class="block text-sm font-medium text-gray-700">Committee</label>
-                                    <select id="committee" v-model="currentRecruit.committee" required class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                                        <option value="HR">HR</option>
-                                        <option value="IT">IT</option>
-                                        <option value="Marketing">Marketing</option>
-                                        <option value="Projects">Projects</option>
-                                    </select>
-                                </div>
-                                <div class="mb-4">
-                                    <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
-                                    <select id="status" v-model="currentRecruit.status" required class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                                        <option value="Pending">Pending</option>
-                                        <option value="Accepted">Accepted</option>
-                                        <option value="Rejected">Rejected</option>
-                                    </select>
-                                </div>
-                                <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
-                                    <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
-                                        {{ editingRecruit ? 'Update' : 'Add' }}
-                                    </button>
-                                    <button type="button" @click="showRecruitModal = false" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm">
-                                        Cancel
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-</div>
-
-<!-- Feedback View -->
-<div v-if="isLoggedIn && currentView === 'feedback'" class="px-4 py-6 sm:px-0">
-<h2 class="text-2xl font-bold text-gray-900 mb-4">Feedback Submission</h2>
-<form @submit.prevent="submitFeedback" class="space-y-8 divide-y divide-gray-200">
-    <div class="space-y-8 divide-y divide-gray-200 sm:space-y-5">
-        <div>
-            <div class="mt-6 sm:mt-5 space-y-6 sm:space-y-5">
-                <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
-                    <label for="recruit" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
-                        Recruit
-                    </label>
-                    <div class="mt-1 sm:mt-0 sm:col-span-2">
-                        <select id="recruit" v-model="feedback.recruitId" required class="max-w-lg block focus:ring-indigo-500 focus:border-indigo-500 w-full shadow-sm sm:max-w-xs sm:text-sm border-gray-300 rounded-md">
-                            <option v-for="recruit in recruits" :key="recruit.id" :value="recruit.id">
-                                {{ recruit.name }}
-                            </option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
-                    <label for="notes" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
-                        Notes
-                    </label>
-                    <div class="mt-1 sm:mt-0 sm:col-span-2">
-                        <textarea id="notes" v-model="feedback.notes" rows="3" class="max-w-lg shadow-sm block w-full focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border border-gray-300 rounded-md"></textarea>
-                    </div>
-                </div>
-
-                <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
-                    <label for="decision" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
-                        Decision
-                    </label>
-                    <div class="mt-1 sm:mt-0 sm:col-span-2">
-                        <select id="decision" v-model="feedback.decision" required class="max-w-lg block focus:ring-indigo-500 focus:border-indigo-500 w-full shadow-sm sm:max-w-xs sm:text-sm border-gray-300 rounded-md">
-                            <option value="Accept">Accept</option>
-                            <option value="Reject">Reject</option>
-                            <option value="Pending">Pending</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
+        </form>
+        <div id="errorMessage" class="mt-4 text-red-600 text-center hidden"></div>
+        <div id="loadingSpinner" class="mt-4 text-center hidden">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600 mx-auto"></div>
         </div>
     </div>
 
-    <div class="pt-5">
-        <div class="flex justify-end">
-            <button type="submit" class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                Submit Feedback
-            </button>
-        </div>
-    </div>
-</form>
-</div>
+    <script>
+        const SCRIPT_URL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec';
 
-<!-- Admin View -->
-<div v-if="isLoggedIn && currentView === 'admin' && user.role === 'admin'" class="px-4 py-6 sm:px-0">
-<h2 class="text-2xl font-bold text-gray-900 mb-4">Admin Dashboard</h2>
-<div class="mb-4">
-    <button @click="showInterviewerModal = true" class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">
-        Add New Interviewer
-    </button>
-</div>
-<div class="flex flex-col">
-    <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-        <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-            <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Name
-                            </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Username
-                            </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Role
-                            </th>
-                            <th scope="col" class="relative px-6 py-3">
-                                <span class="sr-only">Edit</span>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        <tr v-for="interviewer in interviewers" :key="interviewer.username">
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm font-medium text-gray-900">
-                                    {{ interviewer.name }}
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900">{{ interviewer.username }}</div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900">{{ interviewer.role }}</div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <a href="#" @click.prevent="editInterviewer(interviewer)" class="text-indigo-600 hover:text-indigo-900">Edit</a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Add/Edit Interviewer Modal -->
-<div v-if="showInterviewerModal" class="fixed z-10 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-  <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-    <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
-    <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-    <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-      <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-        <div class="sm:flex sm:items-start">
-          <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
-            <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
-              {{ editingInterviewer ? 'Edit Interviewer' : 'Add New Interviewer' }}
-            </h3>
-            <div class="mt-2">
-              <form @submit.prevent="saveInterviewer">
-                <div class="mb-4">
-                  <label for="interviewer-name" class="block text-sm font-medium text-gray-700">Name</label>
-                  <input type="text" id="interviewer-name" v-model="currentInterviewer.name" required class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                </div>
-                <div class="mb-4">
-                  <label for="interviewer-username" class="block text-sm font-medium text-gray-700">Username</label>
-                  <input type="text" id="interviewer-username" v-model="currentInterviewer.username" required class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                </div>
-                <div class="mb-4">
-                  <label for="interviewer-password" class="block text-sm font-medium text-gray-700">Password</label>
-                  <input type="password" id="interviewer-password" v-model="currentInterviewer.password" required class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                </div>
-                <div class="mb-4">
-                  <label for="interviewer-role" class="block text-sm font-medium text-gray-700">Role</label>
-                  <select id="interviewer-role" v-model="currentInterviewer.role" required class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                    <option value="interviewer">Interviewer</option>
-                    <option value="admin">Admin</option>
-                  </select>
-                </div>
-                <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
-                  <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
-                    {{ editingInterviewer ? 'Update' : 'Add' }}
-                  </button>
-                  <button type="button" @click="showInterviewerModal = false" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm">
-                    Cancel
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            showLoading();
+            hideError();
+
+            fetch(`${SCRIPT_URL}?action=login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username, password }),
+            })
+            .then(response => response.json())
+            .then(result => {
+                hideLoading();
+                if (result.success) {
+                    localStorage.setItem('sessionToken', result.sessionToken);
+                    localStorage.setItem('userRole', result.userInfo.role);
+                    localStorage.setItem('userName', result.userInfo.name);
+                    
+                    if (result.userInfo.role === 'admin') {
+                        window.location.href = 'dashboard.html';
+                    } else {
+                        window.location.href = 'interview.html';
+                    }
+                } else {
+                    showError(result.error || 'Login failed. Please try again.');
+                }
+            })
+            .catch(error => {
+                hideLoading();
+                console.error('Login error:', error);
+                showError('An error occurred. Please try again.');
+            });
+        });
+
+        function showError(message) {
+            const errorElement = document.getElementById('errorMessage');
+            errorElement.textContent = message;
+            errorElement.classList.remove('hidden');
+        }
+
+        function hideError() {
+            document.getElementById('errorMessage').classList.add('hidden');
+        }
+
+        function showLoading() {
+            document.getElementById('loadingSpinner').classList.remove('hidden');
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingSpinner').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
