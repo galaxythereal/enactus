@@ -3,240 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enactus Interview System - Conduct Interview</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <title>Enactus Menoufia - Interview</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <?!= include('stylesheet'); ?>
 </head>
 <body class="bg-gray-100">
-    <div class="interview-container">
-        <div class="main-section">
-            <header>
-                <h1>Conduct Interview</h1>
-                <div class="header-actions">
-                    <button id="saveProgress">Save Progress</button>
-                    <button id="endInterview">End Interview</button>
-                </div>
-            </header>
+    <div class="min-h-screen flex flex-col">
+        <header class="bg-white shadow">
+            <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+                <h1 class="text-3xl font-bold text-gray-900">Interview Session</h1>
+                <button id="endInterviewBtn" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                    End Interview
+                </button>
+            </div>
+        </header>
 
-            <form id="interviewForm">
-                <div class="form-group">
-                    <label>Technical Skills</label>
-                    <div class="rating-group">
-                        <input type="radio" name="technicalSkills" value="1"> 1
-                        <input type="radio" name="technicalSkills" value="2"> 2
-                        <input type="radio" name="technicalSkills" value="3"> 3
-                        <input type="radio" name="technicalSkills" value="4"> 4
-                        <input type="radio" name="technicalSkills" value="5"> 5
+        <main class="flex-grow container mx-auto py-6 px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Candidate Information -->
+                <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+                    <div class="px-4 py-5 sm:px-6">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900">Candidate Information</h3>
+                    </div>
+                    <div class="border-t border-gray-200">
+                        <dl>
+                            <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                <dt class="text-sm font-medium text-gray-500">Full name</dt>
+                                <dd id="candidateName" class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"></dd>
+                            </div>
+                            <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                <dt class="text-sm font-medium text-gray-500">Position</dt>
+                                <dd id="candidatePosition" class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"></dd>
+                            </div>
+                            <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                <dt class="text-sm font-medium text-gray-500">Email address</dt>
+                                <dd id="candidateEmail" class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"></dd>
+                            </div>
+                            <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                <dt class="text-sm font-medium text-gray-500">Phone number</dt>
+                                <dd id="candidatePhone" class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"></dd>
+                            </div>
+                        </dl>
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label>Soft Skills</label>
-                    <div class="rating-group">
-                        <input type="radio" name="softSkills" value="1"> 1
-                        <input type="radio" name="softSkills" value="2"> 2
-                        <input type="radio" name="softSkills" value="3"> 3
-                        <input type="radio" name="softSkills" value="4"> 4
-                        <input type="radio" name="softSkills" value="5"> 5
+                <!-- Interview Questions -->
+                <div class="bg-white shadow overflow-hidden sm:rounded-lg md:col-span-2">
+                    <div class="px-4 py-5 sm:px-6">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900">Interview Questions</h3>
+                    </div>
+                    <div class="border-t border-gray-200">
+                        <ul id="questionsList" class="divide-y divide-gray-200">
+                            <!-- Questions will be dynamically inserted here -->
+                        </ul>
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label>Culture Fit</label>
-                    <div class="rating-group">
-                        <input type="radio" name="cultureFit" value="1"> 1
-                        <input type="radio" name="cultureFit" value="2"> 2
-                        <input type="radio" name="cultureFit" value="3"> 3
-                        <input type="radio" name="cultureFit" value="4"> 4
-                        <input type="radio" name="cultureFit" value="5"> 5
+                <!-- Notes Section -->
+                <div class="bg-white shadow overflow-hidden sm:rounded-lg md:col-span-3">
+                    <div class="px-4 py-5 sm:px-6">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900">Interview Notes</h3>
+                    </div>
+                    <div class="border-t border-gray-200 p-4">
+                        <textarea id="interviewNotes" rows="4" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" placeholder="Enter your notes here..."></textarea>
                     </div>
                 </div>
-
-                <div class="form-group">
-                    <label>Interview Notes</label>
-                    <textarea id="interviewNotes"></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label>Final Decision</label>
-                    <select id="finalDecision">
-                        <option value="">Select decision...</option>
-                        <option value="hire">Hire</option>
-                        <option value="doNotHire">Do Not Hire</option>
-                        <option value="secondInterview">Maybe - Second Interview</option>
-                    </select>
-                </div>
-            </form>
-        </div>
-
-        <div class="sidebar">
-            <div class="recruit-profile">
-                <h2>Recruit Profile</h2>
-                <div id="recruitProfile" class="profile-info">
-                    Loading...
-                </div>
             </div>
-
-            <div class="interview-timer">
-                <h2>Interview Timer</h2>
-                <div id="timerDisplay" class="timer-display">00:00</div>
-                <div class="timer-controls">
-                    <button id="startTimer">Start</button>
-                    <button id="resetTimer">Reset</button>
-                </div>
-            </div>
-
-            <div class="question-bank">
-                <h2>Suggested Questions</h2>
-                <ul id="suggestedQuestions"></ul>
-            </div>
-        </div>
+        </main>
     </div>
 
-    <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx3qwRRPo5M4JG1wRSkT6GhImwz5SDv-C6zrT3kPajawoDgfRIRYc7xbELWQZus3wSN/exec';
-        let recruitId;
-        let timerInterval;
-        let seconds = 0;
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const sessionToken = localStorage.getItem('sessionToken');
-            if (!sessionToken) {
-                window.location.href = 'index.html';
-                return;
-            }
-
-            recruitId = new URLSearchParams(window.location.search).get('recruitId');
-            if (!recruitId) {
-                alert('No recruit ID provided');
-                window.location.href = 'dashboard.html';
-                return;
-            }
-
-            loadRecruitProfile();
-            loadSuggestedQuestions();
-
-            document.getElementById('saveProgress').addEventListener('click', saveProgress);
-            document.getElementById('endInterview').addEventListener('click', endInterview);
-            document.getElementById('startTimer').addEventListener('click', startTimer);
-            document.getElementById('resetTimer').addEventListener('click', resetTimer);
-        });
-
-        function loadRecruitProfile() {
-            const sessionToken = localStorage.getItem('sessionToken');
-            fetch(`${SCRIPT_URL}?action=getRecruitProfile&sessionToken=${sessionToken}&recruitId=${recruitId}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.error) {
-                        console.error('Error loading recruit profile:', data.error);
-                        return;
-                    }
-                    displayRecruitProfile(data.profile);
-                })
-                .catch(error => console.error('Error:', error));
-        }
-
-        function displayRecruitProfile(profile) {
-            const profileElement = document.getElementById('recruitProfile');
-            profileElement.innerHTML = `
-                <p>Name: ${profile.name}</p>
-                <p>Position: ${profile.position}</p>
-                <p>Education: ${profile.education}</p>
-                <p>Experience: ${profile.experience}</p>
-            `;
-        }
-
-        function loadSuggestedQuestions() {
-            const sessionToken = localStorage.getItem('sessionToken');
-            fetch(`${SCRIPT_URL}?action=getSuggestedQuestions&sessionToken=${sessionToken}&recruitId=${recruitId}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.error) {
-                        console.error('Error loading suggested questions:', data.error);
-                        return;
-                    }
-                    displaySuggestedQuestions(data.questions);
-                })
-                .catch(error => console.error('Error:', error));
-        }
-
-        function displaySuggestedQuestions(questions) {
-            const questionsElement = document.getElementById('suggestedQuestions');
-            questionsElement.innerHTML = questions.map(q => `<li>${q}</li>`).join('');
-        }
-
-       function saveProgress() {
-            const sessionToken = localStorage.getItem('sessionToken');
-            const formData = new FormData(document.getElementById('interviewForm'));
-            const feedbackData = {
-                technicalSkills: formData.get('technicalSkills'),
-                softSkills: formData.get('softSkills'),
-                cultureFit: formData.get('cultureFit'),
-                notes: document.getElementById('interviewNotes').value,
-                decision: document.getElementById('finalDecision').value
-            };
-
-            fetch(`${SCRIPT_URL}?action=saveFeedback`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    sessionToken,
-                    recruitId,
-                    feedbackData
-                }),
-            })
-            .then(response => response.json())
-            .then(result => {
-                if (result.success) {
-                    alert('Progress saved successfully');
-                } else {
-                    alert('Error saving progress: ' + result.error);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred while saving progress');
-            });
-        }
-
-        function endInterview() {
-            if (confirm('Are you sure you want to end the interview?')) {
-                saveProgress();
-                window.location.href = 'dashboard.html';
-            }
-        }
-
-        function startTimer() {
-            if (!timerInterval) {
-                timerInterval = setInterval(updateTimer, 1000);
-                document.getElementById('startTimer').textContent = 'Pause';
-            } else {
-                clearInterval(timerInterval);
-                timerInterval = null;
-                document.getElementById('startTimer').textContent = 'Resume';
-            }
-        }
-
-        function resetTimer() {
-            clearInterval(timerInterval);
-            timerInterval = null;
-            seconds = 0;
-            updateTimerDisplay();
-            document.getElementById('startTimer').textContent = 'Start';
-        }
-
-        function updateTimer() {
-            seconds++;
-            updateTimerDisplay();
-        }
-
-        function updateTimerDisplay() {
-            const minutes = Math.floor(seconds / 60);
-            const remainingSeconds = seconds % 60;
-            document.getElementById('timerDisplay').textContent = 
-                `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
-        }
-    </script>
+    <?!= include('JavaScript'); ?>
 </body>
 </html>
