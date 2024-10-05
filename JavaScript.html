@@ -1,0 +1,488 @@
+<script>
+
+// Dashboard initialization
+document.addEventListener('DOMContentLoaded', function() {
+    initializeDashboard();
+    setupEventListeners();
+    loadInterviews();
+});
+
+let currentUser = null;
+let interviewData = [];
+
+async function initializeDashboard() {
+    try {
+        const userData = await getUserData();
+        currentUser = userData;
+        document.getElementById('user-name').textContent = userData.name;
+        updateStats();
+        updateCurrentDate();
+    } catch (error) {
+        console.error('Error initializing dashboard:', error);
+        showNotification('Error loading dashboard', 'error');
+    }
+}
+
+function setupEventListeners() {
+    // Refresh button
+    document.querySelector('button:contains("Refresh")').addEventListener('click', refreshDashboard);
+    
+    // Schedule Interview button
+    document.querySelector('button:contains("Schedule Interview")').addEventListener('click', () => openModal('schedule-modal'));
+    
+    // Search input
+    document.querySelector('input[placeholder="Search candidates..."]').addEventListener('input', debounce(filterInterviews, 300));
+    
+    // Status filter
+    document.querySelector('select').addEventListener('change', filterInterviews);
+}
+
+async function loadInterviews() {
+    try {
+        showLoadingState();
+        const response = await google.script.run.withSuccessHandler(handleInterviewData).getInterviews();
+        hideLoadingState();
+    } catch (error) {
+        console.error('Error loading interviews:', error);
+        showNotification('Error loading interviews', 'error');
+        hideLoadingState();
+    }
+}
+
+function handleInterviewData(data) {
+    interviewData = data;
+    updateTimeline(data.today);
+    updateUpcomingTable(data.upcoming);
+    updateStats(data.stats);
+}
+
+function updateTimeline(todayInterviews) {
+    const timeline = document.getElementById('interview-timeline');
+    timeline.innerHTML = '';
+    
+    todayInterviews.forEach(interview => {
+        const li = document.createElement('li');
+        li.className = 'p-4 hover:bg-gray-50 transition-colors duration-200';
+        li.innerHTML = `
+            <div class="flex space-x-3">
+                <img src="/api/placeholder/40/40" alt="" class="h-10 w-10 rounded-full">
+                <div class="flex-1">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-sm font-medium text-gray-900">${interview.candidateName}</h3>
+                        <p class="text-sm text-gray-500">${formatTime(interview.time)}</p>
+                    </div>
+                    <div class="mt-1">
+                        <p class="text-sm text-gray-600">
+                            ${interview.position} • ${getStatusBadge(interview.status)}
+                        </p>
+                    </div>
+                    <div class="mt-2 flex space-x-2">
+                        <button onclick="startInterview('${interview.id}')" class="inline-flex items-center px-3 py-1 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none">
+                            Start Interview
+                        </button>
+                        <button onclick="viewProfile('${interview.candidateId}')" class="inline-flex items-center px-3 py-1 border border-gray-300 text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none">
+                            View Profile
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        timeline.appendChild(li);
+    });
+    
+    if (todayInterviews.length === 0) {
+        timeline.innerHTML = `
+            <li class="p-4 text-center text-gray-500">
+                No interviews scheduled for today
+            </li>
+        `;
+    }
+}
+
+function updateUpcomingTable(upcomingInterviews) {
+    const tableBody = document.getElementById('upcoming-interviews-table');
+    tableBody.innerHTML = '';
+    
+    upcomingInterviews.forEach(interview => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 h-10 w-10">
+                        <img src="/api/placeholder/40/40" alt="" class="h-10 w-10 rounded-full">
+                    </div>
+                    <div class="ml-4">
+                        <div class="text-sm font-medium text-gray-900">${interview.candidateName}</div>
+                        <div class="text-sm text-gray-500">${interview.email}</div>
+                    </div>
+                </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-gray-900">${formatDate(interview.date)}</div>
+                <div class="text-sm text-gray-500">${formatTime(interview.time)}</div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-gray-900">${interview.position}</div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+                ${getStatusBadge(interview.status)}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <div class="flex space-x-2 justify-end">
+                        <button onclick="startInterview('${interview.id}')" class="text-indigo-600 hover:text-indigo-900">Start</button>
+                        <button onclick="rescheduleInterview('${interview.id}')" class="text-yellow-600 hover:text-yellow-900">Reschedule</button>
+                        <button onclick="cancelInterview('${interview.id}')" class="text-red-600 hover:text-red-900">Cancel</button>
+                    </div>
+                </td>
+            `;
+        tableBody.appendChild(tr);
+    });
+}
+
+function updateStats(stats) {
+    document.getElementById('today-count').textContent = stats.today;
+    document.getElementById('week-count').textContent = stats.thisWeek;
+    document.getElementById('pending-count').textContent = stats.pending;
+    document.getElementById('completed-count').textContent = stats.completed;
+    
+    // Animate the numbers
+    animateValue('today-count', 0, stats.today, 1000);
+    animateValue('week-count', 0, stats.thisWeek, 1000);
+    animateValue('pending-count', 0, stats.pending, 1000);
+    animateValue('completed-count', 0, stats.completed, 1000);
+}
+
+function animateValue(elementId, start, end, duration) {
+    const obj = document.getElementById(elementId);
+    const range = end - start;
+    const minTimer = 50;
+    let stepTime = Math.abs(Math.floor(duration / range));
+    stepTime = Math.max(stepTime, minTimer);
+    
+    let current = start;
+    const step = Math.floor(range / (duration / stepTime));
+    
+    const timer = setInterval(() => {
+        current += step;
+        obj.textContent = current;
+        if (current >= end) {
+            obj.textContent = end;
+            clearInterval(timer);
+        }
+    }, stepTime);
+}
+
+// Interview Actions
+async function startInterview(interviewId) {
+    try {
+        const interview = await google.script.run.withSuccessHandler(handleStartInterview).getInterviewDetails(interviewId);
+    } catch (error) {
+        console.error('Error starting interview:', error);
+        showNotification('Error starting interview', 'error');
+    }
+}
+
+function handleStartInterview(interview) {
+    // Store interview data in session storage
+    sessionStorage.setItem('currentInterview', JSON.stringify(interview));
+    // Redirect to interview page
+    window.location.href = 'interview.html?id=' + interview.id;
+}
+
+async function rescheduleInterview(interviewId) {
+    openModal('reschedule-modal');
+    // Populate the reschedule form with current interview details
+    const interview = interviewData.upcoming.find(i => i.id === interviewId);
+    if (interview) {
+        document.getElementById('reschedule-date').value = interview.date;
+        document.getElementById('reschedule-time').value = interview.time;
+    }
+}
+
+async function cancelInterview(interviewId) {
+    if (confirm('Are you sure you want to cancel this interview?')) {
+        try {
+            const result = await google.script.run.withSuccessHandler(handleCancelInterview).cancelInterview(interviewId);
+        } catch (error) {
+            console.error('Error canceling interview:', error);
+            showNotification('Error canceling interview', 'error');
+        }
+    }
+}
+
+function handleCancelInterview(result) {
+    if (result.success) {
+        showNotification('Interview canceled successfully', 'success');
+        refreshDashboard();
+    } else {
+        showNotification(result.message, 'error');
+    }
+}
+
+// Utility Functions
+function getStatusBadge(status) {
+    const statusColors = {
+        scheduled: 'bg-blue-100 text-blue-800',
+        'in progress': 'bg-yellow-100 text-yellow-800',
+        completed: 'bg-green-100 text-green-800',
+        canceled: 'bg-red-100 text-red-800'
+    };
+    
+    return `
+        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusColors[status.toLowerCase()]}">
+            ${status}
+        </span>
+    `;
+}
+
+function formatDate(dateString) {
+    const options = { weekday: 'short', month: 'short', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+}
+
+function formatTime(timeString) {
+    return new Date('1970-01-01T' + timeString).toLocaleTimeString(undefined, {
+        hour: 'numeric',
+        minute: '2-digit'
+    });
+}
+
+function updateCurrentDate() {
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    document.getElementById('current-date').textContent = new Date().toLocaleDateString(undefined, options);
+}
+
+// Modal Handling
+function openModal(modalId) {
+    document.getElementById(modalId).classList.remove('hidden');
+}
+
+function closeModal(modalId) {
+    document.getElementById(modalId).classList.add('hidden');
+}
+
+// Search and Filter
+function filterInterviews() {
+    const searchTerm = document.querySelector('input[placeholder="Search candidates..."]').value.toLowerCase();
+    const statusFilter = document.querySelector('select').value;
+    
+    const filteredInterviews = interviewData.upcoming.filter(interview => {
+        const matchesSearch = interview.candidateName.toLowerCase().includes(searchTerm) ||
+                             interview.position.toLowerCase().includes(searchTerm);
+        const matchesStatus = statusFilter === 'All Statuses' || interview.status === statusFilter;
+        return matchesSearch && matchesStatus;
+    });
+    
+    updateUpcomingTable(filteredInterviews);
+}
+
+// Notifications
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `fixed bottom-4 right-4 px-4 py-2 rounded-lg text-white ${type === 'error' ? 'bg-red-500' : 'bg-green-500'} transition-opacity duration-500`;
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.style.opacity = '0';
+        setTimeout(() => notification.remove(), 500);
+    }, 3000);
+}
+
+// Loading State
+function showLoadingState() {
+    // Add loading overlay
+    const overlay = document.createElement('div');
+    overlay.id = 'loading-overlay';
+    overlay.className = 'fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50';
+    overlay.innerHTML = `
+        <div class="bg-white p-4 rounded-lg shadow-lg">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+            <p class="mt-2 text-gray-700">Loading...</p>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+}
+
+function hideLoadingState() {
+    const overlay = document.getElementById('loading-overlay');
+    if (overlay) overlay.remove();
+}
+
+// Utility function for debouncing
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// Refresh dashboard
+async function refreshDashboard() {
+    showLoadingState();
+    try {
+        await loadInterviews();
+        showNotification('Dashboard refreshed successfully', 'success');
+    } catch (error) {
+        showNotification('Error refreshing dashboard', 'error');
+    } finally {
+        hideLoadingState();
+    }
+}
+
+// Export functions for Google Apps Script
+window.startInterview = startInterview;
+window.rescheduleInterview = rescheduleInterview;
+window.cancelInterview = cancelInterview;
+    // Login functionality
+function handleLogin() {
+  const nationalId = document.getElementById('nationalId').value;
+  const password = document.getElementById('password').value;
+  const loginMessage = document.getElementById('loginMessage');
+  
+  loginMessage.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
+  loginMessage.className = 'message';
+  
+  google.script.run
+    .withSuccessHandler(function(result) {
+      if (result.success) {
+        localStorage.setItem('user', JSON.stringify(result));
+        window.location.href = 'dashboard.html';
+      } else {
+        loginMessage.innerHTML = '<i class="fas fa-exclamation-circle"></i> ' + result.message;
+        loginMessage.className = 'message error';
+      }
+    })
+    .withFailureHandler(function(error) {
+      loginMessage.innerHTML = '<i class="fas fa-exclamation-triangle"></i> An error occurred. Please try again.';
+      loginMessage.className = 'message error';
+      console.error('Login error:', error);
+    })
+    .checkLogin(nationalId, password);
+}
+
+// Dashboard functionality
+function loadDashboardData() {
+  const user = JSON.parse(localStorage.getItem('user'));
+  
+  if (!user) {
+    window.location.href = 'index.html';
+    return;
+  }
+  
+  document.getElementById('interviewerName').textContent = user.name;
+  
+  google.script.run
+    .withSuccessHandler(function(data) {
+      document.getElementById('todayInterviews').textContent = data.todayInterviews;
+      document.getElementById('weekInterviews').textContent = data.weekInterviews;
+      document.getElementById('pendingReviews').textContent = data.pendingReviews;
+      document.getElementById('completedInterviews').textContent = data.completedInterviews;
+      
+      const scheduleBody = document.getElementById('todayScheduleBody');
+      scheduleBody.innerHTML = '';
+      
+      data.upcomingInterviews.forEach(function(interview) {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td class="px-6 py-4 whitespace-nowrap">${formatDate(interview.date)}</td>
+          <td class="px-6 py-4 whitespace-nowrap">${interview.candidateName}</td>
+          <td class="px-6 py-4 whitespace-nowrap">${interview.position}</td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-${getStatusColor(interview.status)}-100 text-${getStatusColor(interview.status)}-800">
+              ${interview.status}
+            </span>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+            <a href="#" class="text-indigo-600 hover:text-indigo-900">View</a>
+          </td>
+        `;
+        scheduleBody.appendChild(row);
+      });
+    })
+    .withFailureHandler(function(error) {
+      console.error('Error loading dashboard data:', error);
+    })
+    .getInterviewerDashboardData(user.nationalId);
+  
+  document.getElementById('current-date').textContent = formatDate(new Date());
+}
+
+// Interview page functionality
+function loadInterviewData() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const interviewId = urlParams.get('id');
+  
+  if (!interviewId) {
+    window.location.href = 'dashboard.html';
+    return;
+  }
+  
+  google.script.run
+    .withSuccessHandler(function(data) {
+      if (!data) {
+        alert('Interview not found');
+        window.location.href = 'dashboard.html';
+        return;
+      }
+      
+      document.getElementById('candidateName').textContent = data.candidate.name;
+      document.getElementById('candidatePosition').textContent = data.candidate.position;
+      document.getElementById('candidateEmail').textContent = data.candidate.email;
+      document.getElementById('candidatePhone').textContent = data.candidate.phone;
+      
+      const questionsList = document.getElementById('questionsList');
+      questionsList.innerHTML = '';
+      
+      data.questions.forEach(function(question, index) {
+        const li = document.createElement('li');
+        li.className = 'px-4 py-5 sm:px-6';
+        li.innerHTML = `
+          <h4 class="text-lg font-medium text-gray-900">Question ${index + 1}</h4>
+          <p class="mt-1 max-w-2xl text-sm text-gray-500">${question}</p>
+          <textarea id="answer_${index}" rows="3" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md mt-2" placeholder="Enter your answer here..."></textarea>
+        `;
+        questionsList.appendChild(li);
+      });
+      
+      document.getElementById('interviewNotes').value = data.notes;
+    })
+    .withFailureHandler(function(error) {
+      console.error('Error loading interview data:', error);
+    })
+    .getInterviewData(interviewId);
+}
+
+function saveInterviewResults() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const interviewId = urlParams.get('id');
+  
+  const answers = [];
+  const questionElements = document.querySelectorAll('[id^="answer_"]');
+  questionElements.forEach(function(element) {
+    answers.push(element.value);
+  });
+  
+  const notes = document.getElementById('interviewNotes').value;
+  
+  google.script.run
+    .withSuccessHandler(function(result) {
+      if (result) {
+        alert('Interview results saved successfully');
+        window.location.href = 'dashboard.html';
+      } else {
+        alert('Error saving interview results');
+      }
+    })
+    .withFailureHandler(function(error) {
+      console.error('Error saving interview results:', error);
+      alert('Error saving interview results');
+    })
+    .saveInterviewResults(interviewId, answers, notes);
+}
+</script>
