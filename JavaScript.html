@@ -1,5 +1,541 @@
 <script>
+// Global variables
+let currentUser = null;
+let isAdmin = false;
 
+// Utility functions
+function showLoading(message = 'Loading...') {
+  return `<div class="flex items-center justify-center">
+    <svg class="animate-spin h-5 w-5 mr-3 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+    </svg>
+    ${message}
+  </div>`;
+}
+
+function showError(message) {
+  return `<div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4" role="alert">
+    <p class="font-bold">Error</p>
+    <p>${message}</p>
+  </div>`;
+}
+
+function showSuccess(message) {
+  return `<div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4" role="alert">
+    <p class="font-bold">Success</p>
+    <p>${message}</p>
+  </div>`;
+}
+
+// Login functionality
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const nationalId = document.getElementById('nationalId').value;
+  const password = document.getElementById('password').value;
+  const loginMessage = document.getElementById('loginMessage');
+  
+  loginMessage.innerHTML = showLoading('Logging in...');
+  
+  google.script.run
+    .withSuccessHandler(function(result) {
+      if (result.success) {
+        currentUser = result.user;
+        isAdmin = result.user.role === 'admin';
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        window.location.href = isAdmin ? 'adminDashboard.html' : 'dashboard.html';
+      } else {
+        loginMessage.innerHTML = showError(result.message);
+      }
+    })
+    .withFailureHandler(function(error) {
+      loginMessage.innerHTML = showError('An error occurred. Please try again.');
+      console.error('Login error:', error);
+    })
+    .checkLogin(nationalId, password);
+});
+
+// Dashboard functionality
+function loadDashboard() {
+  const user = JSON.parse(localStorage.getItem('currentUser'));
+  if (!user) {
+    window.location.href = 'index.html';
+    return;
+  }
+
+  document.getElementById('userName').textContent = user.name;
+  const scheduleContainer = document.getElementById('scheduleContainer');
+  scheduleContainer.innerHTML = showLoading('Loading schedule...');
+
+  google.script.run
+    .withSuccessHandler(function(interviews) {
+      if (interviews.length === 0) {
+        scheduleContainer.innerHTML = '<p class="text-gray-500">No interviews scheduled.</p>';
+      } else {
+        scheduleContainer.innerHTML = interviews.map(interview => `
+          <div class="bg-white shadow rounded-lg p-4 mb-4">
+            <h3 class="font-semibold text-lg">${interview.candidateName}</h3>
+            <p class="text-gray-600">${interview.position}</p>
+            <p class="text-gray-500">${new Date(interview.datetime).toLocaleString()}</p>
+            <a href="interview.html?id=${interview.id}" class="mt-2 inline-block bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-600">Start Interview</a>
+          </div>
+        `).join('');
+      }
+    })
+    .withFailureHandler(function(error) {
+      scheduleContainer.innerHTML = showError('Failed to load schedule. Please try again.');
+      console.error('Schedule loading error:', error);
+    })
+    .getInterviewerSchedule(user.nationalId);
+}
+
+// Interview functionality
+function loadInterview() {
+  const user = JSON.parse(localStorage.getItem('currentUser'));
+  if (!user) {
+    window.location.href = 'index.html';
+    return;
+  }
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const interviewId = urlParams.get('id');
+  const interviewContainer = document.getElementById('interviewContainer');
+  interviewContainer.innerHTML = showLoading('Loading interview...');
+
+  google.script.run
+    .withSuccessHandler(function(interviewData) {
+      interviewContainer.innerHTML = `
+        <div class="bg-white shadow rounded-lg p-6">
+          <h2 class="text-2xl font-bold mb-4">${interviewData.candidateName}</h2>
+          <p class="text-gray-600 mb-2">${interviewData.position}</p>
+          <p class="text-gray-500 mb-4">${new Date(interviewData.datetime).toLocaleString()}</p>
+          
+          <h3 class="text-xl font-semibold mb-2">Questions</h3>
+          <ul class="list-disc pl-5 mb-4">
+            ${interviewData.questions.map(q => `<li class="mb-2">${q}</li>`).join('')}
+          </ul>
+          
+          <h3 class="text-xl font-semibold mb-2">Notes</h3>
+          <textarea id="interviewNotes" class="w-full p-2 border rounded" rows="5"></textarea>
+          
+          <button id="submitInterview" class="mt-4 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Submit Interview</button>
+        </div>
+      `;
+
+      document.getElementById('submitInterview').addEventListener('click', function() {
+        const notes = document.getElementById('interviewNotes').value;
+        this.innerHTML = showLoading('Submitting...');
+        this.disabled = true;
+
+        google.script.run
+          .withSuccessHandler(function(result) {
+            if (result.success) {
+              interviewContainer.innerHTML = showSuccess('Interview submitted successfully!');
+              setTimeout(() => window.location.href = 'dashboard.html', 2000);
+            } else {
+              interviewContainer.innerHTML += showError(result.message);
+            }
+          })
+          .withFailureHandler(function(error) {
+            interviewContainer.innerHTML += showError('Failed to submit interview. Please try again.');
+            console.error('Interview submission error:', error);
+          })
+          .submitInterview(interviewId, notes);
+      });
+    })
+    .withFailureHandler(function(error) {
+      interviewContainer.innerHTML = showError('Failed to load interview. Please try again.');
+      console.error('Interview loading error:', error);
+    })
+    .getInterviewDetails(interviewId);
+}
+
+// Admin Dashboard functionality
+function loadAdminDashboard() {
+  const user = JSON.parse(localStorage.getItem('currentUser'));
+  if (!user || user.role !== 'admin') {
+    window.location.href = 'index.html';
+    return;
+  }
+
+  loadInterviewers();
+  loadInterviewStats();
+}
+
+function loadInterviewers() {
+  const interviewersContainer = document.getElementById('interviewersContainer');
+  interviewersContainer.innerHTML = showLoading('Loading interviewers...');
+
+  google.script.run
+    .withSuccessHandler(function(interviewers) {
+      interviewersContainer.innerHTML = `
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            ${interviewers.map(interviewer => `
+              <tr>
+                <td class="px-6 py-4 whitespace-nowrap">${interviewer.name}</td>
+                <td class="px-6 py-4 whitespace-nowrap">${interviewer.email}</td>
+                <td class="px-6 py-4 whitespace-nowrap">${interviewer.role}</td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <button onclick="editInterviewer('${interviewer.id}')" class="text-indigo-600 hover:text-indigo-900">Edit</button>
+                  <button onclick="deleteInterviewer('${interviewer.id}')" class="ml-2 text-red-600 hover:text-red-900">Delete</button>
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+    })
+    .withFailureHandler(function(error) {
+      interviewersContainer.innerHTML = showError('Failed to load interviewers. Please try again.');
+      console.error('Interviewers loading error:', error);
+    })
+    .getInterviewers();
+}
+
+function loadInterviewStats() {
+  const statsContainer = document.getElementById('statsContainer');
+  statsContainer.innerHTML = showLoading('Loading statistics...');
+
+  google.script.run
+    .withSuccessHandler(function(stats) {
+      statsContainer.innerHTML = `
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="p-5">
+              <div class="flex items-center">
+                <div class="flex-shrink-0 bg-indigo-500 rounded-md p-3">
+                  <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                  </svg>
+                </div>
+                <div class="ml-5 w-0 flex-1">
+                  <dl>
+                    <dt class="text-sm font-medium text-gray-500 truncate">Total Candidates</dt>
+                    <dd class="text-2xl font-semibold text-gray-900">${stats.totalCandidates}</dd>
+                  </dl>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="p-5">
+              <div class="flex items-center">
+                <div class="flex-shrink-0 bg-green-500 rounded-md p-3">
+                  <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div class="ml-5 w-0 flex-1">
+                  <dl>
+                    <dt class="text-sm font-medium text-gray-500 truncate">Completed Interviews</dt>
+                    <dd class="text-2xl font-semibold text-gray-900">${stats.completedInterviews}</dd>
+                  </dl>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="p-5">
+              <div class="flex items-center">
+                <div class="flex-shrink-0 bg-yellow-500 rounded-md p-3">
+                  <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div class="ml-5 w-0 flex-1">
+                  <dl>
+                    <dt class="text-sm font-medium text-gray-500 truncate">Pending Interviews</dt>
+                    <dd class="text-2xl font-semibold text-gray-900">${stats.pendingInterviews}</dd>
+                  </dl>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="p-5">
+              <div class="flex items-center">
+                <div class="flex-shrink-0 bg-red-500 rounded-md p-3">
+                  <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </div>
+                <div class="ml-5 w-0 flex-1">
+                  <dl>
+                    <dt class="text-sm font-medium text-gray-500 truncate">Rejected Candidates</dt>
+                    <dd class="text-2xl font-semibold text-gray-900">${stats.    rejectedCandidates}</dd>
+                  </dl>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    })
+    .withFailureHandler(function(error) {
+      statsContainer.innerHTML = showError('Failed to load statistics. Please try again.');
+      console.error('Statistics loading error:', error);
+    })
+    .getInterviewStats();
+}
+
+function editInterviewer(interviewerId) {
+  const modal = document.getElementById('editInterviewerModal');
+  modal.style.display = 'block';
+  
+  google.script.run
+    .withSuccessHandler(function(interviewer) {
+      document.getElementById('editInterviewerId').value = interviewer.id;
+      document.getElementById('editInterviewerName').value = interviewer.name;
+      document.getElementById('editInterviewerEmail').value = interviewer.email;
+      document.getElementById('editInterviewerRole').value = interviewer.role;
+    })
+    .withFailureHandler(function(error) {
+      showError('Failed to load interviewer details. Please try again.');
+      console.error('Interviewer loading error:', error);
+    })
+    .getInterviewerDetails(interviewerId);
+}
+
+document.getElementById('editInterviewerForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const id = document.getElementById('editInterviewerId').value;
+  const name = document.getElementById('editInterviewerName').value;
+  const email = document.getElementById('editInterviewerEmail').value;
+  const role = document.getElementById('editInterviewerRole').value;
+
+  google.script.run
+    .withSuccessHandler(function(result) {
+      if (result.success) {
+        document.getElementById('editInterviewerModal').style.display = 'none';
+        showSuccess('Interviewer updated successfully');
+        loadInterviewers();
+      } else {
+        showError(result.message);
+      }
+    })
+    .withFailureHandler(function(error) {
+      showError('Failed to update interviewer. Please try again.');
+      console.error('Interviewer update error:', error);
+    })
+    .updateInterviewer(id, name, email, role);
+});
+
+function deleteInterviewer(interviewerId) {
+  if (confirm('Are you sure you want to delete this interviewer?')) {
+    google.script.run
+      .withSuccessHandler(function(result) {
+        if (result.success) {
+          showSuccess('Interviewer deleted successfully');
+          loadInterviewers();
+        } else {
+          showError(result.message);
+        }
+      })
+      .withFailureHandler(function(error) {
+        showError('Failed to delete interviewer. Please try again.');
+        console.error('Interviewer deletion error:', error);
+      })
+      .deleteInterviewer(interviewerId);
+  }
+}
+
+// Schedule management
+function loadSchedule() {
+  const scheduleContainer = document.getElementById('scheduleContainer');
+  scheduleContainer.innerHTML = showLoading('Loading schedule...');
+
+  google.script.run
+    .withSuccessHandler(function(schedule) {
+      scheduleContainer.innerHTML = `
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Time</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Candidate</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Position</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Interviewer</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            ${schedule.map(interview => `
+              <tr>
+                <td class="px-6 py-4 whitespace-nowrap">${new Date(interview.datetime).toLocaleString()}</td>
+                <td class="px-6 py-4 whitespace-nowrap">${interview.candidateName}</td>
+                <td class="px-6 py-4 whitespace-nowrap">${interview.position}</td>
+                <td class="px-6 py-4 whitespace-nowrap">${interview.interviewerName}</td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <button onclick="editInterview('${interview.id}')" class="text-indigo-600 hover:text-indigo-900">Edit</button>
+                  <button onclick="deleteInterview('${interview.id}')" class="ml-2 text-red-600 hover:text-red-900">Delete</button>
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+    })
+    .withFailureHandler(function(error) {
+      scheduleContainer.innerHTML = showError('Failed to load schedule. Please try again.');
+      console.error('Schedule loading error:', error);
+    })
+    .getSchedule();
+}
+
+function editInterview(interviewId) {
+  const modal = document.getElementById('editInterviewModal');
+  modal.style.display = 'block';
+  
+  google.script.run
+    .withSuccessHandler(function(interview) {
+      document.getElementById('editInterviewId').value = interview.id;
+      document.getElementById('editInterviewDateTime').value = new Date(interview.datetime).toISOString().slice(0, 16);
+      document.getElementById('editInterviewCandidate').value = interview.candidateName;
+      document.getElementById('editInterviewPosition').value = interview.position;
+      document.getElementById('editInterviewInterviewer').value = interview.interviewerId;
+    })
+    .withFailureHandler(function(error) {
+      showError('Failed to load interview details. Please try again.');
+      console.error('Interview loading error:', error);
+    })
+    .getInterviewDetails(interviewId);
+}
+
+document.getElementById('editInterviewForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const id = document.getElementById('editInterviewId').value;
+  const datetime = document.getElementById('editInterviewDateTime').value;
+  const candidateName = document.getElementById('editInterviewCandidate').value;
+  const position = document.getElementById('editInterviewPosition').value;
+  const interviewerId = document.getElementById('editInterviewInterviewer').value;
+
+  google.script.run
+    .withSuccessHandler(function(result) {
+      if (result.success) {
+        document.getElementById('editInterviewModal').style.display = 'none';
+        showSuccess('Interview updated successfully');
+        loadSchedule();
+      } else {
+        showError(result.message);
+      }
+    })
+    .withFailureHandler(function(error) {
+      showError('Failed to update interview. Please try again.');
+      console.error('Interview update error:', error);
+    })
+    .updateInterview(id, datetime, candidateName, position, interviewerId);
+});
+
+function deleteInterview(interviewId) {
+  if (confirm('Are you sure you want to delete this interview?')) {
+    google.script.run
+      .withSuccessHandler(function(result) {
+        if (result.success) {
+          showSuccess('Interview deleted successfully');
+          loadSchedule();
+        } else {
+          showError(result.message);
+        }
+      })
+      .withFailureHandler(function(error) {
+        showError('Failed to delete interview. Please try again.');
+        console.error('Interview deletion error:', error);
+      })
+      .deleteInterview(interviewId);
+  }
+}
+
+// Reporting functionality
+function generateReport() {
+  const reportContainer = document.getElementById('reportContainer');
+  reportContainer.innerHTML = showLoading('Generating report...');
+
+  google.script.run
+    .withSuccessHandler(function(report) {
+      reportContainer.innerHTML = `
+        <h2 class="text-2xl font-bold mb-4">Interview Report</h2>
+        <div class="mb-6">
+          <h3 class="text-xl font-semibold mb-2">Overall Statistics</h3>
+          <p>Total Interviews: ${report.totalInterviews}</p>
+          <p>Completed Interviews: ${report.completedInterviews}</p>
+          <p>Pending Interviews: ${report.pendingInterviews}</p>
+          <p>Average Interview Duration: ${report.averageInterviewDuration} minutes</p>
+        </div>
+        <div class="mb-6">
+          <h3 class="text-xl font-semibold mb-2">Top Interviewers</h3>
+          <ul>
+            ${report.topInterviewers.map(interviewer => `
+              <li>${interviewer.name} - ${interviewer.interviewsCount} interviews</li>
+            `).join('')}
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-xl font-semibold mb-2">Recent Interview Results</h3>
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Candidate</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Position</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Result</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Interviewer</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              ${report.recentResults.map(result => `
+                <tr>
+                  <td class="px-6 py-4 whitespace-nowrap">${result.candidateName}</td>
+                  <td class="px-6 py-4 whitespace-nowrap">${result.position}</td>
+                  <td class="px-6 py-4 whitespace-nowrap">${result.result}</td>
+                  <td class="px-6 py-4 whitespace-nowrap">${result.interviewerName}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    })
+    .withFailureHandler(function(error) {
+      reportContainer.innerHTML = showError('Failed to generate report. Please try again.');
+      console.error('Report generation error:', error);
+    })
+    .generateInterviewReport();
+}
+
+// Logout functionality
+function logout() {
+  localStorage.removeItem('currentUser');
+  window.location.href = 'index.html';
+}
+
+// Initialize page-specific functionality
+document.addEventListener('DOMContentLoaded', function() {
+  const currentPage = window.location.pathname.split('/').pop();
+  
+  switch (currentPage) {
+    case 'dashboard.html':
+      loadDashboard();
+      break;
+    case 'interview.html':
+      loadInterview();
+      break;
+    case 'adminDashboard.html':
+      loadAdminDashboard();
+      break;
+  }
+});
+
+
+
+
+                                                                       
 // Dashboard initialization
 document.addEventListener('DOMContentLoaded', function() {
     initializeDashboard();
