@@ -3,100 +3,620 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enactus Interview System - Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <title>Dashboard - Enactus Menoufia Interview System</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <?!= include('stylesheet'); ?>
 </head>
 <body class="bg-gray-100">
-    <div class="dashboard-container">
-        <div class="user-profile">
-            <div id="userAvatar" class="avatar"></div>
-            <div class="user-info">
-                <h2 id="userName">Loading...</h2>
-                <p>Interviewer</p>
+    <div class="h-screen flex overflow-hidden">
+        <!-- Sidebar -->
+        <div class="hidden md:flex md:flex-shrink-0">
+            <div class="flex flex-col w-64 bg-gray-800">
+                <div class="flex items-center h-16 flex-shrink-0 px-4 bg-gray-900">
+                    <img src="/api/placeholder/40/40" alt="Enactus Logo" class="h-8 w-8">
+                    <span class="ml-2 text-white text-lg font-semibold">Enactus Menoufia</span>
+                </div>
+                <div class="h-0 flex-1 flex flex-col overflow-y-auto">
+                    <nav class="flex-1 px-2 py-4 space-y-1">
+                        <a href="#" class="bg-gray-900 text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md">
+                            <i class="fas fa-home mr-3 h-6 w-6"></i>
+                            Dashboard
+                        </a>
+                        <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md">
+                            <i class="fas fa-calendar-alt mr-3 h-6 w-6"></i>
+                            Schedule
+                        </a>
+                        <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md">
+                            <i class="fas fa-history mr-3 h-6 w-6"></i>
+                            History
+                        </a>
+                        <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md">
+                            <i class="fas fa-cog mr-3 h-6 w-6"></i>
+                            Settings
+                        </a>
+                    </nav>
+                </div>
+                <div class="flex-shrink-0 flex bg-gray-700 p-4">
+                    <div class="flex items-center">
+                        <div>
+                            <img src="/api/placeholder/40/40" alt="" class="h-8 w-8 rounded-full">
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm font-medium text-white" id="user-name">Interviewer Name</p>
+                            <button onclick="logout()" class="text-xs font-medium text-gray-300 hover:text-white">Sign out</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <nav>
-            <a href="#" class="active">Today's Schedule</a>
-            <a href="#">Past Interviews</a>
-            <a href="#">Analytics</a>
-            <a href="#">Settings</a>
-            <a href="#" id="logoutButton">Logout</a>
-        </nav>
+        <!-- Main content -->
+        <div class="flex flex-col w-0 flex-1 overflow-hidden">
+            <main class="flex-1 relative z-0 overflow-y-auto focus:outline-none">
+                <div class="py-6">
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+                        <div class="flex justify-between items-center mb-8">
+                            <h1 class="text-2xl font-semibold text-gray-900">Dashboard</h1>
+                            <div class="flex space-x-4">
+                                <button class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors duration-200">
+                                    <i class="fas fa-sync-alt mr-2"></i> Refresh
+                                </button>
+                                <button class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors duration-200">
+                                    <i class="fas fa-calendar-plus mr-2"></i> Schedule Interview
+                                </button>
+                            </div>
+                        </div>
 
-        <main class="main-content">
-            <header>
-                <h1>Today's Schedule</h1>
-                <div id="currentDate" class="date-display"></div>
-            </header>
+                        <!-- Stats cards -->
+                        <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+                            <div class="bg-white overflow-hidden shadow rounded-lg">
+                                <div class="p-5">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0 bg-indigo-500 rounded-md p-3">
+                                            <i class="fas fa-calendar-day text-white text-xl"></i>
+                                        </div>
+                                        <div class="ml-5 w-0 flex-1">
+                                            <dl>
+                                                <dt class="text-sm font-medium text-gray-500 truncate">Today's Interviews</dt>
+                                                <dd class="text-3xl font-semibold text-gray-900" id="today-count">0</dd>
+                                            </dl>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-            <div id="scheduleContainer" class="schedule-grid">
-                <!-- Schedule items will be populated here -->
-            </div>
-        </main>
+                            <div class="bg-white overflow-hidden shadow rounded-lg">
+                                <div class="p-5">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0 bg-green-500 rounded-md p-3">
+                                            <i class="fas fa-calendar-week text-white text-xl"></i>
+                                        </div>
+                                        <div class="ml-5 w-0 flex-1">
+                                            <dl>
+                                                <dt class="text-sm font-medium text-gray-500 truncate">This Week</dt>
+                                                <dd class="text-3xl font-semibold text-gray-900" id="week-count">0</dd>
+                                            </dl>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-white overflow-hidden shadow rounded-lg">
+                                <div class="p-5">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0 bg-yellow-500 rounded-md p-3">
+                                            <i class="fas fa-hourglass-half text-white text-xl"></i>
+                                        </div>
+                                        <div class="ml-5 w-0 flex-1">
+                                            <dl>
+                                                <dt class="text-sm font-medium text-gray-500 truncate">Pending Reviews</dt>
+                                                <dd class="text-3xl font-semibold text-gray-900" id="pending-count">0</dd>
+                                            </dl>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-white overflow-hidden shadow rounded-lg">
+                                <div class="p-5">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0 bg-red-500 rounded-md p-3">
+                                            <i class="fas fa-check-circle text-white text-xl"></i>
+                                        </div>
+                                        <div class="ml-5 w-0 flex-1">
+                                            <dl>
+                                                <dt class="text-sm font-medium text-gray-500 truncate">Completed</dt>
+                                                <dd class="text-3xl font-semibold text-gray-900" id="completed-count">0</dd>
+                                            </dl>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Timeline -->
+                        <div class="bg-white shadow rounded-lg mb-8">
+                            <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
+                                <h2 class="text-lg font-medium text-gray-900">Today's Schedule</h2>
+                                <div class="flex space-x-2">
+                                    <button class="text-gray-400 hover:text-gray-500">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </button>
+                                    <span class="text-gray-900 font-medium" id="current-date">June 15, 2024</span>
+                                    <button class="text-gray-400 hover:text-gray-500">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="border-t border-gray-200">
+                                <div class="overflow-hidden">
+                                    <ul class="divide-y divide-gray-200" id="interview-timeline">
+                                        <!-- Timeline items will be dynamically inserted here -->
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Upcoming Interviews Table -->
+                        <div class="bg-white shadow rounded-lg overflow-hidden">
+                            <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
+                                <h2 class="text-lg font-medium text-gray-900">Upcoming Interviews</h2>
+                                <div class="flex space-x-2">
+                                    <div class="relative">
+                                        <input type="text" placeholder="Search candidates..." class="form-input rounded-md w-64 pl-10">
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <i class="fas fa-search text-gray-400"></i>
+                                        </div>
+                                    </div>
+                                    <select class="form-select rounded-md">
+                                        <option>All Statuses</option>
+                                        <option>Scheduled</option>
+                                        <option>In Progress</option>
+                                        <option>Completed</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full divide-y divide-gray-200">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Candidate</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Time</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Position</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="bg-white divide-y divide-gray-200" id="upcoming-interviews-table">
+                                        <!-- Table rows will be dynamically inserted here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="bg-gray-50 px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+                                <div class="flex-1 flex justify-between sm:hidden">
+                                    <button class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">Previous</button>
+                                    <button class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">Next</button>
+                                </div>
+                                <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                                    <div>
+                                        <p class="text-sm text-gray-700">
+                                            Showing <span class="font-medium">1</span> to <span class="font-medium">10</span> of <span class="font-medium">97</span> results
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                                            <button class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                                <i class="fas fa-chevron-left"></i>
+                                            </button>
+                                            <button class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">1</button>
+                                            <button class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">2</button>
+                                            <button class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-indigo-50 text-sm font-medium text-indigo-600 hover:bg-gray-50">3</button>
+                                            <button class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">4</button>
+                                            <button class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">5</button>
+                                            <button class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                                <i class="fas fa-chevron-right"></i>
+                                            </button>
+                                        </nav>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
     </div>
 
-    <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx3qwRRPo5M4JG1wRSkT6GhImwz5SDv-C6zrT3kPajawoDgfRIRYc7xbELWQZus3wSN/exec';
+    <!-- Modals -->
+    <div id="schedule-modal" class="fixed z-10 inset-0 hidden">
+        <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+                <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+            </div>
+            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Schedule New Interview</h3>
+                    <form id="schedule-form">
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Candidate Name</label>
+                            <input type="text" class="form-input rounded-md w-full" required>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Position</label>
+                            <select class="form-select rounded-md w-full" required>
+                                <option value="">Select Position</option>
+                                <option>Web Development</option>
+                                <option>UI/UX Design</option>
+                                <option>Project Management</option>
+                            </select>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Date</label>
+                                <input type="date" class="form-input rounded-md w-full" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Time</label>
+                                <input type="time" class="form-input rounded-md w-full" required>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button type="submit" form="schedule-form" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm">
+                        Schedule
+                    </button>
+                    <button type="button" onclick="closeModal('schedule-modal')" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+<script>
 
-        document.addEventListener('DOMContentLoaded', function() {
-            const sessionToken = localStorage.getItem('sessionToken');
-            if (!sessionToken) {
-                window.location.href = 'index.html';
-                return;
-            }
+// Dashboard initialization
+document.addEventListener('DOMContentLoaded', function() {
+    initializeDashboard();
+    setupEventListeners();
+    loadInterviews();
+});
 
-            loadUserInfo();
-            loadSchedule();
+let currentUser = null;
+let interviewData = [];
 
-            document.getElementById('logoutButton').addEventListener('click', logout);
-        });
+async function initializeDashboard() {
+    try {
+        const userData = await getUserData();
+        currentUser = userData;
+        document.getElementById('user-name').textContent = userData.name;
+        updateStats();
+        updateCurrentDate();
+    } catch (error) {
+        console.error('Error initializing dashboard:', error);
+        showNotification('Error loading dashboard', 'error');
+    }
+}
 
-        function loadUserInfo() {
-            const userName = localStorage.getItem('userName');
-            document.getElementById('userName').textContent = userName || 'User';
+function setupEventListeners() {
+    // Refresh button
+    document.querySelector('button:contains("Refresh")').addEventListener('click', refreshDashboard);
+    
+    // Schedule Interview button
+    document.querySelector('button:contains("Schedule Interview")').addEventListener('click', () => openModal('schedule-modal'));
+    
+    // Search input
+    document.querySelector('input[placeholder="Search candidates..."]').addEventListener('input', debounce(filterInterviews, 300));
+    
+    // Status filter
+    document.querySelector('select').addEventListener('change', filterInterviews);
+}
+
+async function loadInterviews() {
+    try {
+        showLoadingState();
+        const response = await google.script.run.withSuccessHandler(handleInterviewData).getInterviews();
+        hideLoadingState();
+    } catch (error) {
+        console.error('Error loading interviews:', error);
+        showNotification('Error loading interviews', 'error');
+        hideLoadingState();
+    }
+}
+
+function handleInterviewData(data) {
+    interviewData = data;
+    updateTimeline(data.today);
+    updateUpcomingTable(data.upcoming);
+    updateStats(data.stats);
+}
+
+function updateTimeline(todayInterviews) {
+    const timeline = document.getElementById('interview-timeline');
+    timeline.innerHTML = '';
+    
+    todayInterviews.forEach(interview => {
+        const li = document.createElement('li');
+        li.className = 'p-4 hover:bg-gray-50 transition-colors duration-200';
+        li.innerHTML = `
+            <div class="flex space-x-3">
+                <img src="/api/placeholder/40/40" alt="" class="h-10 w-10 rounded-full">
+                <div class="flex-1">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-sm font-medium text-gray-900">${interview.candidateName}</h3>
+                        <p class="text-sm text-gray-500">${formatTime(interview.time)}</p>
+                    </div>
+                    <div class="mt-1">
+                        <p class="text-sm text-gray-600">
+                            ${interview.position} • ${getStatusBadge(interview.status)}
+                        </p>
+                    </div>
+                    <div class="mt-2 flex space-x-2">
+                        <button onclick="startInterview('${interview.id}')" class="inline-flex items-center px-3 py-1 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none">
+                            Start Interview
+                        </button>
+                        <button onclick="viewProfile('${interview.candidateId}')" class="inline-flex items-center px-3 py-1 border border-gray-300 text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none">
+                            View Profile
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        timeline.appendChild(li);
+    });
+    
+    if (todayInterviews.length === 0) {
+        timeline.innerHTML = `
+            <li class="p-4 text-center text-gray-500">
+                No interviews scheduled for today
+            </li>
+        `;
+    }
+}
+
+function updateUpcomingTable(upcomingInterviews) {
+    const tableBody = document.getElementById('upcoming-interviews-table');
+    tableBody.innerHTML = '';
+    
+    upcomingInterviews.forEach(interview => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 h-10 w-10">
+                        <img src="/api/placeholder/40/40" alt="" class="h-10 w-10 rounded-full">
+                    </div>
+                    <div class="ml-4">
+                        <div class="text-sm font-medium text-gray-900">${interview.candidateName}</div>
+                        <div class="text-sm text-gray-500">${interview.email}</div>
+                    </div>
+                </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-gray-900">${formatDate(interview.date)}</div>
+                <div class="text-sm text-gray-500">${formatTime(interview.time)}</div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-gray-900">${interview.position}</div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+                ${getStatusBadge(interview.status)}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <div class="flex space-x-2 justify-end">
+                        <button onclick="startInterview('${interview.id}')" class="text-indigo-600 hover:text-indigo-900">Start</button>
+                        <button onclick="rescheduleInterview('${interview.id}')" class="text-yellow-600 hover:text-yellow-900">Reschedule</button>
+                        <button onclick="cancelInterview('${interview.id}')" class="text-red-600 hover:text-red-900">Cancel</button>
+                    </div>
+                </td>
+            `;
+        tableBody.appendChild(tr);
+    });
+}
+
+function updateStats(stats) {
+    document.getElementById('today-count').textContent = stats.today;
+    document.getElementById('week-count').textContent = stats.thisWeek;
+    document.getElementById('pending-count').textContent = stats.pending;
+    document.getElementById('completed-count').textContent = stats.completed;
+    
+    // Animate the numbers
+    animateValue('today-count', 0, stats.today, 1000);
+    animateValue('week-count', 0, stats.thisWeek, 1000);
+    animateValue('pending-count', 0, stats.pending, 1000);
+    animateValue('completed-count', 0, stats.completed, 1000);
+}
+
+function animateValue(elementId, start, end, duration) {
+    const obj = document.getElementById(elementId);
+    const range = end - start;
+    const minTimer = 50;
+    let stepTime = Math.abs(Math.floor(duration / range));
+    stepTime = Math.max(stepTime, minTimer);
+    
+    let current = start;
+    const step = Math.floor(range / (duration / stepTime));
+    
+    const timer = setInterval(() => {
+        current += step;
+        obj.textContent = current;
+        if (current >= end) {
+            obj.textContent = end;
+            clearInterval(timer);
         }
+    }, stepTime);
+}
 
-        function loadSchedule() {
-            const sessionToken = localStorage.getItem('sessionToken');
-            fetch(`${SCRIPT_URL}?action=getSchedule&sessionToken=${sessionToken}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.error) {
-                        console.error('Error loading schedule:', data.error);
-                        return;
-                    }
-                    displaySchedule(data.schedule);
-                })
-                .catch(error => console.error('Error:', error));
-        }
+// Interview Actions
+async function startInterview(interviewId) {
+    try {
+        const interview = await google.script.run.withSuccessHandler(handleStartInterview).getInterviewDetails(interviewId);
+    } catch (error) {
+        console.error('Error starting interview:', error);
+        showNotification('Error starting interview', 'error');
+    }
+}
 
-        function displaySchedule(schedule) {
-            const container = document.getElementById('scheduleContainer');
-            container.innerHTML = '';
-            schedule.forEach(item => {
-                const itemElement = document.createElement('div');
-                itemElement.className = 'schedule-item';
-                itemElement.innerHTML = `
-                    <h3>${item.recruitName}</h3>
-                    <p>Time: ${item.time}</p>
-                    <p>Position: ${item.position}</p>
-                `;
-                container.appendChild(itemElement);
-            });
-        }
+function handleStartInterview(interview) {
+    // Store interview data in session storage
+    sessionStorage.setItem('currentInterview', JSON.stringify(interview));
+    // Redirect to interview page
+    window.location.href = 'interview.html?id=' + interview.id;
+}
 
-        function logout() {
-            const sessionToken = localStorage.getItem('sessionToken');
-            fetch(`${SCRIPT_URL}?action=logout&sessionToken=${sessionToken}`)
-                .then(() => {
-                    localStorage.removeItem('sessionToken');
-                    localStorage.removeItem('userRole');
-                    localStorage.removeItem('userName');
-                    window.location.href = 'index.html';
-                })
-                .catch(error => console.error('Logout error:', error));
+async function rescheduleInterview(interviewId) {
+    openModal('reschedule-modal');
+    // Populate the reschedule form with current interview details
+    const interview = interviewData.upcoming.find(i => i.id === interviewId);
+    if (interview) {
+        document.getElementById('reschedule-date').value = interview.date;
+        document.getElementById('reschedule-time').value = interview.time;
+    }
+}
+
+async function cancelInterview(interviewId) {
+    if (confirm('Are you sure you want to cancel this interview?')) {
+        try {
+            const result = await google.script.run.withSuccessHandler(handleCancelInterview).cancelInterview(interviewId);
+        } catch (error) {
+            console.error('Error canceling interview:', error);
+            showNotification('Error canceling interview', 'error');
         }
-    </script>
+    }
+}
+
+function handleCancelInterview(result) {
+    if (result.success) {
+        showNotification('Interview canceled successfully', 'success');
+        refreshDashboard();
+    } else {
+        showNotification(result.message, 'error');
+    }
+}
+
+// Utility Functions
+function getStatusBadge(status) {
+    const statusColors = {
+        scheduled: 'bg-blue-100 text-blue-800',
+        'in progress': 'bg-yellow-100 text-yellow-800',
+        completed: 'bg-green-100 text-green-800',
+        canceled: 'bg-red-100 text-red-800'
+    };
+    
+    return `
+        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusColors[status.toLowerCase()]}">
+            ${status}
+        </span>
+    `;
+}
+
+function formatDate(dateString) {
+    const options = { weekday: 'short', month: 'short', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+}
+
+function formatTime(timeString) {
+    return new Date('1970-01-01T' + timeString).toLocaleTimeString(undefined, {
+        hour: 'numeric',
+        minute: '2-digit'
+    });
+}
+
+function updateCurrentDate() {
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    document.getElementById('current-date').textContent = new Date().toLocaleDateString(undefined, options);
+}
+
+// Modal Handling
+function openModal(modalId) {
+    document.getElementById(modalId).classList.remove('hidden');
+}
+
+function closeModal(modalId) {
+    document.getElementById(modalId).classList.add('hidden');
+}
+
+// Search and Filter
+function filterInterviews() {
+    const searchTerm = document.querySelector('input[placeholder="Search candidates..."]').value.toLowerCase();
+    const statusFilter = document.querySelector('select').value;
+    
+    const filteredInterviews = interviewData.upcoming.filter(interview => {
+        const matchesSearch = interview.candidateName.toLowerCase().includes(searchTerm) ||
+                             interview.position.toLowerCase().includes(searchTerm);
+        const matchesStatus = statusFilter === 'All Statuses' || interview.status === statusFilter;
+        return matchesSearch && matchesStatus;
+    });
+    
+    updateUpcomingTable(filteredInterviews);
+}
+
+// Notifications
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `fixed bottom-4 right-4 px-4 py-2 rounded-lg text-white ${type === 'error' ? 'bg-red-500' : 'bg-green-500'} transition-opacity duration-500`;
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.style.opacity = '0';
+        setTimeout(() => notification.remove(), 500);
+    }, 3000);
+}
+
+// Loading State
+function showLoadingState() {
+    // Add loading overlay
+    const overlay = document.createElement('div');
+    overlay.id = 'loading-overlay';
+    overlay.className = 'fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50';
+    overlay.innerHTML = `
+        <div class="bg-white p-4 rounded-lg shadow-lg">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+            <p class="mt-2 text-gray-700">Loading...</p>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+}
+
+function hideLoadingState() {
+    const overlay = document.getElementById('loading-overlay');
+    if (overlay) overlay.remove();
+}
+
+// Utility function for debouncing
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// Refresh dashboard
+async function refreshDashboard() {
+    showLoadingState();
+    try {
+        await loadInterviews();
+        showNotification('Dashboard refreshed successfully', 'success');
+    } catch (error) {
+        showNotification('Error refreshing dashboard', 'error');
+    } finally {
+        hideLoadingState();
+    }
+}
+
+// Export functions for Google Apps Script
+window.startInterview = startInterview;
+window.rescheduleInterview = rescheduleInterview;
+window.cancelInterview = cancelInterview;
+    
+</script>
+    
 </body>
 </html>
