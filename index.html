@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enactus Recruitment App</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f4f8;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-control {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .btn-primary {
+            background-color: #3b82f6;
+            color: #ffffff;
+        }
+        .btn-primary:hover {
+            background-color: #2563eb;
+        }
+        .leaderboard {
+            list-style-type: none;
+            padding: 0;
+        }
+        .leaderboard li {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .error {
+            color: #dc2626;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-3xl font-bold mb-8 text-center">Enactus Recruitment App</h1>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="card">
+                <h2 class="text-2xl font-bold mb-4">Application Form</h2>
+                <form id="recruitmentForm">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" name="name" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" class="form-control" required>
+                        <div id="phoneError" class="error"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="college">College</label>
+                        <input type="text" id="college" name="college" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="committee">Committee</label>
+                        <select id="committee" name="committee" class="form-control" required>
+                            <option value="">Select a committee</option>
+                            <option value="Marketing">Marketing</option>
+                            <option value="Finance">Finance</option>
+                            <option value="Human Resources">Human Resources</option>
+                            <option value="Projects">Projects</option>
+                            <option value="IT">IT</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="recruiter">Recruiter</label>
+                        <input type="text" id="recruiter" name="recruiter" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-full">Submit Application</button>
+                </form>
+            </div>
+
+            <div>
+                <div class="card mb-8">
+                    <h2 class="text-2xl font-bold mb-4">Recruiter Leaderboard</h2>
+                    <ul id="leaderboard" class="leaderboard"></ul>
+                </div>
+
+                <div class="card">
+                    <h2 class="text-2xl font-bold mb-4">Analytics</h2>
+                    <div id="analytics"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'https://script.google.com/macros/s/AKfycbzedu08QyrQNO410dTL5PGJL-Shu0-DZI4o3DJOVbJaZRODr8-OguumqY1_4OJJeXpC/exec';
+        const phoneInput = document.getElementById('phone');
+        const phoneError = document.getElementById('phoneError');
+        const form = document.getElementById('recruitmentForm');
+        const leaderboardEl = document.getElementById('leaderboard');
+        const analyticsEl = document.getElementById('analytics');
+
+        // Phone number validation
+        function validateEgyptianPhone(phone) {
+            const egyptianPhoneRegex = /^(01)[0-2,5]{1}[0-9]{8}$/;
+            return egyptianPhoneRegex.test(phone);
+        }
+
+        phoneInput.addEventListener('input', () => {
+            if (!validateEgyptianPhone(phoneInput.value)) {
+                phoneError.textContent = 'Please enter a valid Egyptian phone number';
+            } else {
+                phoneError.textContent = '';
+            }
+        });
+
+        // Form submission
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (!validateEgyptianPhone(phoneInput.value)) {
+                alert('Please enter a valid Egyptian phone number');
+                return;
+            }
+
+            const formData = new FormData(form);
+            const data = {
+                id: Date.now().toString(),
+                name: formData.get('name'),
+                email: formData.get('email'),
+                phone: formData.get('phone'),
+                college: formData.get('college'),
+                committee: formData.get('committee'),
+                timestamp: new Date().toISOString(),
+                recruiter: formData.get('recruiter')
+            };
+
+            fetch(API_URL, {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: { 'Content-Type': 'application/json' }
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.status === 'success') {
+                    alert('Application submitted successfully!');
+                    form.reset();
+                    fetchLeaderboard();
+                    fetchAnalytics();
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while submitting the form. Please try again.');
+            });
+        });
+
+        // Fetch and display leaderboard
+        function fetchLeaderboard() {
+            fetch(`${API_URL}?action=getLeaderboard`)
+                .then(response => response.json())
+                .then(data => {
+                    leaderboardEl.innerHTML = data.map((item, index) => `
+                        <li>
+                            <span>${index + 1}. ${item.recruiter}</span>
+                            <span>${item.count} recruits</span>
+                        </li>
+                    `).join('');
+                });
+        }
+
+        // Fetch and display analytics
+        function fetchAnalytics() {
+            fetch(`${API_URL}?action=getAnalytics`)
+                .then(response => response.json())
+                .then(data => {
+                    analyticsEl.innerHTML = `
+                        <p><strong>Total Recruits:</strong> ${data.totalRecruits}</p>
+                        <p><strong>Recruits This Week:</strong> ${data.recruitsThisWeek}</p>
+                        <p><strong>Recruits Today:</strong> ${data.recruitsThisDay}</p>
+                        <h3 class="font-bold mt-4 mb-2">Committee Distribution</h3>
+                        <ul>${Object.entries(data.committeeDistribution).map(([committee, count]) => `
+                            <li>${committee}: ${count}</li>
+                        `).join('')}</ul>
+                        <h3 class="font-bold mt-4 mb-2">College Distribution</h3>
+                        <ul>${Object.entries(data.collegeDistribution).map(([college, count]) => `
+                            <li>${college}: ${count}</li>
+                        `).join('')}</ul>
+                    `;
+                });
+        }
+
+        // Initial fetch of leaderboard and analytics
+        fetchLeaderboard();
+        fetchAnalytics();
+    </script>
+</body>
+</html>
