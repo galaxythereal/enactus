@@ -12,37 +12,47 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 
     <style>
-     :root {
-  /* Elegant gold palette */
-  --primary-gold: #C5A572;      /* Rich, muted gold */
-  --secondary-gold: #DFC298;    /* Lighter gold accent */
-  --accent-gold: #B4833E;       /* Deeper, more saturated gold */
-  --highlight-gold: #F2D6A2;    /* Bright gold for highlights */
+:root {
+  /* Primary colors */
+  --primary-teal: #00A7B5;      /* Vibrant teal */
+  --secondary-coral: #FF6B6B;   /* Warm coral */
+  --accent-purple: #845EC2;     /* Rich purple */
+  --pop-yellow: #FFC75F;        /* Sunny yellow */
   
-  /* Sophisticated grey palette */
-  --grey-dark: #333333;         /* Deep charcoal */
-  --grey-medium: #666666;       /* Medium grey */
-  --grey-light: #999999;        /* Light grey */
-  --grey-pale: #E5E5E5;         /* Very light grey */
+  /* Supporting colors */
+  --mint-green: #00C9A7;        /* Fresh mint */
+  --dusty-pink: #FF8FC5;        /* Soft pink */
+  --deep-indigo: #4B4453;       /* Deep indigo for contrast */
   
-  /* Background colors */
-  --bg-primary: #FFFFFF;        /* Clean white */
-  --bg-secondary: #F5F5F5;      /* Soft grey background */
-  --bg-gold-light: #FAF6F0;     /* Warm, barely gold tint */
+  /* Neutral palette */
+  --neutral-100: #FFFFFF;
+  --neutral-200: #F7F7F9;
+  --neutral-300: #E3E3E8;
+  --neutral-400: #C1C1C9;
+  --neutral-500: #93939D;
+  --neutral-600: #6B6B76;
+  --neutral-700: #4A4A54;
+  --neutral-800: #2E2E35;
   
-  /* Text colors */
-  --text-primary: #1A1A1A;      /* Nearly black */
-  --text-secondary: #4D4D4D;    /* Dark grey */
-  --text-tertiary: #808080;     /* Medium grey */
+  /* Background gradients */
+  --gradient-1: linear-gradient(120deg, var(--primary-teal), var(--mint-green));
+  --gradient-2: linear-gradient(120deg, var(--secondary-coral), var(--dusty-pink));
   
-  /* Enhanced shadows with gold tint */
-  --shadow-sm: 0 1px 2px rgba(197, 165, 114, 0.07);
-  --shadow-md: 0 4px 6px rgba(197, 165, 114, 0.1);
-  --shadow-lg: 0 10px 15px rgba(197, 165, 114, 0.15);
+  /* Semantic colors */
+  --success: #00C9A7;
+  --warning: #FFC75F;
+  --error: #FF6B6B;
+  --info: #845EC2;
   
-  /* Smooth transitions */
+  /* Enhanced shadows */
+  --shadow-sm: 0 2px 4px rgba(75, 68, 83, 0.05);
+  --shadow-md: 0 4px 8px rgba(75, 68, 83, 0.08);
+  --shadow-lg: 0 8px 16px rgba(75, 68, 83, 0.12);
+  
+  /* Transitions */
   --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-normal: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
         body {
