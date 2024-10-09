@@ -55,7 +55,7 @@
 
         /* Enhanced Header Styles */
         .header {
-            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/api/placeholder/1920/1080');
+            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://i.postimg.cc/mDxr6n1S/Artboard-1-1-topaz-enhance-3-2x-faceai.jpg');
             background-size: cover;
             background-position: center;
             height: 100vh;
@@ -914,8 +914,38 @@ const committeeQuestions = {
         { label: "How do you approach problem-solving in project management?", name: "projectsQ2" },
         { label: "What social issue are you most passionate about addressing?", name: "projectsQ3" }
     ],
-    // Add questions for other committees
+    "Presentation": [
+        { label: "How would you structure a presentation to ensure maximum engagement?", name: "presentationQ1" },
+        { label: "Describe a time when you had to present complex information in a simple way.", name: "presentationQ2" },
+        { label: "What tools or techniques do you use for creating impactful presentations?", name: "presentationQ3" }
+    ],
+    "Graphic Design": [
+        { label: "What is your process for creating visually appealing designs?", name: "graphicDesignQ1" },
+        { label: "Can you describe a design project that you are particularly proud of?", name: "graphicDesignQ2" },
+        { label: "How do you incorporate feedback into your design process?", name: "graphicDesignQ3" }
+    ],
+    "Video Editing & Photography": [
+        { label: "What tools do you use for video editing and photography?", name: "videoPhotoQ1" },
+        { label: "Describe a challenging project you’ve worked on in video editing or photography.", name: "videoPhotoQ2" },
+        { label: "How do you stay current with trends in video production and photography?", name: "videoPhotoQ3" }
+    ],
+    "PR & Fundraising": [
+        { label: "How would you manage the public image of an organization?", name: "prFrQ1" },
+        { label: "What strategies would you use to secure funding or sponsorships?", name: "prFrQ2" },
+        { label: "Describe an event or campaign you’ve managed to increase public awareness.", name: "prFrQ3" }
+    ],
+    "Logistics": [
+        { label: "How do you handle the logistical challenges of a large event?", name: "logisticsQ1" },
+        { label: "What tools do you use for efficient planning and coordination?", name: "logisticsQ2" },
+        { label: "Describe a time when you overcame logistical challenges under pressure.", name: "logisticsQ3" }
+    ],
+    "Digital Marketing": [
+        { label: "How do you develop a digital marketing strategy for a brand?", name: "digitalMarketingQ1" },
+        { label: "What is your approach to managing social media campaigns?", name: "digitalMarketingQ2" },
+        { label: "Can you describe a successful digital marketing campaign you’ve executed?", name: "digitalMarketingQ3" }
+    ]
 };
+
 
 function showCommitteeQuestions() {
     const committee = document.getElementById('preferredCommittee').value;
@@ -1032,25 +1062,29 @@ window.formSubmitCallback = function(response) {
 document.getElementById('recruitmentForm').addEventListener('submit', submitForm);
 
 
-// Sharing functions
+// Sharing functions with actual application URL
 function shareWhatsApp() {
-    const text = encodeURIComponent("Join Enactus Menoufia and make a difference! Apply now: [Your application URL]");
+    const text = encodeURIComponent("Join Enactus Menoufia and make a difference! Apply now: https://galaxythereal.github.io/enactus/");
     window.open(`https://wa.me/?text=${text}`, '_blank');
 }
 
 function shareFacebook() {
-    const url = encodeURIComponent("[Your application URL]");
+    const url = encodeURIComponent("https://galaxythereal.github.io/enactus/");
     window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
 }
 
 function shareInstagram() {
-    alert("Copy this link and share it on your Instagram story or post: [Your application URL]");
+    const link = "https://galaxythereal.github.io/enactus/";
+    alert(`Copy this link and share it on your Instagram story or post: ${link}`);
 }
 
 function shareMessenger() {
-    const url = encodeURIComponent("[Your application URL]");
-    window.open(`https://www.facebook.com/dialog/send?link=${url}&app_id=[Your Facebook App ID]&redirect_uri=[Your Redirect URI]`, '_blank');
+    const url = encodeURIComponent("https://galaxythereal.github.io/enactus/");
+    const appId = "your-facebook-app-id"; // Replace with your actual Facebook App ID
+    const redirectUri = encodeURIComponent("https://galaxythereal.github.io/enactus/"); // Replace with your actual Redirect URI if necessary
+    window.open(`https://www.facebook.com/dialog/send?link=${url}&app_id=${appId}&redirect_uri=${redirectUri}`, '_blank');
 }
+
 
 // Other faculty option
 const facultySelect = document.getElementById('faculty');
