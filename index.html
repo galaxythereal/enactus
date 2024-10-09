@@ -12,30 +12,37 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 
     <style>
-      :root {
-    /* Updated color palette for gold and grey */
-    --primary-gold: #D4AF37; /* Main gold color */
-    --secondary-gold: #C19A36; /* Slightly darker gold for accents */
-    --accent-grey: #9E9E9E; /* Main grey for accents */
-    --success-gold-light: #E1C16E; /* Lighter gold for success feedback */
-    --error-dark-grey: #6D6D6D; /* Dark grey for error states */
-    
-    --bg-white: #ffffff;
-    --bg-light-grey: #F5F5F5; /* Light grey background */
-    --bg-gold-light: #FAF4E0; /* Light gold background */
-    
-    --text-primary: #333333; /* Dark grey for primary text */
-    --text-secondary: #666666; /* Medium grey for secondary text */
-    --text-tertiary: #999999; /* Lighter grey for tertiary text */
-    
-    /* Enhanced shadows */
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.05);
-    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
-    
-    /* Transitions */
-    --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-normal: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+     :root {
+  /* Elegant gold palette */
+  --primary-gold: #C5A572;      /* Rich, muted gold */
+  --secondary-gold: #DFC298;    /* Lighter gold accent */
+  --accent-gold: #B4833E;       /* Deeper, more saturated gold */
+  --highlight-gold: #F2D6A2;    /* Bright gold for highlights */
+  
+  /* Sophisticated grey palette */
+  --grey-dark: #333333;         /* Deep charcoal */
+  --grey-medium: #666666;       /* Medium grey */
+  --grey-light: #999999;        /* Light grey */
+  --grey-pale: #E5E5E5;         /* Very light grey */
+  
+  /* Background colors */
+  --bg-primary: #FFFFFF;        /* Clean white */
+  --bg-secondary: #F5F5F5;      /* Soft grey background */
+  --bg-gold-light: #FAF6F0;     /* Warm, barely gold tint */
+  
+  /* Text colors */
+  --text-primary: #1A1A1A;      /* Nearly black */
+  --text-secondary: #4D4D4D;    /* Dark grey */
+  --text-tertiary: #808080;     /* Medium grey */
+  
+  /* Enhanced shadows with gold tint */
+  --shadow-sm: 0 1px 2px rgba(197, 165, 114, 0.07);
+  --shadow-md: 0 4px 6px rgba(197, 165, 114, 0.1);
+  --shadow-lg: 0 10px 15px rgba(197, 165, 114, 0.15);
+  
+  /* Smooth transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 300ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
         body {
