@@ -4,15 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Enactus Menoufia Recruitment</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 
     <style>
-        :root {
+       :root {
             /* Enhanced color palette */
             --primary-blue: #1a73e8;
             --secondary-blue: #4285f4;
@@ -55,7 +55,7 @@
 
         /* Enhanced Header Styles */
         .header {
-            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://i.postimg.cc/mDxr6n1S/Artboard-1-1-topaz-enhance-3-2x-faceai.jpg');
+            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/api/placeholder/1920/1080');
             background-size: cover;
             background-position: center;
             height: 100vh;
@@ -312,7 +312,9 @@
                 flex: 0 0 calc(50% - 1rem);
             }
         }
-                /* Enhanced Progress Bar */
+                /* Previous styles remain the same */
+
+        /* Enhanced Progress Bar */
         .progress-container {
             background: var(--bg-white);
             padding: 2rem;
@@ -536,7 +538,11 @@
     </style>
 </head>
 <body>
-    <div class="header">
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loader"></div>
+    </div>
+
+<div class="header">
         <div class="header-content">
             <h1 class="animate__animated animate__fadeInDown">Shape the Future with Enactus Menoufia</h1>
             <p class="animate__animated animate__fadeInUp animate__delay-1s">Join a Global Movement of Student Entrepreneurs Creating Positive Impact</p>
@@ -577,7 +583,7 @@
         </div>
     </div>
 
-     <div class="container">
+    <div class="container">
         <div class="progress-container animate__animated animate__fadeIn">
             <div class="progress-label">
                 Application Progress <span id="progressPercentage">0%</span>
@@ -586,7 +592,7 @@
                 <div id="formProgress" class="progress"></div>
             </div>
         </div>
-
+        
         <form id="recruitmentForm">
             <!-- Personal Information Section -->
             <div class="form-section animate__animated animate__fadeIn">
@@ -611,11 +617,25 @@
                         <input type="tel" id="phone" name="phone" required>
                     </div>
                 </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="dob">Date of Birth <span class="mandatory">*</span></label>
+                        <input type="date" id="dob" name="dob" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="gender">Gender <span class="mandatory">*</span></label>
+                        <select id="gender" name="gender" required>
+                            <option value="">Select Gender</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                        </select>
+                    </div>
+                </div>
             </div>
 
-            <!-- Academic Background Section -->
-            <div class="form-section animate__animated animate__fadeIn">
+           <div class="form-section animate-slide">
                 <h2 class="section-title"><i class="fas fa-graduation-cap"></i>Academic Background</h2>
+
                 <div class="form-row">
                     <div class="form-group">
                         <label for="faculty">Faculty <span class="mandatory">*</span></label>
@@ -624,43 +644,85 @@
                             <option value="Engineering">Engineering</option>
                             <option value="Commerce">Commerce</option>
                             <option value="Science">Science</option>
-                            <!-- Add other options -->
+                            <option value="Arts">Arts</option>
+                            <option value="Medicine">Medicine</option>
+                            <option value="Law">Law</option>
+                            <option value="Agriculture">Agriculture</option>
+                            <option value="Computer Science">Computer Science</option>
+                            <option value="Nursing">Nursing</option>
+                            <option value="Physical Education">Physical Education</option>
+                            <option value="Specific Education">Specific Education</option>
+                            <option value="Home Economics">Home Economics</option>
+                            <option value="Electronic Engineering">Home Economics</option>
+                            <option value="Artificial Intelligence">Home Economics</option>
+                            <option value="Pharmacy">Home Economics</option>
+                            <option value="Dentistry">Home Economics</option>
+                            <option value="Nursing">Home Economics</option>
+                            <option value="Vet. Medicine">Home Economics</option>
+                            <option value="Education">Home Economics</option>
+                            <option value="Mascom">Home Economics</option>
+                            <option value="Medical Science Tech.">Home Economics</option>
+                            <option value="other">Other</option>
                         </select>
                     </div>
+                    <div class="form-group">
+                        <label for="otherFaculty">Other Faculty <span class="optional">(Optional)</span></label>
+                        <input type="text" id="otherFaculty" name="otherFaculty">
+                    </div>
+                </div>
+                <div class="form-row">
                     <div class="form-group">
                         <label for="academicYear">Academic Year <span class="mandatory">*</span></label>
                         <select id="academicYear" name="academicYear" required>
                             <option value="">Select Year</option>
+                            <option value="Preparatory Year">Preparatory Year</option>
                             <option value="First Year">First Year</option>
                             <option value="Second Year">Second Year</option>
                             <option value="Third Year">Third Year</option>
+                            <option value="Fourth Year">Fourth Year</option>
                             <option value="Fourth Year">Fourth Year</option>
                         </select>
                     </div>
                 </div>
             </div>
 
-            <!-- Skills Section -->
-            <div class="form-section animate__animated animate__fadeIn">
-                <h2 class="section-title"><i class="fas fa-star"></i>Skills & Experience</h2>
-                <div class="skills-grid">
-                    <input type="checkbox" id="skill1" name="skills" value="leadership" class="skill-checkbox">
-                    <label for="skill1" class="skill-label"><i class="fas fa-users"></i>Leadership</label>
-                    
-                    <input type="checkbox" id="skill2" name="skills" value="communication" class="skill-checkbox">
-                    <label for="skill2" class="skill-label"><i class="fas fa-comments"></i>Communication</label>
-                    
-                    <input type="checkbox" id="skill3" name="skills" value="projectManagement" class="skill-checkbox">
-                    <label for="skill3" class="skill-label"><i class="fas fa-tasks"></i>Project Management</label>
-                    
-                    <input type="checkbox" id="skill4" name="skills" value="marketing" class="skill-checkbox">
-                    <label for="skill4" class="skill-label"><i class="fas fa-bullhorn"></i>Marketing</label>
+            <div class="form-section animate-slide">
+                <h2 class="section-title"><i class="fas fa-briefcase"></i>Skills & Experience</h2>
+                
+                <div class="form-group">
+                    <label>Select Your Skills</label>
+                    <div class="skills-grid">
+                        <input type="checkbox" id="skill1" name="skills" value="leadership" class="skill-checkbox">
+                        <label for="skill1" class="skill-label"><i class="fas fa-users"></i>Leadership</label>
+                        
+                        <input type="checkbox" id="skill2" name="skills" value="communication" class="skill-checkbox">
+                        <label for="skill2" class="skill-label"><i class="fas fa-comments"></i>Communication</label>
+                        
+                        <input type="checkbox" id="skill3" name="skills" value="projectManagement" class="skill-checkbox">
+                        <label for="skill3" class="skill-label"><i class="fas fa-tasks"></i>Project Management</label>
+                        
+                        <input type="checkbox" id="skill4" name="skills" value="marketing" class="skill-checkbox">
+                        <label for="skill4" class="skill-label"><i class="fas fa-bullhorn"></i>Marketing</label>
+                        
+                        <input type="checkbox" id="skill5" name="skills" value="design" class="skill-checkbox">
+                        <label for="skill5" class="skill-label"><i class="fas fa-palette"></i>Design</label>
+                        
+                        <input type="checkbox" id="skill6" name="skills" value="programming" class="skill-checkbox">
+                        <label for="skill6" class="skill-label"><i class="fas fa-code"></i>Programming</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="experience" class="required-label">Relevant Experience</label>
+                    <textarea id="experience" name="experience" rows="4" required
+                              placeholder="Describe any relevant experience in leadership, volunteering, or project work..."></textarea>
                 </div>
             </div>
 
-            <!-- Committee Selection Section -->
-            <div class="form-section animate__animated animate__fadeIn">
-                <h2 class="section-title"><i class="fas fa-users"></i>Committee Selection</h2>
+             
+
+            <div class="form-section animate-slide">
+                <h2 class="section-title">Committee Selection</h2>
                 <div class="form-group">
                     <label for="preferredCommittee">Preferred Committee <span class="mandatory">*</span></label>
                     <select id="preferredCommittee" name="preferredCommittee" required>
@@ -668,33 +730,42 @@
                         <option value="Human Resources">Human Resources</option>
                         <option value="Projects">Projects</option>
                         <option value="Presentation">Presentation</option>
-                        <!-- Add other options -->
+                        <option value="Public Relations & Fundraising">Public Relations & Fundraising</option>
+                        <option value="Logistics">Logistics</option>
+                        <option value="Graphic Design">Graphic Design</option>
+                        <option value="Video Editing & Photography">Video Editing & Photography</option>
                     </select>
                 </div>
+                <div id="committeeQuestions"></div>
             </div>
 
-            <!-- Social Media Section -->
-            <div class="form-section animate__animated animate__fadeIn">
+          <div class="form-section animate-slide">
                 <h2 class="section-title"><i class="fas fa-link"></i>Social Media & Portfolio</h2>
+                
                 <div class="social-links">
                     <div class="form-group">
                         <label for="linkedin">LinkedIn</label>
                         <div class="social-input">
                             <div class="social-icon"><i class="fab fa-linkedin-in"></i></div>
-                            <input type="url" id="linkedin" name="linkedin" placeholder="Your LinkedIn URL">
+                            <input type="url" id="linkedin" name="linkedin" placeholder="LinkedIn URL">
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="facebook">Facebook</label>
                         <div class="social-input">
                             <div class="social-icon"><i class="fab fa-facebook-f"></i></div>
-                            <input type="url" id="facebook" name="facebook" placeholder="Your Facebook URL">
+                            <input type="url" id="facebook" name="facebook" placeholder="Facebook URL">
                         </div>
                     </div>
                 </div>
+
+                <div class="form-group">
+                    <label for="portfolio">Portfolio/Website <span class="optional">(Optional)</span></label>
+                    <input type="url" id="portfolio" name="portfolio">
+                </div>
             </div>
 
-            <!-- Legal Section -->
+                 <!-- Legal Section -->
             <div class="legal-section animate__animated animate__fadeIn">
                 <h3 class="legal-title"><i class="fas fa-gavel"></i>Terms & Conditions</h3>
                 <ul class="legal-list">
@@ -710,24 +781,23 @@
 
             <button type="submit" class="animate__animated animate__fadeIn">Submit Application</button>
         </form>
-
-        <!-- Share Section -->
-        <div class="share-section animate__animated animate__fadeIn">
+</div>
+        <div class="share-section">
             <h2>Share This Opportunity</h2>
             <p>Help us spread the word and invite your friends to join Enactus Menoufia!</p>
             <div class="share-buttons">
-                <a href="#" class="share-button"><i class="fab fa-whatsapp"></i>Share on WhatsApp</a>
-                <a href="#" class="share-button"><i class="fab fa-facebook"></i>Share on Facebook</a>
-                <a href="#" class="share-button"><i class="fab fa-twitter"></i>Share on Twitter</a>
+                <a href="#" class="share-button share-whatsapp" onclick="shareWhatsApp()"><i class="fab fa-whatsapp"></i> Share on WhatsApp</a>
+                <a href="#" class="share-button share-facebook" onclick="shareFacebook()"><i class="fab fa-facebook"></i> Share on Facebook</a>
+                <a href="#" class="share-button share-instagram" onclick="shareInstagram()"><i class="fab fa-instagram"></i> Share on Instagram</a>
+                <a href="#" class="share-button share-messenger" onclick="shareMessenger()"><i class="fab fa-facebook-messenger"></i> Share on Messenger</a>
             </div>
         </div>
 
-        <!-- Testimonials Section -->
-        <div class="testimonial-section animate__animated animate__fadeIn">
+        <div class="testimonial-section">
             <h2>What Our Members Say</h2>
             <div class="testimonial-container">
                 <div class="testimonial-card">
-                     <img src="https://i.postimg.cc/d0cPMcnD/DSCN0551.jpg" alt="Ahmed" class="testimonial-avatar">
+                    <img src="https://i.postimg.cc/d0cPMcnD/DSCN0551.jpg" alt="Ahmed" class="testimonial-avatar">
                     <p class="testimonial-quote">"Joining Enactus Menoufia was the best decision I made in my university life. It has given me the opportunity to make a real impact in my community while developing invaluable skills."</p>
                     <p class="testimonial-author">- Ahmed, 3rd Year Engineering</p>
                 </div>
@@ -752,8 +822,13 @@
         <p>Transforming lives. Shaping a better, more sustainable world.</p>
     </footer>
 
-    <script>
-        // Enhanced countdown timer
+   <script>
+// Loading overlay
+window.addEventListener('load', function() {
+    document.getElementById('loadingOverlay').style.display = 'none';
+});
+
+  // Enhanced countdown timer
         function updateCountdown() {
             const deadline = new Date("2024-12-31T23:59:59").getTime();
             const now = new Date().getTime();
@@ -793,7 +868,7 @@
             
             updateStat();
         });
-        // Trigger stats animation when in view
+// Trigger stats animation when in view
 const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -997,6 +1072,6 @@ const floatingHelp = document.querySelector('.floating-help');
 floatingHelp.addEventListener('click', () => {
     alert('Need help? Contact us at support@enactusmenoufia.org or call +20 123 456 7890');
 });
-    </script>
+</script>
 </body>
 </html>
