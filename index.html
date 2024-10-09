@@ -9,34 +9,25 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <style>
-         :root {
-            --enactus-blue: #005daa;
-            --enactus-yellow: #fdb913;
-            --dark-blue: #003666;
-            --light-blue: #e6f3ff;
-            --accent-blue: #0088ff;
-            --success-green: #28a745;
-            --warning-orange: #fd7e14;
-            --light-gray: #f8f9fa;
-            --medium-gray: #6c757d;
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
-            --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
-            --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
-        }
-
- * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+        :root {
+            --bg-color: #f0f4f8;
+            --text-color: #333;
+            --primary-color: #1e5799;
+            --secondary-color: #2989d8;
+            --highlight-color: #ffce00;
+            --white: #ffffff;
+            --grey: #f9f9f9;
+            --dark-grey: #e0e0e0;
+            --red: #ff3e3e;
         }
 
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
             line-height: 1.6;
-            color: #2c3e50;
-            background-color: var(--light-gray);
-            overflow-x: hidden;
         }
 
         .container {
@@ -122,36 +113,6 @@
         .stat-item {
             text-align: center;
         }
- .skills-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-
-        .skill-checkbox {
-            display: none;
-        }
-
-        .skill-label {
-            display: flex;
-            align-items: center;
-            padding: 10px 15px;
-            background: var(--light-gray);
-            border-radius: 5px;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .skill-checkbox:checked + .skill-label {
-            background: var(--enactus-blue);
-            color: white;
-        }
-
-        .skill-label i {
-            margin-right: 10px;
-        }
-
 
         .stat-number {
             font-size: 2.5em;
@@ -334,34 +295,6 @@
             font-weight: bold;
             text-align: right;
             color: var(--text-color);
-        }
-
-        .legal-section {
-            background: var(--light-blue);
-            padding: 30px;
-            border-radius: 10px;
-            margin-top: 40px;
-        }
-
-        .legal-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 15px;
-            color: var(--dark-blue);
-        }
-
-        .legal-list li {
-            margin-bottom: 10px;
-            padding-left: 25px;
-            position: relative;
-        }
-
-        .legal-list li::before {
-            content: '?';
-            position: absolute;
-            left: 0;
-            color: var(--success-green);
-            font-weight: bold;
         }
 
         /* Share Section */
@@ -577,32 +510,25 @@
                 </div>
             </div>
 
-             <div class="form-section animate-slide">
-                <h2 class="section-title"><i class="fas fa-briefcase"></i>Skills & Experience</h2>
-                
+            <div class="form-section animate-slide">
+                <h2 class="section-title">Skills & Experience</h2>
                 <div class="form-group">
-                    <label>Select Your Skills</label>
+                    <label>Select Your Skills <span class="mandatory">*</span></label>
                     <div class="skills-grid">
-                        <input type="checkbox" id="skill1" name="skills" value="leadership" class="skill-checkbox">
-                        <label for="skill1" class="skill-label"><i class="fas fa-users"></i>Leadership</label>
-                        
-                        <input type="checkbox" id="skill2" name="skills" value="communication" class="skill-checkbox">
-                        <label for="skill2" class="skill-label"><i class="fas fa-comments"></i>Communication</label>
-                        
-                        <input type="checkbox" id="skill3" name="skills" value="projectManagement" class="skill-checkbox">
-                        <label for="skill3" class="skill-label"><i class="fas fa-tasks"></i>Project Management</label>
-                        
-                        <input type="checkbox" id="skill4" name="skills" value="marketing" class="skill-checkbox">
-                        <label for="skill4" class="skill-label"><i class="fas fa-bullhorn"></i>Marketing</label>
-                        
-                        <input type="checkbox" id="skill5" name="skills" value="design" class="skill-checkbox">
-                        <label for="skill5" class="skill-label"><i class="fas fa-palette"></i>Design</label>
-                        
-                        <input type="checkbox" id="skill6" name="skills" value="programming" class="skill-checkbox">
-                        <label for="skill6" class="skill-label"><i class="fas fa-code"></i>Programming</label>
+                        <div class="skill-item" data-skill="Leadership">Leadership</div>
+                        <div class="skill-item" data-skill="Communication">Communication</div>
+                        <div class="skill-item" data-skill="Project Management">Project Management</div>
+                        <div class="skill-item" data-skill="Marketing">Marketing</div>
+                        <div class="skill-item" data-skill="Design">Design</div>
+                        <div class="skill-item" data-skill="Programming">Programming</div>
+                        <div class="skill-item" data-skill="Public Speaking">Public Speaking</div>
+                        <div class="skill-item" data-skill="Teamwork">Teamwork</div>
+                        <div class="skill-item" data-skill="Problem Solving">Problem Solving</div>
+                        <div class="skill-item" data-skill="Critical Thinking">Critical Thinking</div>
+                        <div class="skill-item" data-skill="Time Management">Time Management</div>
+                        <div class="skill-item" data-skill="Research">Research</div>
                     </div>
                 </div>
-
                 <div class="form-group">
                     <label for="relevantExperience">Relevant Experience <span class="optional">(Optional)</span></label>
                     <textarea id="relevantExperience" name="relevantExperience" rows="4"></textarea>
