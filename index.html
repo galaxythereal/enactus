@@ -297,6 +297,34 @@
             color: var(--text-color);
         }
 
+        .legal-section {
+            background: var(--light-blue);
+            padding: 30px;
+            border-radius: 10px;
+            margin-top: 40px;
+        }
+
+        .legal-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--dark-blue);
+        }
+
+        .legal-list li {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .legal-list li::before {
+            content: '?';
+            position: absolute;
+            left: 0;
+            color: var(--success-green);
+            font-weight: bold;
+        }
+
         /* Share Section */
         .share-section {
             background-color: #e9f0f7;
