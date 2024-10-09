@@ -992,7 +992,7 @@ async function submitFormWithRetry(jsonData, maxRetries = 5) {
     }
 }
 
-async function submitForm(event) {
+function submitForm(event) {
     event.preventDefault();
     const form = event.target;
     const loadingOverlay = document.getElementById('loadingOverlay');
@@ -1026,42 +1026,34 @@ async function submitForm(event) {
         });
     }
 
-    async function submitFormWithRetry(data, maxRetries = 5) {
-        for (let attempt = 0; attempt < maxRetries; attempt++) {
-            try {
-                const response = await fetch('https://script.google.com/macros/s/AKfycbw0f-rKrA7WIQNSr0owk_511SCUgfdIVZPfzYoO2Rg5l25geNVst7QM0MUFlPg2SUfB/exec', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data)
-                });
+    // Convert jsonData to URL-encoded string
+    const encodedData = Object.keys(jsonData)
+        .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(JSON.stringify(jsonData[key])))
+        .join('&');
 
-                if (response.ok) {
-                    const result = await response.json();
-                    if (result.result === 'success') {
-                        return result;
-                    }
-                }
-                throw new Error('Submission failed');
-            } catch (error) {
-                if (attempt === maxRetries - 1) throw error;
-                await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000));
-            }
-        }
-    }
-
-    try {
-        const result = await submitFormWithRetry(jsonData);
-        alert('Thank you for your application! We will review your submission and contact you soon.');
-        form.reset();
-        updateProgress();
-    } catch (error) {
-        alert('There was an error submitting your application. Please try again later.');
-        console.error('Submission error:', error);
-    } finally {
+    // Create a script element for JSONP
+    const script = document.createElement('script');
+    script.src = `https://script.google.com/macros/s/AKfycbx0U5latTtosZs6c0RzLYy4mJ_XptvzU8idog5xZq-cpoFvEz0-X03FkDUXbTVkd-dP/exec?${encodedData}&callback=formSubmitCallback`;
+    
+    // Define the callback function
+    window.formSubmitCallback = function(response) {
         loadingOverlay.classList.remove('active');
-    }
+        if (response.result === 'success') {
+            alert('Thank you for your application! We will review your submission and contact you soon.');
+            form.reset();
+            updateProgress();
+        } else {
+            alert('There was an error submitting your application. Please try again later.');
+            console.error('Submission error:', response.error);
+        }
+        // Remove the script element
+        document.body.removeChild(script);
+        // Remove the callback function
+        delete window.formSubmitCallback;
+    };
+
+    // Append the script to the document to send the request
+    document.body.appendChild(script);
 }
 
 // Make sure to add this event listener to your form
