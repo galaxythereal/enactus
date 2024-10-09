@@ -3,290 +3,500 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enactus Menoufia Recruitment</title>
+    <title>Enactus Menoufia - Global Talent Acquisition Portal</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
+        :root {
+            --enactus-blue: #005daa;
+            --enactus-yellow: #fdb913;
+            --dark-blue: #003666;
+            --light-blue: #e6f3ff;
+            --accent-blue: #0088ff;
+            --success-green: #28a745;
+            --warning-orange: #fd7e14;
+            --light-gray: #f8f9fa;
+            --medium-gray: #6c757d;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+        }
+
+        * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            background-color: var(--light-gray);
+            overflow-x: hidden;
+        }
+
         .container {
-            width: 90%;
             max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 0 20px;
         }
+
+        header {
+            background: linear-gradient(135deg, var(--enactus-blue), var(--dark-blue));
+            color: white;
+            padding: 60px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
         .header-content {
+            position: relative;
+            z-index: 1;
             text-align: center;
-            margin-bottom: 40px;
         }
+
         .logo {
             max-width: 250px;
-            height: auto;
+            margin-bottom: 30px;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
         }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .tagline {
+            font-size: 1.5rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto 30px;
+        }
+
         .stats-bar {
             display: flex;
-            justify-content: space-around;
-            margin-bottom: 40px;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 40px;
         }
+
         .stat-item {
             text-align: center;
-        }
-        .stat-number {
-            font-size: 2.5em;
-            font-weight: bold;
-            color: #4CAF50;
-        }
-        .stat-label {
-            font-size: 1em;
-        }
-        .form-section {
-            background-color: #f9f9f9;
-            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
             padding: 20px;
-            margin-bottom: 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(5px);
         }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--enactus-yellow);
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        form {
+            background: white;
+            padding: 60px;
+            border-radius: 15px;
+            box-shadow: var(--shadow-lg);
+            margin-top: -100px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .form-section {
+            margin-bottom: 40px;
+            padding-bottom: 40px;
+            border-bottom: 1px solid #e1e1e1;
+        }
+
         .section-title {
-            color: #4CAF50;
-            border-bottom: 2px solid #4CAF50;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
+            font-size: 1.8rem;
+            color: var(--dark-blue);
+            margin-bottom: 25px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
         }
+
+        .section-title i {
+            margin-right: 15px;
+            color: var(--enactus-yellow);
+        }
+
         .form-row {
             display: flex;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
+            gap: 20px;
+            margin-bottom: 25px;
         }
+
         .form-group {
             flex: 1;
-            min-width: 200px;
-            margin-right: 20px;
         }
-        .form-group:last-child {
-            margin-right: 0;
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--dark-blue);
+            font-size: 1.1rem;
         }
+
+        .required-label::after {
+            content: '*';
+            color: #dc3545;
+            margin-left: 4px;
+        }
+
         input, select, textarea {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            padding: 15px;
+            border: 2px solid #e1e1e1;
+            border-radius: 8px;
             font-size: 16px;
+            transition: var(--transition);
+            background-color: #f8f9fa;
         }
-        .skills-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 10px;
-            margin-top: 10px;
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--accent-blue);
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(0, 136, 255, 0.1);
+            background-color: white;
         }
-        .skill-item {
-            background-color: #e0e0e0;
-            padding: 10px;
-            border-radius: 4px;
-            text-align: center;
-            cursor: pointer;
-            transition: background-color 0.3s;
+
+        .progress-container {
+            margin-bottom: 40px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: var(--shadow-sm);
         }
-        .skill-item.selected {
-            background-color: #4CAF50;
-            color: white;
-        }
-        .social-links {
+
+        .progress-label {
             display: flex;
             justify-content: space-between;
+            margin-bottom: 10px;
+            font-weight: 600;
         }
+
+        .progress-bar {
+            height: 8px;
+            background: #e1e1e1;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--enactus-yellow), var(--accent-blue));
+            width: 0%;
+            transition: var(--transition);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
         .social-input {
             display: flex;
             align-items: center;
-            width: 100%;
         }
+
         .social-icon {
-            width: 30px;
-            height: 30px;
-            margin-right: 10px;
-            background-size: contain;
-            background-repeat: no-repeat;
-        }
-        .legal-section {
-            background-color: #f0f0f0;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-        .legal-title {
-            color: #333;
-            margin-bottom: 10px;
-        }
-        button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        .footer-content {
-            text-align: center;
-            margin-top: 40px;
-            padding: 20px 0;
-            background-color: #f9f9f9;
-            border-top: 1px solid #ddd;
-        }
-        .share-section {
-            text-align: center;
-            margin-top: 20px;
-            padding: 20px;
-            background-color: #e8f5e9;
-            border-radius: 8px;
-        }
-        .share-buttons {
+            width: 40px;
+            height: 40px;
             display: flex;
+            align-items: center;
             justify-content: center;
-            gap: 10px;
-            margin-top: 15px;
-        }
-        .share-button {
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: background-color 0.3s;
-        }
-        .share-button.facebook {
-            background-color: #3b5998;
-            color: white;
-        }
-        .share-button.twitter {
-            background-color: #1da1f2;
-            color: white;
-        }
-        .share-button.linkedin {
-            background-color: #0077b5;
-            color: white;
-        }
-        .referral-section {
-            margin-top: 20px;
-            padding: 20px;
-            background-color: #e8eaf6;
+            background: var(--light-blue);
             border-radius: 8px;
+            margin-right: 10px;
         }
-        .progress-container {
-            margin-bottom: 20px;
-        }
-        .progress-bar {
-            background-color: #e0e0e0;
-            height: 20px;
-            border-radius: 10px;
+
+        button {
+            background: linear-gradient(90deg, var(--enactus-blue), var(--accent-blue));
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            font-size: 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            box-shadow: var(--shadow-md);
+            position: relative;
             overflow: hidden;
         }
-        .progress {
-            width: 0;
-            height: 100%;
-            background-color: #4CAF50;
-            transition: width 0.5s ease-in-out;
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
         }
-        .progress-label {
-            margin-bottom: 5px;
+
+        .legal-section {
+            background: var(--light-blue);
+            padding: 30px;
+            border-radius: 10px;
+            margin-top: 40px;
+        }
+
+        .legal-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--dark-blue);
+        }
+
+        .legal-list li {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .legal-list li::before {
+            content: '?';
+            position: absolute;
+            left: 0;
+            color: var(--success-green);
             font-weight: bold;
         }
-        #confetti {
+
+        footer {
+            text-align: center;
+            padding: 60px 0;
+            background: var(--dark-blue);
+            color: white;
+            margin-top: 60px;
+        }
+
+        .footer-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .floating-help {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: white;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-lg);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 24px;
+            color: var(--enactus-blue);
+        }
+
+        .floating-help:hover {
+            transform: scale(1.1);
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .skill-checkbox {
+            display: none;
+        }
+
+        .skill-label {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            background: var(--light-gray);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .skill-checkbox:checked + .skill-label {
+            background: var(--enactus-blue);
+            color: white;
+        }
+
+        .skill-label i {
+            margin-right: 10px;
+        }
+
+        .loading-overlay {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 9999;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+
+        .loading-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--enactus-yellow);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            form {
+                padding: 30px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .form-row {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .stats-bar {
+                flex-wrap: wrap;
+                gap: 20px;
+            }
+
+            .skill-label {
+                font-size: 14px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container header-content">
-        <img src="/api/placeholder/250/100" alt="Enactus Menoufia Logo" class="logo">
-        <h1>Shape the Future with Enactus Menoufia</h1>
-        <p>Join a Global Movement of Student Entrepreneurs Creating Positive Impact</p>
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loader"></div>
     </div>
 
-    <div class="container stats-bar">
-        <div class="stat-item">
-            <div class="stat-number" data-count="37">0</div>
-            <div class="stat-label">Countries Worldwide</div>
-        </div>
-        <div class="stat-item">
-            <div class="stat-number" data-count="72000">0</div>
-            <div class="stat-label">Student Members</div>
-        </div>
-        <div class="stat-item">
-            <div class="stat-number" data-count="1730">0</div>
-            <div class="stat-label">Universities</div>
-        </div>
-    </div>
-
-    <div class="container">
-        <div class="progress-container">
-            <div class="progress-label">Application Progress: <span id="progressPercentage">0%</span></div>
-            <div class="progress-bar">
-                <div id="formProgress" class="progress"></div>
+    <header>
+        <div class="container header-content">
+            <img src="/api/placeholder/250/100" alt="Enactus Menoufia Logo" class="logo animate__animated animate__fadeInDown">
+            <h1 class="animate__animated animate__fadeInDown">Shape the Future with Enactus Menoufia</h1>
+            <p class="tagline animate__animated animate__fadeInUp">Join a Global Movement of Student Entrepreneurs Creating Positive Impact</p>
+            
+            <div class="stats-bar animate__animated animate__fadeInUp animate__delay-1s">
+                <div class="stat-item">
+                    <div class="stat-number" data-count="37">0</div>
+                    <div class="stat-label">Countries Worldwide</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" data-count="72000">0</div>
+                    <div class="stat-label">Student Members</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" data-count="1730">0</div>
+                    <div class="stat-label">Universities</div>
+                </div>
             </div>
         </div>
+    </header>
 
-        <form id="applicationForm">
-            <div class="form-section">
-                <h2 class="section-title">Personal Information</h2>
+    <div class="container">
+        <form id="recruitmentForm" onsubmit="return submitForm(event)">
+            <div class="progress-container">
+                <div class="progress-label">
+                    <span>Application Progress</span>
+                    <span id="progressPercentage">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress" id="formProgress"></div>
+                </div>
+            </div>
+
+            <div class="form-section animate-slide">
+                <h2 class="section-title"><i class="fas fa-user"></i>Personal Information</h2>
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="firstName">First Name</label>
+                        <label for="firstName" class="required-label">First Name</label>
                         <input type="text" id="firstName" name="firstName" required>
                     </div>
                     <div class="form-group">
-                        <label for="lastName">Last Name</label>
+                        <label for="lastName" class="required-label">Last Name</label>
                         <input type="text" id="lastName" name="lastName" required>
                     </div>
                 </div>
+
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="email">Email Address</label>
+                        <label for="email" class="required-label">Email Address</label>
                         <input type="email" id="email" name="email" required>
                     </div>
                     <div class="form-group">
-                        <label for="phone">Phone Number</label>
+                        <label for="phone" class="required-label">Phone Number</label>
                         <input type="tel" id="phone" name="phone" required>
                     </div>
                 </div>
+
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="dob">Date of Birth</label>
-                        <input type="date" id="dob" name="dob" required>
+                        <label for="birthdate" class="required-label">Date of Birth</label>
+                        <input type="date" id="birthdate" name="birthdate" required>
                     </div>
                     <div class="form-group">
                         <label for="gender">Gender</label>
-                        <select id="gender" name="gender" required>
-                            <option value="">Select Gender</option>
+                        <select id="gender" name="gender">
+                            <option value="">Prefer not to say</option>
                             <option value="male">Male</option>
                             <option value="female">Female</option>
+                            <option value="other">Other</option>
                         </select>
                     </div>
                 </div>
             </div>
 
-            <div class="form-section">
-                <h2 class="section-title">Academic Background</h2>
+            <div class="form-section animate-slide">
+                <h2 class="section-title"><i class="fas fa-graduation-cap"></i>Academic Background</h2>
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="university">University</label>
+                        <label for="university" class="required-label">University</label>
                         <input type="text" id="university" name="university" value="Menoufia University" readonly>
                     </div>
                     <div class="form-group">
-                        <label for="faculty">Faculty</label>
+                        <label for="faculty" class="required-label">Faculty</label>
                         <select id="faculty" name="faculty" required>
                             <option value="">Select Faculty</option>
                             <option value="engineering">Engineering</option>
@@ -296,26 +506,14 @@
                             <option value="medicine">Medicine</option>
                             <option value="law">Law</option>
                             <option value="agriculture">Agriculture</option>
-                            <option value="computer_science">Computer Science</option>
-                            <option value="education">Education</option>
-                            <option value="nursing">Nursing</option>
-                            <option value="pharmacy">Pharmacy</option>
-                            <option value="physical_education">Physical Education</option>
-                            <option value="specific_education">Specific Education</option>
-                            <option value="veterinary_medicine">Veterinary Medicine</option>
-                            <option value="other">Other</option>
+                            <option value="computerScience">Computer Science</option>
                         </select>
                     </div>
                 </div>
-                <div class="form-row" id="otherFacultyRow" style="display: none;">
-                    <div class="form-group">
-                        <label for="otherFaculty">Specify Other Faculty</label>
-                        <input type="text" id="otherFaculty" name="otherFaculty">
-                    </div>
-                </div>
+
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="academicYear">Academic Year</label>
+                        <label for="academicYear" class="required-label">Academic Year</label>
                         <select id="academicYear" name="academicYear" required>
                             <option value="">Select Year</option>
                             <option value="preparatory">Preparatory Year</option>
@@ -325,359 +523,265 @@
                             <option value="fourth">Fourth Year</option>
                         </select>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label for="achievements">Academic Achievements</label>
-                    <textarea id="achievements" name="achievements" rows="3"></textarea>
-                </div>
-            </div>
-
-            <div class="form-section">
-                <h2 class="section-title">Skills & Experience</h2>
-                <div class="form-group">
-                    <label>Select Your Skills (Click to select)</label>
-                    <div class="skills-grid" id="skillsGrid">
-                        <div class="skill-item" data-skill="leadership">Leadership</div>
-                        <div class="skill-item" data-skill="communication">Communication</div>
-                        <div class="skill-item" data-skill="project_management">Project Management</div>
-                        <div class="skill-item" data-skill="marketing">Marketing</div>
-                        <div class="skill-item" data-skill="design">Design</div>
-                        <div class="skill-item" data-skill="programming">Programming</div>
-                        <div class="skill-item" data-skill="public_speaking">Public Speaking</div>
-                        <div class="skill-item" data-skill="teamwork">Teamwork</div>
-                        <div class="skill-item" data-skill="problem_solving">Problem Solving</div>
-                        <div class="skill-item" data-skill="data_analysis">Data Analysis</div>
-                        <div class="skill-item" data-skill="creativity">Creativity</div>
-                        <div class="skill-item" data-skill="time_management">Time Management</div>
+                    <div class="form-group">
+                        <label for="gpa">GPA</label>
+                        <input type="number" id="gpa" name="gpa" step="0.01" min="0" max="4" placeholder="Optional">
                     </div>
                 </div>
+
                 <div class="form-group">
-                    <label for="experience">Relevant Experience</label>
-                    <textarea id="experience" name="experience" rows="4"></textarea>
+                    <label for="academicAchievements">Academic Achievements</label>
+                    <textarea id="academicAchievements" name="academicAchievements" rows="4" 
+                              placeholder="List any academic awards, honors, or notable achievements..."></textarea>
                 </div>
             </div>
 
-            <div class="form-section">
-                <h2 class="section-title">Committee Selection</h2>
+            <div class="form-section animate-slide">
+                <h2 class="section-title"><i class="fas fa-briefcase"></i>Skills & Experience</h2>
+                
                 <div class="form-group">
-                    <label for="committee">Preferred Committee</label>
-                    <select id="committee" name="committee" required>
+                    <label>Select Your Skills</label>
+                    <div class="skills-grid">
+                        <input type="checkbox" id="skill1" name="skills" value="leadership" class="skill-checkbox">
+                        <label for="skill1" class="skill-label"><i class="fas fa-users"></i>Leadership</label>
+                        
+                        <input type="checkbox" id="skill2" name="skills" value="communication" class="skill-checkbox">
+                        <label for="skill2" class="skill-label"><i class="fas fa-comments"></i>Communication</label>
+                        
+                        <input type="checkbox" id="skill3" name="skills" value="projectManagement" class="skill-checkbox">
+                        <label for="skill3" class="skill-label"><i class="fas fa-tasks"></i>Project Management</label>
+                        
+                        <input type="checkbox" id="skill4" name="skills" value="marketing" class="skill-checkbox">
+                        <label for="skill4" class="skill-label"><i class="fas fa-bullhorn"></i>Marketing</label>
+                        
+                        <input type="checkbox" id="skill5" name="skills" value="design" class="skill-checkbox">
+                        <label for="skill5" class="skill-label"><i class="fas fa-palette"></i>Design</label>
+                        
+                        <input type="checkbox" id="skill6" name="skills" value="programming" class="skill-checkbox">
+                        <label for="skill6" class="skill-label"><i class="fas fa-code"></i>Programming</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="experience" class="required-label">Relevant Experience</label>
+                    <textarea id="experience" name="experience" rows="4" required
+                              placeholder="Describe any relevant experience in leadership, volunteering, or project work..."></textarea>
+                </div>
+            </div>
+
+            <div class="form-section animate-slide">
+                <h2 class="section-title"><i class="fas fa-users"></i>Committee Selection</h2>
+                
+                <div class="form-group">
+                    <label for="committee" class="required-label">Preferred Committee</label>
+                    <select id="committee" name="committee" required onchange="showCommitteeQuestions()">
                         <option value="">Select Committee</option>
-                        <option value="hr">Human Resources</option>
-                        <option value="projects">Projects</option>
-                        <option value="presentation">Presentation</option>
-                        <option value="pr_fundraising">Public Relations & Fundraising</option>
-                        <option value="logistics">Logistics</option>
-                        <option value="design">Graphic Design</option>
-                        <option value="media">Video Editing & Photography</option>
+                        <option value="HR">Human Resources</option>
+                        <option value="Projects">Projects</option>
+                        <option value="Presentation">Presentation</option>
+                        <option value="PR_FR">Public Relations & Fundraising</option>
+                        <option value="Logistics">Logistics</option>
+                        <option value="GraphicDesign">Graphic Design</option>
+                        <option value="VideoEditing">Video Editing & Photography</option>
                     </select>
                 </div>
+
                 <div id="committeeQuestions"></div>
             </div>
 
-            <div class="form-section">
-                <h2 class="section-title">Social Media & Portfolio</h2>
+            <div class="form-section animate-slide">
+                <h2 class="section-title"><i class="fas fa-link"></i>Social Media & Portfolio</h2>
+                
                 <div class="social-links">
                     <div class="form-group">
                         <label for="linkedin">LinkedIn</label>
                         <div class="social-input">
-                            <div class="social-icon" style="background-image: url('/api/placeholder/30/30');"></div>
-                            <input type="url" id="linkedin" name="linkedin">
+                            <div class="social-icon"><i class="fab fa-linkedin-in"></i></div>
+                            <input type="url" id="linkedin" name="linkedin" placeholder="LinkedIn URL">
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="facebook">Facebook</label>
                         <div class="social-input">
-                            <div class="social-icon" style="background-image: url('/api/placeholder/30');"></div>
-                            <input type="url" id="facebook" name="facebook">
+                            <div class="social-icon"><i class="fab fa-facebook-f"></i></div>
+                            <input type="url" id="facebook" name="facebook" placeholder="Facebook URL">
                         </div>
                     </div>
                 </div>
+
                 <div class="form-group">
                     <label for="portfolio">Portfolio/Website</label>
-                    <input type="url" id="portfolio" name="portfolio">
+                    <input type="url" id="portfolio" name="portfolio" placeholder="Your portfolio or personal website URL">
                 </div>
             </div>
 
-            <div class="legal-section">
-                <h3 class="legal-title">Terms & Conditions</h3>
-                <ul>
+            <div class="legal-section animate-slide">
+                <h3 class="legal-title"><i class="fas fa-gavel"></i> Terms & Conditions</h3>
+                <ul class="legal-list">
                     <li>I confirm that all information provided is accurate and complete.</li>
                     <li>I understand that providing false information may result in disqualification.</li>
                     <li>I consent to Enactus Menoufia processing my personal data for recruitment purposes.</li>
                     <li>I acknowledge that this application does not guarantee acceptance.</li>
                 </ul>
                 <div class="form-group">
-                    <label>
-                        <input type="checkbox" id="agreement" name="agreement" required>
-                        I agree to the terms and conditions
-                    </label>
+                    <input type="checkbox" id="terms" name="terms" required>
+                    <label for="terms" class="required-label">I agree to the terms and conditions</label>
                 </div>
             </div>
 
-            <button type="submit" id="submitButton">Submit Application</button>
+            <button type="submit" class="animate-slide">Submit Application</button>
         </form>
-
-        <div class="share-section">
-            <h3>Share Your Application</h3>
-            <p>Help us spread the word and invite your friends to join Enactus Menoufia!</p>
-            <div class="share-buttons">
-                <button class="share-button facebook" onclick="shareOnFacebook()">Share on Facebook</button>
-                <button class="share-button twitter" onclick="shareOnTwitter()">Share on Twitter</button>
-                <button class="share-button linkedin" onclick="shareOnLinkedIn()">Share on LinkedIn</button>
-            </div>
-        </div>
-
-        <div class="referral-section">
-            <h3>Refer a Friend</h3>
-            <p>Know someone who'd be perfect for Enactus? Refer them and you both could win exciting prizes!</p>
-            <div class="form-group">
-                <label for="referralEmail">Friend's Email</label>
-                <input type="email" id="referralEmail" name="referralEmail">
-            </div>
-            <button onclick="referFriend()">Send Invitation</button>
-        </div>
     </div>
 
-    <div class="container footer-content">
-        <p>© 2024 Enactus Menoufia. All rights reserved.</p>
-        <p>Transforming lives. Shaping a better, more sustainable world.</p>
+    <div class="floating-help">
+        <i class="fas fa-question"></i>
     </div>
 
-    <canvas id="confetti"></canvas>
+    <footer>
+        <div class="container footer-content">
+            <p>© 2024 Enactus Menoufia. All rights reserved.</p>
+            <p>Transforming lives. Shaping a better, more sustainable world.</p>
+        </div>
+    </footer>
 
     <script>
-        // Function to update progress bar
+        gsap.registerPlugin(ScrollTrigger);
+
+        const committeeQuestions = {
+            HR: [
+                { label: "How would you handle a conflict between team members?", name: "hrQ1" },
+                { label: "Describe your experience in talent acquisition and development.", name: "hrQ2" },
+                { label: "What strategies would you implement to maintain team motivation?", name: "hrQ3" }
+            ],
+            Projects: [
+                { label: "Describe a project you've managed or participated in.", name: "projectsQ1" },
+                { label: "How do you approach problem-solving in project management?", name: "projectsQ2" },
+                { label: "What social issue are you most passionate about addressing?", name: "projectsQ3" }
+            ],
+            // Add questions for other committees
+        };
+
+        function showCommitteeQuestions() {
+            const committee = document.getElementById('committee').value;
+            const container = document.getElementById('committeeQuestions');
+            container.innerHTML = '';
+
+            if (committee && committeeQuestions[committee]) {
+                committeeQuestions[committee].forEach(q => {
+                    const div = document.createElement('div');
+                    div.className = 'form-group';
+                    div.innerHTML = `
+                        <label for="${q.name}" class="required-label">${q.label}</label>
+                        <textarea id="${q.name}" name="${q.name}" rows="4" required></textarea>
+                    `;
+                    container.appendChild(div);
+                });
+            }
+
+            updateProgress();
+        }
+
         function updateProgress() {
-            const form = document.getElementById('applicationForm');
-            const inputs = form.querySelectorAll('input, select, textarea');
+            const form = document.getElementById('recruitmentForm');
+            const requiredInputs = form.querySelectorAll('[required]');
             let filledInputs = 0;
 
-            inputs.forEach(input => {
-                if (input.value.trim() !== '') {
+            requiredInputs.forEach(input => {
+                if (input.type === 'checkbox') {
+                    if (input.checked) filledInputs++;
+                } else if (input.value.trim() !== '') {
                     filledInputs++;
                 }
             });
 
-            const progress = (filledInputs / inputs.length) * 100;
+            const progress = Math.round((filledInputs / requiredInputs.length) * 100);
             document.getElementById('formProgress').style.width = `${progress}%`;
-            document.getElementById('progressPercentage').textContent = `${Math.round(progress)}%`;
+            document.getElementById('progressPercentage').textContent = `${progress}%`;
         }
 
-        // Add event listeners to form inputs
-        const form = document.getElementById('applicationForm');
-        form.querySelectorAll('input, select, textarea').forEach(input => {
-            input.addEventListener('input', updateProgress);
-        });
+        function animateNumbers() {
+            document.querySelectorAll('.stat-number').forEach(stat => {
+                const finalValue = parseInt(stat.dataset.count);
+                let currentValue = 0;
+                const duration = 2000;
+                const increment = finalValue / (duration / 16);
 
-        // Initialize progress bar
-        updateProgress();
-
-        // Function to animate stats
-        function animateStats() {
-            const stats = document.querySelectorAll('.stat-number');
-            stats.forEach(stat => {
-                const target = parseInt(stat.getAttribute('data-count'));
-                let count = 0;
-                const duration = 2000; // 2 seconds
-                const interval = 50; // Update every 50ms
-                const increment = target / (duration / interval);
-
-                const timer = setInterval(() => {
-                    count += increment;
-                    if (count >= target) {
-                        clearInterval(timer);
-                        count = target;
+                const updateValue = () => {
+                    if (currentValue < finalValue) {
+                        currentValue = Math.min(currentValue + increment, finalValue);
+                        stat.textContent = Math.round(currentValue).toLocaleString();
+                        requestAnimationFrame(updateValue);
                     }
-                    stat.textContent = Math.round(count).toLocaleString();
-                }, interval);
+                };
+
+                updateValue();
             });
         }
 
-        // Call animateStats when the page loads
-        window.addEventListener('load', animateStats);
-
-        // Skills selection
-        const skillsGrid = document.getElementById('skillsGrid');
-        skillsGrid.addEventListener('click', (e) => {
-            if (e.target.classList.contains('skill-item')) {
-                e.target.classList.toggle('selected');
-            }
-        });
-
-        // Show/hide other faculty input
-        const facultySelect = document.getElementById('faculty');
-        const otherFacultyRow = document.getElementById('otherFacultyRow');
-        facultySelect.addEventListener('change', () => {
-            otherFacultyRow.style.display = facultySelect.value === 'other' ? 'block' : 'none';
-        });
-
-        // Form submission
-        document.getElementById('applicationForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
+        async function submitForm(event) {
+            event.preventDefault();
+            const form = event.target;
+            const loadingOverlay = document.getElementById('loadingOverlay');
             
-            // Collect form data
-            const formData = new FormData(e.target);
-            const data = Object.fromEntries(formData.entries());
+            loadingOverlay.classList.add('active');
             
-            // Collect selected skills
-            data.skills = Array.from(document.querySelectorAll('.skill-item.selected'))
-                .map(item => item.getAttribute('data-skill'))
-                .join(', ');
-
-            // Send data to Google Apps Script
-            try {
-                const response = await fetch('https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec', {
-                    method: 'POST',
-                    body: JSON.stringify(data),
-                    headers: {
-                        'Content-Type': 'application/json'
+            const formData = new FormData(form);
+            const jsonData = {};
+            formData.forEach((value, key) => {
+                if (jsonData[key]) {
+                    if (!Array.isArray(jsonData[key])) {
+                        jsonData[key] = [jsonData[key]];
                     }
+                    jsonData[key].push(value);
+                } else {
+                    jsonData[key] = value;
+                }
+            });
+
+            try {
+                const response = await fetch('https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec', {
+                    method: 'POST',
+                    body: JSON.stringify(jsonData)
                 });
 
                 if (response.ok) {
-                    alert('Application submitted successfully!');
-                    triggerConfetti();
-                    // Reset form or redirect to a thank you page
+                    alert('Thank you for your application! We will review your submission and contact you soon.');
+                    form.reset();
+                    updateProgress();
                 } else {
-                    throw new Error('Submission failed');
+                    throw new Error('Form submission failed');
                 }
             } catch (error) {
-                console.error('Error:', error);
-                alert('There was an error submitting your application. Please try again.');
+                alert('There was an error submitting your application. Please try again later.');
+                console.error('Submission error:', error);
+            } finally {
+                loadingOverlay.classList.remove('active');
             }
-        });
 
-        // Sharing functions
-        function shareOnFacebook() {
-            const url = encodeURIComponent(window.location.href);
-            const text = encodeURIComponent("I just applied to join Enactus Menoufia! Join me in shaping a better future. Apply now:");
-            window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${text}`, '_blank');
+            return false;
         }
 
-        function shareOnTwitter() {
-            const url = encodeURIComponent(window.location.href);
-            const text = encodeURIComponent("I just applied to join Enactus Menoufia! Join me in shaping a better future. Apply now:");
-            window.open(`https://twitter.com/intent/tweet?url=${url}&text=${text}`, '_blank');
-        }
-
-        function shareOnLinkedIn() {
-            const url = encodeURIComponent(window.location.href);
-            const title = encodeURIComponent("Join Enactus Menoufia");
-            const summary = encodeURIComponent("I just applied to join Enactus Menoufia! Join me in shaping a better future. Apply now:");
-            window.open(`https://www.linkedin.com/shareArticle?mini=true&url=${url}&title=${title}&summary=${summary}`, '_blank');
-        }
-
-        // Referral function
-        function referFriend() {
-            const email = document.getElementById('referralEmail').value;
-            if (email) {
-                // Here you would typically send this email to your server to handle the invitation
-                alert(`Invitation sent to ${email}!`);
-                document.getElementById('referralEmail').value = '';
-            } else {
-                alert('Please enter a valid email address.');
-            }
-        }
-
-        // Confetti animation
-        function triggerConfetti() {
-            const canvas = document.getElementById('confetti');
-            const ctx = canvas.getContext('2d');
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-
-            const confetti = [];
-            const confettiCount = 300;
-            const gravity = 0.5;
-            const terminalVelocity = 5;
-            const drag = 0.075;
-            const colors = [
-                { front: 'red', back: 'darkred' },
-                { front: 'green', back: 'darkgreen' },
-                { front: 'blue', back: 'darkblue' },
-                { front: 'yellow', back: 'darkyellow' },
-                { front: 'orange', back: 'darkorange' },
-                { front: 'pink', back: 'darkpink' },
-                { front: 'purple', back: 'darkpurple' },
-                { front: 'turquoise', back: 'darkturquoise' }
-            ];
-
-            const resizeCanvas = () => {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-            };
-
-            window.addEventListener('resize', resizeCanvas);
-
-            const randomRange = (min, max) => Math.random() * (max - min) + min;
-
-            const initConfetti = () => {
-                for (let i = 0; i < confettiCount; i++) {
-                    confetti.push({
-                        color: colors[Math.floor(randomRange(0, colors.length))],
-                        dimensions: {
-                            x: randomRange(10, 20),
-                            y: randomRange(10, 30)
-                        },
-                        position: {
-                            x: randomRange(0, canvas.width),
-                            y: canvas.height - 1
-                        },
-                        rotation: randomRange(0, 2 * Math.PI),
-                        scale: {
-                            x: 1,
-                            y: 1
-                        },
-                        velocity: {
-                            x: randomRange(-25, 25),
-                            y: randomRange(0, -50)
-                        }
-                    });
-                }
-            };
-
-            const render = () => {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-                confetti.forEach((confetto, index) => {
-                    let width = confetto.dimensions.x * confetto.scale.x;
-                    let height = confetto.dimensions.y * confetto.scale.y;
-
-                    ctx.translate(confetto.position.x, confetto.position.y);
-                    ctx.rotate(confetto.rotation);
-
-                    confetto.velocity.x -= confetto.velocity.x * drag;
-                    confetto.velocity.y = Math.min(confetto.velocity.y + gravity, terminalVelocity);
-                    confetto.velocity.x += Math.random() > 0.5 ? Math.random() : -Math.random();
-
-                    confetto.position.x += confetto.velocity.x;
-                    confetto.position.y += confetto.velocity.y;
-
-                    if (confetto.position.y >= canvas.height) confetti.splice(index, 1);
-
-                    if (confetto.position.x > canvas.width) confetto.position.x = 0;
-                    if (confetto.position.x < 0) confetto.position.x = canvas.width;
-
-                    confetto.scale.y = Math.cos(confetto.position.y * 0.1);
-                    ctx.fillStyle = confetto.scale.y > 0 ? confetto.color.front : confetto.color.back;
-
-                    ctx.fillRect(-width / 2, -height / 2, width, height);
-
-                    ctx.setTransform(1, 0, 0, 1, 0, 0);
+        document.addEventListener('DOMContentLoaded', function() {
+            gsap.utils.toArray('.animate-slide').forEach(element => {
+                gsap.from(element, {
+                    y: 50,
+                    opacity: 0,
+                    duration: 1,
+                    scrollTrigger: {
+                        trigger: element,
+                        start: 'top 80%',
+                        toggleActions: 'play none none reverse'
+                    }
                 });
+            });
 
-                if (confetti.length > 0) {
-                    window.requestAnimationFrame(render);
-                } else {
-                    canvas.style.display = 'none';
-                }
-            };
+            animateNumbers();
+            updateProgress();
 
-            initConfetti();
-            render();
-            canvas.style.display = 'block';
-        }
+            document.querySelectorAll('input, select, textarea').forEach(element => {
+                element.addEventListener('input', updateProgress);
+            });
+        });
     </script>
 </body>
 </html>
