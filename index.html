@@ -187,13 +187,13 @@
         }
 
         input, select, textarea {
-            width: 100%;
-            padding: 10px 15px;
-            border: 2px solid #ddd;
-            border-radius: 5px;
-            font-size: 16px;
-            transition: border-color 0.3s;
-        }
+    padding: 10px 15px 10px 40px; /* Adds padding on the left to make room for the icon */
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
 
         input:focus, select:focus, textarea:focus {
             border-color: var(--primary-color);
@@ -210,12 +210,13 @@
         }
 
         .icon-field {
-            position: absolute;
-            left: 10px;
-            top: 10px;
-            font-size: 18px;
-            color: var(--primary-color);
-        }
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%); /* Center the icon vertically */
+    font-size: 18px;
+    color: var(--primary-color);
+}
 
         /* Skills Selection */
         .skills-grid {
