@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Enactus Menoufia - Global Talent Acquisition Portal</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <style>
@@ -52,17 +53,6 @@
             overflow: hidden;
         }
 
-        header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('/api/placeholder/1200/400') center/cover;
-            opacity: 0.1;
-        }
-
         .header-content {
             position: relative;
             z-index: 1;
@@ -98,17 +88,22 @@
 
         .stat-item {
             text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(5px);
         }
 
         .stat-number {
-            font-size: 2rem;
+            font-size: 2.5rem;
             font-weight: 700;
             color: var(--enactus-yellow);
+            margin-bottom: 5px;
         }
 
         .stat-label {
-            font-size: 0.9rem;
-            opacity: 0.8;
+            font-size: 1rem;
+            opacity: 0.9;
         }
 
         form {
@@ -127,15 +122,18 @@
             border-bottom: 1px solid #e1e1e1;
         }
 
-        .form-section:last-child {
-            border-bottom: none;
-        }
-
         .section-title {
             font-size: 1.8rem;
             color: var(--dark-blue);
             margin-bottom: 25px;
             font-weight: 700;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title i {
+            margin-right: 15px;
+            color: var(--enactus-yellow);
         }
 
         .form-row {
@@ -179,12 +177,12 @@
             background-color: white;
         }
 
-        .committee-specific {
-            display: none;
-        }
-
         .progress-container {
             margin-bottom: 40px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: var(--shadow-sm);
         }
 
         .progress-label {
@@ -247,25 +245,9 @@
             overflow: hidden;
         }
 
-        button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transform: translateX(-100%);
-        }
-
         button:hover {
             transform: translateY(-2px);
             box-shadow: var(--shadow-lg);
-        }
-
-        button:hover::before {
-            transform: translateX(100%);
-            transition: transform 0.6s;
         }
 
         .legal-section {
@@ -280,10 +262,6 @@
             font-weight: 600;
             margin-bottom: 15px;
             color: var(--dark-blue);
-        }
-
-        .legal-list {
-            list-style: none;
         }
 
         .legal-list li {
@@ -313,31 +291,91 @@
             margin: 0 auto;
         }
 
-        .tooltip {
-            position: relative;
-            display: inline-block;
+        .floating-help {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: white;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-lg);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 24px;
+            color: var(--enactus-blue);
         }
 
-        .tooltip .tooltiptext {
-            visibility: hidden;
-            width: 200px;
-            background-color: #333;
+        .floating-help:hover {
+            transform: scale(1.1);
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .skill-checkbox {
+            display: none;
+        }
+
+        .skill-label {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            background: var(--light-gray);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .skill-checkbox:checked + .skill-label {
+            background: var(--enactus-blue);
             color: white;
-            text-align: center;
-            border-radius: 6px;
-            padding: 10px;
-            position: absolute;
-            z-index: 1;
-            bottom: 125%;
-            left: 50%;
-            transform: translateX(-50%);
-            opacity: 0;
-            transition: opacity 0.3s;
         }
 
-        .tooltip:hover .tooltiptext {
-            visibility: visible;
+        .skill-label i {
+            margin-right: 10px;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+
+        .loading-overlay.active {
             opacity: 1;
+            visibility: visible;
+        }
+
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--enactus-yellow);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         @media (max-width: 768px) {
@@ -362,59 +400,18 @@
                 flex-wrap: wrap;
                 gap: 20px;
             }
-        }
 
-        .floating-help {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: white;
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: var(--shadow-lg);
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .floating-help:hover {
-            transform: scale(1.1);
-        }
-
-        /* Animations */
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
+            .skill-label {
+                font-size: 14px;
             }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .animate-slide {
-            opacity: 0;
-            animation: slideIn 0.6s ease forwards;
-        }
-
-        .animate-delay-1 {
-            animation-delay: 0.2s;
-        }
-
-        .animate-delay-2 {
-            animation-delay: 0.4s;
-        }
-
-        .animate-delay-3 {
-            animation-delay: 0.6s;
         }
     </style>
 </head>
 <body>
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loader"></div>
+    </div>
+
     <header>
         <div class="container header-content">
             <img src="/api/placeholder/250/100" alt="Enactus Menoufia Logo" class="logo animate__animated animate__fadeInDown">
@@ -423,15 +420,15 @@
             
             <div class="stats-bar animate__animated animate__fadeInUp animate__delay-1s">
                 <div class="stat-item">
-                    <div class="stat-number">37</div>
+                    <div class="stat-number" data-count="37">0</div>
                     <div class="stat-label">Countries Worldwide</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-number">72,000</div>
+                    <div class="stat-number" data-count="72000">0</div>
                     <div class="stat-label">Student Members</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-number">1,730</div>
+                    <div class="stat-number" data-count="1730">0</div>
                     <div class="stat-label">Universities</div>
                 </div>
             </div>
@@ -451,7 +448,7 @@
             </div>
 
             <div class="form-section animate-slide">
-                <h2 class="section-title">Personal Information</h2>
+                <h2 class="section-title"><i class="fas fa-user"></i>Personal Information</h2>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="firstName" class="required-label">First Name</label>
@@ -491,8 +488,8 @@
                 </div>
             </div>
 
-            <div class="form-section animate-slide animate-delay-1">
-            <h2 class="section-title">Academic Background</h2>
+            <div class="form-section animate-slide">
+                <h2 class="section-title"><i class="fas fa-graduation-cap"></i>Academic Background</h2>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="university" class="required-label">University</label>
@@ -533,59 +530,47 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="languages">Languages Spoken</label>
-                    <select id="languages" name="languages" multiple>
-                        <option value="arabic">Arabic</option>
-                        <option value="english">English</option>
-                        <option value="french">French</option>
-                        <option value="german">German</option>
-                        <option value="other">Other</option>
-                    </select>
+                    <label for="academicAchievements">Academic Achievements</label>
+                    <textarea id="academicAchievements" name="academicAchievements" rows="4" 
+                              placeholder="List any academic awards, honors, or notable achievements..."></textarea>
                 </div>
             </div>
 
-            <div class="form-section animate-slide animate-delay-2">
-                <h2 class="section-title">Enactus Experience</h2>
+            <div class="form-section animate-slide">
+                <h2 class="section-title"><i class="fas fa-briefcase"></i>Skills & Experience</h2>
                 
                 <div class="form-group">
-                    <label for="hearAbout" class="required-label">How did you hear about Enactus?</label>
-                    <select id="hearAbout" name="hearAbout" required>
-                        <option value="">Select an option</option>
-                        <option value="socialMedia">Social Media</option>
-                        <option value="friend">Friend or Family</option>
-                        <option value="university">University Event</option>
-                        <option value="presentation">Enactus Presentation</option>
-                        <option value="newspaper">Newspaper/Magazine</option>
-                        <option value="other">Other</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="enactusAwareness" class="required-label">What do you know about Enactus?</label>
-                    <textarea id="enactusAwareness" name="enactusAwareness" rows="4" required 
-                              placeholder="Please share your understanding of Enactus, its mission, and its impact..."></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label>Have you been involved with Enactus before?</label>
-                    <div class="radio-group">
-                        <input type="radio" id="previousYes" name="previousInvolvement" value="yes">
-                        <label for="previousYes">Yes</label>
-                        <input type="radio" id="previousNo" name="previousInvolvement" value="no">
-                        <label for="previousNo">No</label>
+                    <label>Select Your Skills</label>
+                    <div class="skills-grid">
+                        <input type="checkbox" id="skill1" name="skills" value="leadership" class="skill-checkbox">
+                        <label for="skill1" class="skill-label"><i class="fas fa-users"></i>Leadership</label>
+                        
+                        <input type="checkbox" id="skill2" name="skills" value="communication" class="skill-checkbox">
+                        <label for="skill2" class="skill-label"><i class="fas fa-comments"></i>Communication</label>
+                        
+                        <input type="checkbox" id="skill3" name="skills" value="projectManagement" class="skill-checkbox">
+                        <label for="skill3" class="skill-label"><i class="fas fa-tasks"></i>Project Management</label>
+                        
+                        <input type="checkbox" id="skill4" name="skills" value="marketing" class="skill-checkbox">
+                        <label for="skill4" class="skill-label"><i class="fas fa-bullhorn"></i>Marketing</label>
+                        
+                        <input type="checkbox" id="skill5" name="skills" value="design" class="skill-checkbox">
+                        <label for="skill5" class="skill-label"><i class="fas fa-palette"></i>Design</label>
+                        
+                        <input type="checkbox" id="skill6" name="skills" value="programming" class="skill-checkbox">
+                        <label for="skill6" class="skill-label"><i class="fas fa-code"></i>Programming</label>
                     </div>
                 </div>
 
-                <div id="previousInvolvementDetails" style="display: none;">
-                    <div class="form-group">
-                        <label for="involvementDetails">Please describe your previous involvement:</label>
-                        <textarea id="involvementDetails" name="involvementDetails" rows="4"></textarea>
-                    </div>
+                <div class="form-group">
+                    <label for="experience" class="required-label">Relevant Experience</label>
+                    <textarea id="experience" name="experience" rows="4" required
+                              placeholder="Describe any relevant experience in leadership, volunteering, or project work..."></textarea>
                 </div>
             </div>
 
-            <div class="form-section animate-slide animate-delay-3">
-                <h2 class="section-title">Committee Selection & Skills</h2>
+            <div class="form-section animate-slide">
+                <h2 class="section-title"><i class="fas fa-users"></i>Committee Selection</h2>
                 
                 <div class="form-group">
                     <label for="committee" class="required-label">Preferred Committee</label>
@@ -601,82 +586,37 @@
                     </select>
                 </div>
 
-                <div class="form-group">
-                    <label for="secondaryCommittee">Secondary Committee Preference</label>
-                    <select id="secondaryCommittee" name="secondaryCommittee">
-                        <option value="">Select Secondary Committee (Optional)</option>
-                        <option value="HR">Human Resources</option>
-                        <option value="Projects">Projects</option>
-                        <option value="Presentation">Presentation</option>
-                        <option value="PR_FR">Public Relations & Fundraising</option>
-                        <option value="Logistics">Logistics</option>
-                        <option value="GraphicDesign">Graphic Design</option>
-                        <option value="VideoEditing">Video Editing & Photography</option>
-                    </select>
-                </div>
-
-                <!-- Committee-specific questions -->
-                <div id="HR" class="committee-specific">
-                    <div class="form-group">
-                        <label for="hrQ1" class="required-label">How would you handle a conflict between team members?</label>
-                        <textarea id="hrQ1" name="hrQ1" rows="4" required></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="hrQ2" class="required-label">Describe your experience in talent acquisition and development.</label>
-                        <textarea id="hrQ2" name="hrQ2" rows="4" required></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="hrQ3" class="required-label">What strategies would you implement to maintain team motivation?</label>
-                        <textarea id="hrQ3" name="hrQ3" rows="4" required></textarea>
-                    </div>
-                </div>
-
-                <div id="Projects" class="committee-specific">
-                    <div class="form-group">
-                        <label for="projectsQ1" class="required-label">Describe a project you've managed or participated in.</label>
-                        <textarea id="projectsQ1" name="projectsQ1" rows="4" required></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="projectsQ2" class="required-label">How do you approach problem-solving in project management?</label>
-                        <textarea id="projectsQ2" name="projectsQ2" rows="4" required></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="projectsQ3" class="required-label">What social issue are you most passionate about addressing?</label>
-                        <textarea id="projectsQ3" name="projectsQ3" rows="4" required></textarea>
-                    </div>
-                </div>
-
-                <!-- Add similar sections for other committees -->
+                <div id="committeeQuestions"></div>
             </div>
 
             <div class="form-section animate-slide">
-                <h2 class="section-title">Social Media & Portfolio</h2>
+                <h2 class="section-title"><i class="fas fa-link"></i>Social Media & Portfolio</h2>
                 
                 <div class="social-links">
                     <div class="form-group">
                         <label for="linkedin">LinkedIn</label>
                         <div class="social-input">
-                            <div class="social-icon">in</div>
+                            <div class="social-icon"><i class="fab fa-linkedin-in"></i></div>
                             <input type="url" id="linkedin" name="linkedin" placeholder="LinkedIn URL">
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="facebook">Facebook</label>
                         <div class="social-input">
-                            <div class="social-icon">f</div>
+                            <div class="social-icon"><i class="fab fa-facebook-f"></i></div>
                             <input type="url" id="facebook" name="facebook" placeholder="Facebook URL">
                         </div>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="portfolio">Portfolio/Website (if applicable)</label>
+                    <label for="portfolio">Portfolio/Website</label>
                     <input type="url" id="portfolio" name="portfolio" placeholder="Your portfolio or personal website URL">
                 </div>
             </div>
 
             <div class="legal-section animate-slide">
-                <h3 class="legal-title">Terms & Conditions</h3>
+                <h3 class="legal-title"><i class="fas fa-gavel"></i> Terms & Conditions</h3>
                 <ul class="legal-list">
                     <li>I confirm that all information provided is accurate and complete.</li>
                     <li>I understand that providing false information may result in disqualification.</li>
@@ -693,9 +633,8 @@
         </form>
     </div>
 
-    <div class="floating-help tooltip">
-        <span class="tooltiptext">Need help? Click to chat!</span>
-        ?
+    <div class="floating-help">
+        <i class="fas fa-question"></i>
     </div>
 
     <footer>
@@ -708,30 +647,35 @@
     <script>
         gsap.registerPlugin(ScrollTrigger);
 
-        function initAnimations() {
-            gsap.utils.toArray('.animate-slide').forEach(element => {
-                gsap.from(element, {
-                    y: 50,
-                    opacity: 0,
-                    duration: 1,
-                    scrollTrigger: {
-                        trigger: element,
-                        start: 'top 80%',
-                        toggleActions: 'play none none reverse'
-                    }
-                });
-            });
-        }
+        const committeeQuestions = {
+            HR: [
+                { label: "How would you handle a conflict between team members?", name: "hrQ1" },
+                { label: "Describe your experience in talent acquisition and development.", name: "hrQ2" },
+                { label: "What strategies would you implement to maintain team motivation?", name: "hrQ3" }
+            ],
+            Projects: [
+                { label: "Describe a project you've managed or participated in.", name: "projectsQ1" },
+                { label: "How do you approach problem-solving in project management?", name: "projectsQ2" },
+                { label: "What social issue are you most passionate about addressing?", name: "projectsQ3" }
+            ],
+            // Add questions for other committees
+        };
 
         function showCommitteeQuestions() {
-            document.querySelectorAll('.committee-specific').forEach(div => {
-                div.style.display = 'none';
-            });
-
             const committee = document.getElementById('committee').value;
-            const committeeDiv = document.getElementById(committee);
-            if (committeeDiv) {
-                committeeDiv.style.display = 'block';
+            const container = document.getElementById('committeeQuestions');
+            container.innerHTML = '';
+
+            if (committee && committeeQuestions[committee]) {
+                committeeQuestions[committee].forEach(q => {
+                    const div = document.createElement('div');
+                    div.className = 'form-group';
+                    div.innerHTML = `
+                        <label for="${q.name}" class="required-label">${q.label}</label>
+                        <textarea id="${q.name}" name="${q.name}" rows="4" required></textarea>
+                    `;
+                    container.appendChild(div);
+                });
             }
 
             updateProgress();
@@ -755,31 +699,88 @@
             document.getElementById('progressPercentage').textContent = `${progress}%`;
         }
 
-        document.getElementById('previousYes').addEventListener('change', function() {
-            document.getElementById('previousInvolvementDetails').style.display = 'block';
-        });
+        function animateNumbers() {
+            document.querySelectorAll('.stat-number').forEach(stat => {
+                const finalValue = parseInt(stat.dataset.count);
+                let currentValue = 0;
+                const duration = 2000;
+                const increment = finalValue / (duration / 16);
 
-        document.getElementById('previousNo').addEventListener('change', function() {
-            document.getElementById('previousInvolvementDetails').style.display = 'none';
-        });
+                const updateValue = () => {
+                    if (currentValue < finalValue) {
+                        currentValue = Math.min(currentValue + increment, finalValue);
+                        stat.textContent = Math.round(currentValue).toLocaleString();
+                        requestAnimationFrame(updateValue);
+                    }
+                };
 
-        document.querySelectorAll('input, select, textarea').forEach(element => {
-            element.addEventListener('input', updateProgress);
-        });
+                updateValue();
+            });
+        }
 
-        function submitForm(event) {
+        async function submitForm(event) {
             event.preventDefault();
+            const form = event.target;
+            const loadingOverlay = document.getElementById('loadingOverlay');
             
-            // Here you would typically send the form data to your Google Sheets backend
-            // For demonstration, we'll show a success message
-            alert('Thank you for your application! We will review your submission and contact you soon.');
+            loadingOverlay.classList.add('active');
             
+            const formData = new FormData(form);
+            const jsonData = {};
+            formData.forEach((value, key) => {
+                if (jsonData[key]) {
+                    if (!Array.isArray(jsonData[key])) {
+                        jsonData[key] = [jsonData[key]];
+                    }
+                    jsonData[key].push(value);
+                } else {
+                    jsonData[key] = value;
+                }
+            });
+
+            try {
+                const response = await fetch('https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec', {
+                    method: 'POST',
+                    body: JSON.stringify(jsonData)
+                });
+
+                if (response.ok) {
+                    alert('Thank you for your application! We will review your submission and contact you soon.');
+                    form.reset();
+                    updateProgress();
+                } else {
+                    throw new Error('Form submission failed');
+                }
+            } catch (error) {
+                alert('There was an error submitting your application. Please try again later.');
+                console.error('Submission error:', error);
+            } finally {
+                loadingOverlay.classList.remove('active');
+            }
+
             return false;
         }
 
         document.addEventListener('DOMContentLoaded', function() {
-            initAnimations();
+            gsap.utils.toArray('.animate-slide').forEach(element => {
+                gsap.from(element, {
+                    y: 50,
+                    opacity: 0,
+                    duration: 1,
+                    scrollTrigger: {
+                        trigger: element,
+                        start: 'top 80%',
+                        toggleActions: 'play none none reverse'
+                    }
+                });
+            });
+
+            animateNumbers();
             updateProgress();
+
+            document.querySelectorAll('input, select, textarea').forEach(element => {
+                element.addEventListener('input', updateProgress);
+            });
         });
     </script>
 </body>
