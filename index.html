@@ -1165,6 +1165,7 @@ async function submitFormWithRetry(jsonData, maxRetries = 5) {
     }
 }
 
+// Replace your existing submitForm function with this updated version
 function submitForm(event) {
     event.preventDefault();
     const form = event.target;
@@ -1209,30 +1210,38 @@ function submitForm(event) {
     script.src = `https://script.google.com/macros/s/AKfycbwfipUi1KdRgNczoBlQ1Q_Akf60YHTRXwVezZqD68OGY0Ha3AUhTAu_qzbijFXnJiE/exec?${encodedData}&callback=formSubmitCallback`;
     
     // Define the callback function
-window.formSubmitCallback = function(response) {
-    loadingOverlay.classList.remove('active');
-    console.log('Full response:', response); // Add this line for debugging
-    if (response.result === 'success') {
-        alert('Thank you for your application! We will review your submission and contact you soon.');
-        form.reset();
-        updateProgress();
-    } else {
-        alert('There was an error submitting your application. Please try again later.');
-        console.error('Submission error:', response.error);
-    }
-    // Remove the script element
-    document.body.removeChild(script);
-    // Remove the callback function
-    delete window.formSubmitCallback;
-};
+    window.formSubmitCallback = function(response) {
+        loadingOverlay.classList.remove('active');
+        if (response.result === 'success') {
+            showQuoteModal(); // Show quote modal instead of alert
+            form.reset();
+            updateProgress();
+        } else {
+            alert('There was an error submitting your application. Please try again later.');
+            console.error('Submission error:', response.error);
+        }
+        // Remove the script element
+        document.body.removeChild(script);
+        // Remove the callback function
+        delete window.formSubmitCallback;
+    };
 
     // Append the script to the document to send the request
     document.body.appendChild(script);
 }
 
-// Make sure to add this event listener to your form
-document.getElementById('recruitmentForm').addEventListener('submit', submitForm);
-
+// Make sure this event listener is present
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('recruitmentForm').addEventListener('submit', submitForm);
+    
+    // Add event listener for closing quote modal
+    const closeQuoteButton = document.querySelector('.close-quote');
+    if (closeQuoteButton) {
+        closeQuoteButton.addEventListener('click', function() {
+            document.querySelector('.quote-modal').style.display = 'none';
+        });
+    }
+});
 
 // Sharing functions with actual application URL
 function shareWhatsApp() {
@@ -1307,7 +1316,9 @@ function showQuoteModal() {
 document.querySelector('.close-quote').addEventListener('click', () => {
     document.querySelector('.quote-modal').style.display = 'none';
 });
-
+function testQuoteModal() {
+    showQuoteModal();
+}
 function shareQuote(platform) {
     const quote = document.querySelector('.quote-text').textContent;
     const shareText = `${quote} - Join Enactus Menoufia: https://galaxythereal.github.io/enactus/`;
@@ -1345,7 +1356,8 @@ window.formSubmitCallback = function(response) {
     delete window.formSubmitCallback;
 };
 </script>
-<div class="quote-modal">
+<!-- Add this right before the closing body tag -->
+<div class="quote-modal" style="display: none;">
     <div class="quote-content">
         <button class="close-quote">&times;</button>
         <p class="quote-text"></p>
