@@ -1204,13 +1204,15 @@ function submitForm(event) {
     
     // Handle regular form fields
     formData.forEach((value, key) => {
-        if (jsonData[key]) {
-            if (!Array.isArray(jsonData[key])) {
-                jsonData[key] = [jsonData[key]];
+        if (key !== 'skills') { // Exclude skills from this loop
+            if (jsonData[key]) {
+                if (!Array.isArray(jsonData[key])) {
+                    jsonData[key] = [jsonData[key]];
+                }
+                jsonData[key].push(value);
+            } else {
+                jsonData[key] = value;
             }
-            jsonData[key].push(value);
-        } else {
-            jsonData[key] = value;
         }
     });
 
@@ -1218,8 +1220,6 @@ function submitForm(event) {
     const selectedSkills = Array.from(document.querySelectorAll('.skill-checkbox:checked'))
         .map(checkbox => checkbox.value);
     jsonData['skills'] = selectedSkills;
-    console.log('Selected Skills:', selectedSkills);
- // This should correctly collect all selected skills
 
     // Add committee-specific questions and answers
     const committeeQuestions = document.getElementById('committeeQuestions');
@@ -1232,7 +1232,10 @@ function submitForm(event) {
 
     // Convert jsonData to URL-encoded string
     const encodedData = Object.keys(jsonData)
-        .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(JSON.stringify(jsonData[key])))
+        .map(key => {
+            const value = Array.isArray(jsonData[key]) ? JSON.stringify(jsonData[key]) : jsonData[key];
+            return encodeURIComponent(key) + '=' + encodeURIComponent(value);
+        })
         .join('&');
 
     // Create a script element for JSONP
@@ -1259,7 +1262,6 @@ function submitForm(event) {
     // Append the script to the document to send the request
     document.body.appendChild(script);
 }
-
 // Make sure this event listener is present
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('recruitmentForm').addEventListener('submit', submitForm);
