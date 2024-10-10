@@ -1041,15 +1041,15 @@ window.addEventListener('load', function() {
             
             updateStat();
         });
-// Trigger stats animation when in view
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            animateStats();
-            observer.unobserve(entry.target);
-        }
-    });
-}, { threshold: 0.5 });
+// // Trigger stats animation when in view
+// const observer = new IntersectionObserver((entries) => {
+//     entries.forEach(entry => {
+//         if (entry.isIntersecting) {
+//             animateStats();
+//             observer.unobserve(entry.target);
+//         }
+//     });
+// }, { threshold: 0.5 });
 
 observer.observe(document.querySelector('.stats-bar'));
 
