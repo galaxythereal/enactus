@@ -1168,7 +1168,30 @@ async function submitFormWithRetry(jsonData, maxRetries = 5) {
     }
 }
 
-// Replace your existing submitForm function with this updated version
+// Add the missing animateStats function
+function animateStats() {
+    const stats = document.querySelectorAll('.stat-number');
+    stats.forEach(stat => {
+        const target = parseInt(stat.getAttribute('data-count'));
+        const duration = 2000;
+        const step = target / duration * 10;
+        let current = 0;
+        
+        const updateStat = () => {
+            current += step;
+            if (current < target) {
+                stat.textContent = Math.floor(current);
+                requestAnimationFrame(updateStat);
+            } else {
+                stat.textContent = target;
+            }
+        };
+        
+        updateStat();
+    });
+}
+
+// Update the form submission function to handle multiple skills correctly
 function submitForm(event) {
     event.preventDefault();
     const form = event.target;
@@ -1178,6 +1201,8 @@ function submitForm(event) {
     
     const formData = new FormData(form);
     const jsonData = {};
+    
+    // Handle regular form fields
     formData.forEach((value, key) => {
         if (jsonData[key]) {
             if (!Array.isArray(jsonData[key])) {
@@ -1189,7 +1214,7 @@ function submitForm(event) {
         }
     });
 
-    // Add selected skills
+    // Handle skills checkboxes specifically
     const selectedSkills = Array.from(document.querySelectorAll('.skill-checkbox:checked'))
         .map(checkbox => checkbox.value);
     jsonData['skills'] = selectedSkills;
@@ -1216,7 +1241,7 @@ function submitForm(event) {
     window.formSubmitCallback = function(response) {
         loadingOverlay.classList.remove('active');
         if (response.result === 'success') {
-            showQuoteModal(); // Show quote modal instead of alert
+            showQuoteModal();
             form.reset();
             updateProgress();
         } else {
