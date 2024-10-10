@@ -1217,6 +1217,7 @@ function submitForm(event) {
     // Handle skills checkboxes specifically
     const selectedSkills = Array.from(document.querySelectorAll('.skill-checkbox:checked'))
         .map(checkbox => checkbox.value);
+    jsonData['skills'] = selectedSkills;
     console.log('Selected Skills:', selectedSkills);
  // This should correctly collect all selected skills
 
