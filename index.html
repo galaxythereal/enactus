@@ -194,7 +194,7 @@
     text-align: center;
     color: white;
     box-shadow: var(--shadow-lg);
-    position: relative;
+    position: relative; /* Important for the absolute positioning of close button */
 }
 
 .quote-text {
@@ -235,14 +235,15 @@
 
 .close-quote {
     position: absolute;
-    top: 1rem;
-    right: 1rem;
+    top: 1rem; /* Position from top */
+    right: 1rem; /* Position from right */
     background: none;
     border: none;
     color: white;
     font-size: 1.5rem;
     cursor: pointer;
 }
+
         /* Enhanced Stats Bar */
         .stats-bar {
             display: flex;
