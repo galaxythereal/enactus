@@ -120,6 +120,163 @@
             font-weight: 500;
         }
 
+        /* Preserve existing styles and only add specific mobile adjustments */
+@media (max-width: 768px) {
+    .header {
+        /* Keep height: 100vh for fullscreen effect */
+        height: 100vh;
+        /* Add padding for better content spacing */
+        padding: 2rem 1rem;
+    }
+
+    .header-content {
+        padding: 1rem;
+        /* Ensure content is centered and readable */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .header h1 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        /* Improve readability on mobile */
+        line-height: 1.2;
+    }
+
+    .header p {
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .countdown {
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        justify-content: center;
+    }
+
+    .countdown-item {
+        flex: 0 0 calc(50% - 0.375rem);
+        min-width: auto;
+    }
+
+    .stats-bar {
+        flex-direction: column;
+        gap: 1.5rem;
+        padding: 1.5rem;
+    }
+
+    .stat-item {
+        text-align: center;
+    }
+
+    /* Fix sharing buttons on mobile */
+    .share-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        padding: 0 1rem;
+    }
+
+    .share-button {
+        width: 100%;
+        justify-content: center;
+        padding: 1rem;
+    }
+}
+
+/* Quote Popup Styles - Add this as is */
+.quote-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+    color: white;
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: var(--shadow-lg);
+    max-width: 90%;
+    width: 400px;
+    text-align: center;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.quote-popup.active {
+    opacity: 1;
+}
+
+.quote-text {
+    font-size: 1.25rem;
+    font-style: italic;
+    margin-bottom: 1rem;
+    line-height: 1.6;
+}
+
+.quote-author {
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+.quote-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.quote-button {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    background: white;
+    color: var(--primary-blue);
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.quote-button:hover {
+    transform: translateY(-2px);
+}
+
+.quote-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.quote-overlay.active {
+    opacity: 1;
+}
+
+/* Ensure quote popup is also mobile-friendly */
+@media (max-width: 768px) {
+    .quote-popup {
+        padding: 1.5rem;
+        width: 85%;
+    }
+
+    .quote-text {
+        font-size: 1.1rem;
+    }
+
+    .quote-buttons {
+        flex-direction: column;
+    }
+
+    .quote-button {
+        width: 100%;
+    }
+}
+
         /* Enhanced Form Styles */
         .form-section {
             background-color: var(--bg-white);
