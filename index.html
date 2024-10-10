@@ -1304,6 +1304,14 @@ const inspirationalQuotes = [
     }
 ];
 
+// Sample array of quotes for demonstration
+const inspirationalQuotes = [
+    { text: "The best way to predict the future is to create it.", author: "Peter Drucker" },
+    { text: "You miss 100% of the shots you don’t take.", author: "Wayne Gretzky" },
+    { text: "Success is not the key to happiness. Happiness is the key to success.", author: "Albert Schweitzer" },
+    // Add more quotes as needed
+];
+
 function showQuoteModal() {
     const modal = document.querySelector('.quote-modal');
     const randomQuote = inspirationalQuotes[Math.floor(Math.random() * inspirationalQuotes.length)];
@@ -1311,15 +1319,22 @@ function showQuoteModal() {
     document.querySelector('.quote-text').textContent = randomQuote.text;
     document.querySelector('.quote-author').textContent = "- " + randomQuote.author;
     
-    modal.style.display = 'flex';
+    modal.style.display = 'flex'; // Show the modal
 }
 
-document.querySelector('.close-quote').addEventListener('click', () => {
-    document.querySelector('.quote-modal').style.display = 'none';
+// Event listener for closing the modal
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelector('.close-quote').addEventListener('click', () => {
+        document.querySelector('.quote-modal').style.display = 'none'; // Hide the modal
+    });
 });
+
+// Test function to show the quote modal (can be triggered as needed)
 function testQuoteModal() {
     showQuoteModal();
 }
+
+// Function to share the quote on different platforms
 function shareQuote(platform) {
     const quote = document.querySelector('.quote-text').textContent;
     const shareText = `${quote} - Join Enactus Menoufia: https://galaxythereal.github.io/enactus/`;
@@ -1334,6 +1349,8 @@ function shareQuote(platform) {
         case 'twitter':
             window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`, '_blank');
             break;
+        default:
+            console.error('Unsupported platform: ' + platform);
     }
 }
 
