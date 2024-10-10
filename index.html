@@ -3,9 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
     <title>Enactus Menoufia Recruitment</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
@@ -1226,6 +1223,7 @@ function animateStats() {
         updateStat();
     });
 }
+
 // Update the form submission function to handle multiple skills correctly
 function submitForm(event) {
     event.preventDefault();
@@ -1265,7 +1263,7 @@ function submitForm(event) {
         });
     }
 
-    // Convert jsonData to URL-encoded string with cache buster
+    // Convert jsonData to URL-encoded string
     const encodedData = Object.keys(jsonData)
         .map(key => {
             const value = Array.isArray(jsonData[key]) ? JSON.stringify(jsonData[key]) : jsonData[key];
@@ -1273,56 +1271,30 @@ function submitForm(event) {
         })
         .join('&');
 
-    // Create a unique callback name
-    const callbackName = 'formCallback_' + Date.now();
-
     // Create a script element for JSONP
     const script = document.createElement('script');
-    script.src = `https://script.google.com/macros/s/AKfycbwLw4vuGOnZvR-an8rzQh6LFw3HIrJiQpTbW1C0J4KkybK9nMJqFx6h6BbXbHa64uXm/exec?${encodedData}&callback=${callbackName}&cacheBuster=${Date.now()}`;
+    script.src = `https://script.google.com/macros/s/AKfycbwLw4vuGOnZvR-an8rzQh6LFw3HIrJiQpTbW1C0J4KkybK9nMJqFx6h6BbXbHa64uXm/exec?${encodedData}&callback=formSubmitCallback`;
     
-    // Add timeout to handle cases where the script fails to load
-    const timeoutId = setTimeout(() => {
-        handleSubmissionError();
-    }, 10000); // 10 second timeout
-
     // Define the callback function
-    window[callbackName] = function(response) {
-        clearTimeout(timeoutId);
+    window.formSubmitCallback = function(response) {
         loadingOverlay.classList.remove('active');
         if (response.result === 'success') {
             showQuoteModal();
             form.reset();
             updateProgress();
         } else {
-            handleSubmissionError(response.error);
+            alert('There was an error submitting your application. Please try again later.');
+            console.error('Submission error:', response.error);
         }
-        cleanup();
+        // Remove the script element
+        document.body.removeChild(script);
+        // Remove the callback function
+        delete window.formSubmitCallback;
     };
-
-    // Add error handler for script loading
-    script.onerror = function() {
-        clearTimeout(timeoutId);
-        handleSubmissionError();
-        cleanup();
-    };
-
-    function handleSubmissionError(error) {
-        loadingOverlay.classList.remove('active');
-        alert('There was an error submitting your application. Please try again later.');
-        console.error('Submission error:', error || 'Script failed to load');
-    }
-
-    function cleanup() {
-        if (script.parentNode) {
-            document.body.removeChild(script);
-        }
-        delete window[callbackName];
-    }
 
     // Append the script to the document to send the request
     document.body.appendChild(script);
 }
-
 // Make sure this event listener is present
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('recruitmentForm').addEventListener('submit', submitForm);
