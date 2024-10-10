@@ -87,7 +87,128 @@
             font-weight: 400;
             text-shadow: 0 1px 2px rgba(0,0,0,0.2);
         }
+/* Enhanced Mobile Responsive Header */
+@media (max-width: 768px) {
+    .header {
+        height: auto;
+        min-height: 100vh;
+        padding: 2rem 1rem;
+    }
 
+    .header-content {
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+    }
+
+    .header h1 {
+        font-size: 2rem;
+        margin-top: 2rem;
+    }
+
+    .header p {
+        font-size: 1.1rem;
+    }
+
+    .countdown {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1rem;
+        margin: 2rem 0;
+    }
+
+    .countdown-item {
+        flex: 0 0 calc(50% - 1rem);
+    }
+
+    .stats-bar {
+        flex-direction: column;
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .stat-item {
+        width: 100%;
+    }
+
+    .share-buttons {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .share-button {
+        width: 100%;
+        padding: 1rem;
+        justify-content: center;
+    }
+}
+
+/* Quote Modal Styles */
+.quote-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+}
+
+.quote-content {
+    background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+    border-radius: 16px;
+    padding: 2rem;
+    max-width: 90%;
+    width: 500px;
+    text-align: center;
+    color: white;
+    box-shadow: var(--shadow-lg);
+    position: relative;
+}
+
+.quote-text {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    line-height: 1.4;
+}
+
+.quote-author {
+    font-style: italic;
+    margin-bottom: 2rem;
+}
+
+.quote-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.quote-button {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    background: white;
+    color: var(--primary-blue);
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: var(--transition-normal);
+}
+
+.quote-button:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
         /* Enhanced Stats Bar */
         .stats-bar {
             display: flex;
@@ -992,7 +1113,63 @@ async function submitFormWithRetry(jsonData, maxRetries = 5) {
         }
     }
 }
+// Add these functions to your existing JavaScript
 
+const inspiringQuotes = [
+    {
+        text: "Be the change you wish to see in your community. Your journey with Enactus starts today!",
+        author: "Enactus Menoufia"
+    },
+    {
+        text: "Together we create, together we innovate, together we impact lives.",
+        author: "Enactus Spirit"
+    },
+    {
+        text: "Your entrepreneurial spirit can transform communities. Welcome to the Enactus family!",
+        author: "Enactus Menoufia"
+    }
+];
+
+function showQuoteModal() {
+    const modal = document.getElementById('quoteModal');
+    const randomQuote = inspiringQuotes[Math.floor(Math.random() * inspiringQuotes.length)];
+    
+    modal.querySelector('.quote-text').textContent = randomQuote.text;
+    modal.querySelector('.quote-author').textContent = `- ${randomQuote.author}`;
+    
+    modal.style.display = 'flex';
+}
+
+function closeQuoteModal() {
+    document.getElementById('quoteModal').style.display = 'none';
+}
+
+function shareQuote(platform) {
+    const quoteText = document.querySelector('.quote-text').textContent;
+    const quoteAuthor = document.querySelector('.quote-author').textContent;
+    const shareText = `${quoteText} ${quoteAuthor}\n\nJoin Enactus Menoufia: https://galaxythereal.github.io/enactus/`;
+    
+    if (platform === 'whatsapp') {
+        window.open(`https://wa.me/?text=${encodeURIComponent(shareText)}`, '_blank');
+    } else if (platform === 'facebook') {
+        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent('https://galaxythereal.github.io/enactus/')}&quote=${encodeURIComponent(shareText)}`, '_blank');
+    }
+}
+
+// Update your form submission callback to show the quote modal
+window.formSubmitCallback = function(response) {
+    loadingOverlay.classList.remove('active');
+    if (response.result === 'success') {
+        showQuoteModal();
+        form.reset();
+        updateProgress();
+    } else {
+        alert('There was an error submitting your application. Please try again later.');
+        console.error('Submission error:', response.error);
+    }
+    document.body.removeChild(script);
+    delete window.formSubmitCallback;
+};
 function submitForm(event) {
     event.preventDefault();
     const form = event.target;
@@ -1107,5 +1284,26 @@ floatingHelp.addEventListener('click', () => {
     alert('Need help? Contact us at support@enactusmenoufia.org or call +20 123 456 7890');
 });
 </script>
+    <!-- Add this right before the closing body tag -->
+<div id="quoteModal" class="quote-modal" style="display: none;">
+    <div class="quote-content">
+        <div class="quote-text"></div>
+        <div class="quote-author"></div>
+        <div class="quote-buttons">
+            <button onclick="shareQuote('whatsapp')" class="quote-button">
+                <i class="fab fa-whatsapp"></i> Share on WhatsApp
+            </button>
+            <button onclick="shareQuote('facebook')" class="quote-button">
+                <i class="fab fa-facebook"></i> Share on Facebook
+            </button>
+            <button onclick="downloadQuote()" class="quote-button">
+                <i class="fas fa-download"></i> Save Image
+            </button>
+            <button onclick="closeQuoteModal()" class="quote-button">
+                Close
+            </button>
+        </div>
+    </div>
+</div>
 </body>
 </html>
