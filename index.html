@@ -1149,7 +1149,92 @@ async function submitFormWithRetry(jsonData, maxRetries = 5) {
         }
     }
 }
+// Add this to your existing JavaScript
+const inspiringQuotes = [
+    {
+        text: "Be the change you wish to see in the world through entrepreneurial action.",
+        author: "Enactus Menoufia"
+    },
+    {
+        text: "Together, we create sustainable solutions that empower communities.",
+        author: "Enactus Menoufia"
+    },
+    {
+        text: "Your journey to impact starts here. Welcome to the Enactus family!",
+        author: "Enactus Menoufia"
+    }
+];
 
+function showQuotePopup() {
+    const randomQuote = inspiringQuotes[Math.floor(Math.random() * inspiringQuotes.length)];
+    
+    const overlay = document.createElement('div');
+    overlay.className = 'quote-overlay';
+    
+    const popup = document.createElement('div');
+    popup.className = 'quote-popup';
+    popup.innerHTML = `
+        <p class="quote-text">${randomQuote.text}</p>
+        <p class="quote-author">- ${randomQuote.author}</p>
+        <div class="quote-buttons">
+            <button onclick="shareQuote('whatsapp')" class="quote-button">Share on WhatsApp</button>
+            <button onclick="shareQuote('facebook')" class="quote-button">Share on Facebook</button>
+            <button onclick="closeQuotePopup()" class="quote-button">Close</button>
+        </div>
+    `;
+    
+    document.body.appendChild(overlay);
+    document.body.appendChild(popup);
+    
+    // Trigger reflow before adding active class
+    popup.offsetHeight;
+    overlay.offsetHeight;
+    
+    overlay.classList.add('active');
+    popup.classList.add('active');
+}
+
+function closeQuotePopup() {
+    const overlay = document.querySelector('.quote-overlay');
+    const popup = document.querySelector('.quote-popup');
+    
+    overlay.classList.remove('active');
+    popup.classList.remove('active');
+    
+    setTimeout(() => {
+        overlay.remove();
+        popup.remove();
+    }, 300);
+}
+
+function shareQuote(platform) {
+    const quoteText = document.querySelector('.quote-text').textContent;
+    const quoteAuthor = document.querySelector('.quote-author').textContent;
+    const fullQuote = `${quoteText} ${quoteAuthor}`;
+    const encodedQuote = encodeURIComponent(fullQuote);
+    const websiteUrl = encodeURIComponent("https://galaxythereal.github.io/enactus/");
+    
+    if (platform === 'whatsapp') {
+        window.open(`https://wa.me/?text=${encodedQuote}%0A%0AJoin Enactus Menoufia: ${websiteUrl}`, '_blank');
+    } else if (platform === 'facebook') {
+        window.open(`https://www.facebook.com/sharer/sharer.php?u=${websiteUrl}&quote=${encodedQuote}`, '_blank');
+    }
+}
+
+// Update your form submission callback
+window.formSubmitCallback = function(response) {
+    loadingOverlay.classList.remove('active');
+    if (response.result === 'success') {
+        showQuotePopup();
+        form.reset();
+        updateProgress();
+    } else {
+        alert('There was an error submitting your application. Please try again later.');
+        console.error('Submission error:', response.error);
+    }
+    document.body.removeChild(script);
+    delete window.formSubmitCallback;
+};
 function submitForm(event) {
     event.preventDefault();
     const form = event.target;
