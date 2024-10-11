@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Enactus Menoufia Recruitment</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -16,22 +15,29 @@
 
     <style>
 :root {
-  --primary-blue: #1a5f7a;
-  --secondary-blue: #39a9db;
-  --accent-yellow: #ffd700;
-  --success-green: #32cd32;
-  --error-red: #ff4500;
-  --bg-white: #ffffff;
-  --bg-light: #f0f8ff;
-  --bg-blue-light: #e6f3ff;
-  --text-primary: #333333;
-  --text-secondary: #4a4a4a;
-  --text-tertiary: #808080;
-  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
-  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.1);
-  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-normal: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    /* Updated color palette with deep teal and silver */
+    --primary-blue: #005f73; /* Deep teal replacing the primary blue */
+    --secondary-blue: #0a9396; /* Lighter teal for secondary blue */
+    --accent-yellow: #94a1b2; /* Muted silver replacing the accent yellow */
+    --success-green: #94d2bd; /* Soft mint green for success feedback */
+    --error-red: #d00000; /* Deep crimson for error states */
+    
+    --bg-white: #ffffff;
+    --bg-light: #f0f4f8; /* Light grey background */
+    --bg-blue-light: #e0f2f1; /* Light teal background replacing light blue */
+    
+    --text-primary: #001219; /* Dark teal for primary text */
+    --text-secondary: #5f6f72; /* Soft grey for secondary text */
+    --text-tertiary: #829399; /* Muted blue-grey for tertiary text */
+    
+    /* Enhanced shadows */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.05);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+    
+    /* Transitions */
+    --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-normal: 300ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
         body {
@@ -49,108 +55,93 @@
             padding: 2rem;
         }
 
+        /* Enhanced Header Styles */
+        .header {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://i.postimg.cc/pL0Q1fjS/ADVENTUS-cover-1.jpg');
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
 
-      /* Enhanced Header Styles for Laptop/Desktop */
-/* Default styles for larger screens */
-.header {
-  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://i.imghippo.com/files/95ZsL1728671880.jpg');
-  background-size: cover;
-  background-position: center;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-}
+        .header-content {
+            text-align: center;
+            color: var(--bg-white);
+            z-index: 1;
+            max-width: 800px;
+            padding: 2rem;
+        }
 
-/* Styles for smaller screens */
-@media only screen and (max-width: 768px) {
-  .header {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://i.imghippo.com/files/MqG841728683084.jpg');
-    min-height: 100vh;
-    height: auto;
-  }
-}
+        .header h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
 
-/* Other styles remain the same */
-.header-content {
-  text-align: center;
-  color: var(--bg-white);
-  z-index: 1;
-  max-width: 800px;
-  padding: 2rem;
-}
+        .header p {
+            font-size: 1.25rem;
+            margin-bottom: 2.5rem;
+            font-weight: 400;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+/* Updated Header Styles for Mobile */
+@media (max-width: 768px) {
+    .header {
+        height: auto;
+        min-height: 100vh;
+        padding: 2rem 1rem;
+    }
 
-.header h1 {
-  font-size: 3.5rem;
-  font-weight: 700;
-  margin-bottom: 1.5rem;
-  line-height: 1.2;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
+    .header-content {
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+    }
 
-.header p {
-  font-size: 1.25rem;
-  margin-bottom: 2.5rem;
-  font-weight: 400;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-}
+    .header h1 {
+        font-size: 2rem;
+        margin-top: 2rem;
+    }
 
-/* Add responsive adjustments for text sizes if needed */
-@media only screen and (max-width: 768px) {
-  .header h1 {
-    font-size: 2rem;
-  }
-  
-  .header p {
-    font-size: 1rem;
-  }
-}
+    .header p {
+        font-size: 1rem;
+    }
 
-  .header-content {
-    padding: 1rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-  }
+    .countdown {
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-top: 1.5rem;
+        gap: 0.75rem;
+    }
 
-  .header h1 {
-    font-size: 2rem;
-    margin-top: 2rem;
-  }
+    .countdown-item {
+        flex: 0 0 calc(50% - 0.75rem);
+    }
 
-  .header p {
-    font-size: 1rem;
-  }
-
-  .countdown {
+    .stats-bar {
     flex-wrap: wrap;
-    justify-content: center;
-    margin-top: 1.5rem;
-    gap: 0.75rem;
-  }
+        flex-direction: column;
+        gap: 1.5rem;
+        justify-content: center;
+        margin-top: 2rem;
+        padding: 1.5rem;
+        margin-top: 2rem;
+    }
 
-  .countdown-item {
+    .stat-item {
     flex: 0 0 calc(50% - 0.75rem);
-  }
-
-  .stats-bar {
-    flex-wrap: wrap;
-    flex-direction: column;
-    gap: 1.5rem;
-    justify-content: center;
-    margin-top: 2rem;
-    padding: 1.5rem;
-  }
-
-  .stat-item {
-    flex: 0 0 calc(50% - 0.75rem);
-    width: 100%;
-    margin-left: -1rem;
-  }
-}
+        width: 100%;
+        
+        margin-left: -1rem;
+    }
 
     /* Fix sharing section on mobile */
 .share-section {
@@ -728,7 +719,7 @@ input[type="checkbox"] {
 <div class="header">
         <div class="header-content">
             <h1 class="animate__animated animate__fadeInDown">Shape the Future with Enactus Menoufia</h1>
-            <p class="animate__animated animate__fadeInUp animate__delay-1s">One Bond Future Beyond</p>
+            <p class="animate__animated animate__fadeInUp animate__delay-1s">Join a Global Movement of Student Entrepreneurs Creating Positive Impact</p>
             
             <div class="countdown">
                 <div class="countdown-item">
