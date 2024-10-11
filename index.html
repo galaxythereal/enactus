@@ -62,12 +62,15 @@
     position: relative;
 }
         .header-content {
-            text-align: center;
-            color: var(--bg-white);
-            z-index: 1;
-            max-width: 800px;
-            padding: 2rem;
-        }
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
         .header h1 {
             font-size: 3.5rem;
