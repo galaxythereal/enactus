@@ -48,6 +48,7 @@ body {
     padding: 2rem;
 }
        /* Common styles */
+/* Header Styles */
 .header {
     background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://i.imghippo.com/files/95ZsL1728671880.jpg');
     background-size: cover;
@@ -83,13 +84,13 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     height: 100%;
     max-height: 100vh;
 }
 
 .logo-container {
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
 }
 
 .logo {
@@ -98,16 +99,16 @@ body {
 }
 
 .header h1 {
-    font-size: 2.5rem;
+    font-size: 2.3rem;
     font-weight: 700;
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
     line-height: 1.2;
     text-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
 .header p {
-    font-size: 1.1rem;
-    margin-bottom: 1.5rem;
+    font-size: 1rem;
+    margin-bottom: 1rem;
     font-weight: 400;
     text-shadow: 0 1px 2px rgba(0,0,0,0.2);
 }
@@ -116,7 +117,7 @@ body {
     display: flex;
     justify-content: center;
     gap: 1rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
 }
 
 .countdown-item {
@@ -155,6 +156,7 @@ body {
     font-size: 0.8rem;
 }
 
+/* Mobile Styles */
 @media (max-width: 768px) {
     .header {
         background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://i.imghippo.com/files/MqG841728683084.jpg');
@@ -173,11 +175,11 @@ body {
     }
 
     .header h1 {
-        font-size: 1.8rem;
+        font-size: 1.6rem;
     }
 
     .header p {
-        font-size: 1rem;
+        font-size: 0.9rem;
     }
 
     .countdown {
@@ -196,6 +198,37 @@ body {
     .stats-bar {
         flex-direction: column;
         gap: 1rem;
+    }
+}
+
+/* Additional responsiveness for very small screens */
+@media (max-width: 320px) {
+    .logo {
+        max-width: 120px;
+    }
+
+    .header h1 {
+        font-size: 1.4rem;
+    }
+
+    .header p {
+        font-size: 0.8rem;
+    }
+
+    .countdown-item {
+        min-width: 35px;
+    }
+
+    .countdown-number {
+        font-size: 1rem;
+    }
+
+    .stat-number {
+        font-size: 1.2rem;
+    }
+
+    .stat-label {
+        font-size: 0.7rem;
     }
 }
     /* Fix sharing section on mobile */
