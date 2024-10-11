@@ -51,6 +51,7 @@
 
 
       /* Enhanced Header Styles for Laptop/Desktop */
+/* Default styles for older browsers */
 .header {
   background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://i.imghippo.com/files/95ZsL1728671880.jpg');
   background-size: cover;
@@ -85,12 +86,10 @@
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
-/* Updated Header Styles for Mobile */
-@media screen and (max-width: 768px) {
+/* Styles for mobile browsers smaller than 480px (iPhone) */
+@media only screen and (max-device-width: 480px) {
   .header {
     background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://i.imghippo.com/files/MqG841728683084.jpg');
-    background-size: cover;
-    background-position: center;
     height: auto;
     min-height: 100vh;
     padding: 2rem 1rem;
@@ -102,7 +101,6 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    text-align: center;
   }
 
   .header h1 {
@@ -138,6 +136,83 @@
     flex: 0 0 calc(50% - 0.75rem);
     width: 100%;
     margin-left: -1rem;
+  }
+}
+
+/* Default iPad screens */
+@media only screen and (device-width: 768px) {
+  .header {
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .header h1 {
+    font-size: 3rem;
+  }
+
+  .header p {
+    font-size: 1.1rem;
+  }
+}
+
+/* For portrait layouts only */
+@media only screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:portrait) {
+  .header {
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .header-content {
+    max-width: 90%;
+  }
+}
+
+/* For landscape layouts only */
+@media only screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:landscape) {
+  .header {
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .header-content {
+    max-width: 80%;
+  }
+}
+
+/* Styles for browsers larger than 960px */
+@media only screen and (min-width: 960px) {
+  .header-content {
+    max-width: 900px;
+  }
+}
+
+/* Styles for browsers larger than 1440px */
+@media only screen and (min-width: 1440px) {
+  .header-content {
+    max-width: 1200px;
+  }
+
+  .header h1 {
+    font-size: 4rem;
+  }
+
+  .header p {
+    font-size: 1.5rem;
+  }
+}
+
+/* For sumo sized (mac) screens */
+@media only screen and (min-width: 2000px) {
+  .header-content {
+    max-width: 1600px;
+  }
+
+  .header h1 {
+    font-size: 5rem;
+  }
+
+  .header p {
+    font-size: 1.75rem;
   }
 }
 
