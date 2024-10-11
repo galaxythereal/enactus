@@ -15,33 +15,25 @@
 
     <style>
 :root {
-    /* Updated color palette with deep teal and silver */
-    --primary-blue: #005f73; /* Deep teal replacing the primary blue */
-    --secondary-blue: #0a9396; /* Lighter teal for secondary blue */
-    --accent-yellow: #94a1b2; /* Muted silver replacing the accent yellow */
-    --success-green: #94d2bd; /* Soft mint green for success feedback */
-    --error-red: #d00000; /* Deep crimson for error states */
-    
-    --bg-white: #ffffff;
-    --bg-light: #f0f4f8; /* Light grey background */
-    --bg-blue-light: #e0f2f1; /* Light teal background replacing light blue */
-    
-    --text-primary: #001219; /* Dark teal for primary text */
-    --text-secondary: #5f6f72; /* Soft grey for secondary text */
-    --text-tertiary: #829399; /* Muted blue-grey for tertiary text */
-    
-    /* Enhanced shadows */
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.05);
-    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
-    
-    /* Transitions */
-    --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-normal: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  --primary-blue: #222831;
+  --secondary-blue: #393e46;
+  --accent-yellow: #ffd369;
+  --success-green: #4caf50;
+  --error-red: #ff6b6b;
+  --bg-white: #ffffff;
+  --bg-light: #f0f0f0;
+  --bg-blue-light: #e3e3e3;
+  --text-primary: #222831;
+  --text-secondary: #393e46;
+  --text-tertiary: #929aab;
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.05);
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 300ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
        /* Common styles */
-/* Common styles */
 body {
     font-family: 'Poppins', sans-serif;
     margin: 0;
@@ -87,6 +79,18 @@ body {
     max-width: 800px;
     padding: 2rem;
     position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.logo-container {
+    margin-bottom: 2rem;
+}
+
+.logo {
+    max-width: 150px;
+    height: auto;
 }
 
 .header h1 {
@@ -122,15 +126,22 @@ body {
         text-align: center;
     }
 
+    .logo-container {
+        margin-bottom: 1.5rem;
+    }
+
+    .logo {
+        max-width: 100px;
+    }
+
     .header h1 {
         font-size: 2rem;
-        margin-top: 2rem;
+        margin-top: 1rem;
     }
 
     .header p {
         font-size: 1rem;
     }
-
     .countdown {
         flex-wrap: wrap;
         justify-content: center;
@@ -731,45 +742,48 @@ input[type="checkbox"] {
     </div>
 
 <div class="header">
-        <div class="header-content">
-            <h1 class="animate__animated animate__fadeInDown">Shape the Future with Enactus Menoufia</h1>
-            <p class="animate__animated animate__fadeInUp animate__delay-1s">Join a Global Movement of Student Entrepreneurs Creating Positive Impact</p>
-            
-            <div class="countdown">
-                <div class="countdown-item">
-                    <div class="countdown-number" id="days">00</div>
-                    <div class="countdown-label">Days</div>
-                </div>
-                <div class="countdown-item">
-                    <div class="countdown-number" id="hours">00</div>
-                    <div class="countdown-label">Hours</div>
-                </div>
-                <div class="countdown-item">
-                    <div class="countdown-number" id="minutes">00</div>
-                    <div class="countdown-label">Minutes</div>
-                </div>
-                <div class="countdown-item">
-                    <div class="countdown-number" id="seconds">00</div>
-                    <div class="countdown-label">Seconds</div>
-                </div>
+    <div class="header-content">
+        <div class="logo-container animate__animated animate__fadeInDown">
+            <img src="https://i.imghippo.com/files/GrAmh1728689022.png" alt="Enactus Menoufia Logo" class="logo">
+        </div>
+        <h1 class="animate__animated animate__fadeInDown animate__delay-1s">Unlock the Adventure with Advantus</h1>
+        <p class="animate__animated animate__fadeInUp animate__delay-2s">Begin your chapter with Advantus: Write the future alongside Enactus Menoufia</p>
+        
+        <div class="countdown animate__animated animate__fadeInUp animate__delay-3s">
+            <div class="countdown-item">
+                <div class="countdown-number" id="days">00</div>
+                <div class="countdown-label">Days</div>
             </div>
-            
-            <div class="stats-bar animate__animated animate__fadeInUp animate__delay-1s">
-                <div class="stat-item">
-                    <div class="stat-number" data-count="37">0</div>
-                    <div class="stat-label">Countries Worldwide</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number" data-count="72000">0</div>
-                    <div class="stat-label">Student Members</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number" data-count="1730">0</div>
-                    <div class="stat-label">Universities</div>
-                </div>
+            <div class="countdown-item">
+                <div class="countdown-number" id="hours">00</div>
+                <div class="countdown-label">Hours</div>
+            </div>
+            <div class="countdown-item">
+                <div class="countdown-number" id="minutes">00</div>
+                <div class="countdown-label">Minutes</div>
+            </div>
+            <div class="countdown-item">
+                <div class="countdown-number" id="seconds">00</div>
+                <div class="countdown-label">Seconds</div>
+            </div>
+        </div>
+        
+        <div class="stats-bar animate__animated animate__fadeInUp animate__delay-4s">
+            <div class="stat-item">
+                <div class="stat-number" data-count="37">0</div>
+                <div class="stat-label">Countries Worldwide</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" data-count="72000">0</div>
+                <div class="stat-label">Student Members</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" data-count="1730">0</div>
+                <div class="stat-label">Universities</div>
             </div>
         </div>
     </div>
+</div>
 
     <div class="container">
         <div class="progress-container animate__animated animate__fadeIn">
@@ -1052,7 +1066,7 @@ window.addEventListener('load', function() {
 
   // Enhanced countdown timer
         function updateCountdown() {
-            const deadline = new Date("2024-12-31T23:59:59").getTime();
+            const deadline = new Date("2024-10-26T21:59:59").getTime();
             const now = new Date().getTime();
             const difference = deadline - now;
 
