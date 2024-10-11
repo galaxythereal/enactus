@@ -51,6 +51,7 @@
 
 
       /* Enhanced Header Styles for Laptop/Desktop */
+/* Default styles for larger screens */
 .header {
   background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://i.imghippo.com/files/95ZsL1728671880.jpg');
   background-size: cover;
@@ -62,6 +63,16 @@
   position: relative;
 }
 
+/* Styles for smaller screens */
+@media only screen and (max-width: 768px) {
+  .header {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://i.imghippo.com/files/MqG841728683084.jpg');
+    min-height: 100vh;
+    height: auto;
+  }
+}
+
+/* Other styles remain the same */
 .header-content {
   text-align: center;
   color: var(--bg-white);
@@ -85,16 +96,16 @@
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
-/* Updated Header Styles for Mobile */
-@media screen and (max-width: 950px) {
-  .header {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://i.imghippo.com/files/MqG841728683084.jpg');
-    background-size: cover;
-    background-position: center;
-    height: auto;
-    min-height: 100vh;
-    padding: 2rem 1rem;
+/* Add responsive adjustments for text sizes if needed */
+@media only screen and (max-width: 768px) {
+  .header h1 {
+    font-size: 2rem;
   }
+  
+  .header p {
+    font-size: 1rem;
+  }
+}
 
   .header-content {
     padding: 1rem;
