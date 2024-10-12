@@ -228,7 +228,7 @@ body {
 
 /* Quote Modal Styles */
 .quote-modal {
-    display: none;
+    display: none; /* Keep this for hiding the modal by default */
     position: fixed;
     top: 0;
     left: 0;
@@ -236,9 +236,14 @@ body {
     bottom: 0;
     background: rgba(0, 0, 0, 0.8);
     z-index: 1000;
+    padding: 1rem;
+}
+
+/* Add this new class for when the modal is visible */
+.quote-modal.show {
+    display: flex; /* Change to flex when visible */
     justify-content: center;
     align-items: center;
-    padding: 1rem;
 }
 
 .quote-content {
@@ -250,28 +255,26 @@ body {
     text-align: center;
     color: white;
     box-shadow: var(--shadow-lg);
-    position: relative; /* Important for the absolute positioning of close button */
+    position: relative;
 }
 
+/* Rest of the CSS remains the same */
 .quote-text {
     font-size: 1.5rem;
     font-weight: 600;
     margin-bottom: 1rem;
     line-height: 1.4;
 }
-
 .quote-author {
     font-style: italic;
     margin-bottom: 1.5rem;
 }
-
 .quote-share-buttons {
     display: flex;
     justify-content: center;
     gap: 1rem;
     flex-wrap: wrap;
 }
-
 .quote-share-button {
     padding: 0.5rem 1rem;
     border-radius: 8px;
@@ -284,15 +287,13 @@ body {
     align-items: center;
     gap: 0.5rem;
 }
-
 .quote-share-button:hover {
     background: rgba(255, 255, 255, 0.3);
 }
-
 .close-quote {
     position: absolute;
-    top: -2rem; /* Position from top */
-    right: 0rem; /* Position from right */
+    top: -2rem;
+    right: 0rem;
     background: none;
     border: none;
     color: white;
