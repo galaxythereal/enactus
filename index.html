@@ -1557,15 +1557,15 @@ function shareMessenger() {
 
 // Other faculty option
 const facultySelect = document.getElementById('faculty');
-const otherFacultyRow = document.getElementById('otherFacultyRow');
+
 const otherFacultyInput = document.getElementById('otherFaculty');
 
 facultySelect.addEventListener('change', () => {
     if (facultySelect.value === 'other') {
-        otherFacultyRow.style.display = 'block';
+    
         otherFacultyInput.required = true;
     } else {
-        otherFacultyRow.style.display = 'none';
+       
         otherFacultyInput.required = false;
     }
 });
