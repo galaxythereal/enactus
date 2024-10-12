@@ -57,7 +57,7 @@ body {
     align-items: center;
     justify-content: center;
     position: relative;
-    padding: 2rem 0;
+    padding: 1rem 0;
     overflow: hidden;
 }
 
@@ -78,7 +78,7 @@ body {
     z-index: 1;
     max-width: 800px;
     width: 90%;
-    padding: 2rem;
+    padding: 1rem;
     position: relative;
     display: flex;
     flex-direction: column;
@@ -88,18 +88,18 @@ body {
 }
 
 .logo-container {
-    margin-bottom: 1.5rem;
+    margin-bottom: 0rem;
 }
 
 .logo {
-    max-width: 180px;
+    max-width: 240px;
     height: auto;
 }
 
 .header h1 {
     font-size: 2.5rem;
     font-weight: 700;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
     line-height: 1.2;
     text-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
@@ -168,7 +168,7 @@ body {
     }
 
     .logo {
-        max-width: 130px;
+        max-width: 240px;
     }
 
     .header h1 {
@@ -227,7 +227,6 @@ body {
     
 
 /* Quote Modal Styles */
-/* Quote Modal Styles */
 .quote-modal {
     display: none;
     position: fixed;
@@ -239,14 +238,14 @@ body {
     z-index: 1000;
     justify-content: center;
     align-items: center;
-    padding: 1rem;
+    padding: 0.2rem;
     backdrop-filter: blur(8px);
 }
 
 .quote-content {
     background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
     border-radius: 20px;
-    padding: 4rem 3rem;
+    padding: 4rem 3rem 3rem;
     max-width: 90%;
     width: 600px;
     text-align: center;
@@ -260,7 +259,7 @@ body {
 .quote-content::after {
     content: '"';
     position: absolute;
-    font-size: 120px;
+    font-size: 160px;
     font-family: Georgia, serif;
     opacity: 0.1;
     line-height: 1;
@@ -269,12 +268,12 @@ body {
 
 .quote-content::before {
     top: 20px;
-    left: 20px;
+    left: 10px;
 }
 
 .quote-content::after {
     bottom: 20px;
-    right: 20px;
+    right: 10px;
     transform: rotate(180deg);
 }
 
@@ -331,8 +330,8 @@ body {
 
 .close-quote {
     position: absolute;
-    top: 20px;
-    right: 20px;
+    top: 0px;
+    right: 10px;
     background: rgba(255, 255, 255, 0.2);
     border: none;
     color: white;
@@ -345,6 +344,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 2;
 }
 
 .close-quote:hover {
@@ -371,7 +371,7 @@ body {
 
 @media (max-width: 600px) {
     .quote-content {
-        padding: 3rem 2rem;
+        padding: 3rem 2rem 2rem;
     }
     
     .quote-text {
@@ -385,6 +385,29 @@ body {
     .quote-share-button {
         padding: 0.6rem 1rem;
         font-size: 0.8rem;
+    }
+
+    .quote-content::before,
+    .quote-content::after {
+        font-size: 120px;
+    }
+
+    .quote-content::before {
+        top: 15px;
+        left: 10px;
+    }
+
+    .quote-content::after {
+        bottom: 15px;
+        right: 10px;
+    }
+
+    .close-quote {
+        top: 5px;
+        right: 5px;
+        width: 30px;
+        height: 30px;
+        font-size: 1.2rem;
     }
 }
         /* Enhanced Stats Bar */
@@ -1150,8 +1173,8 @@ input[type="checkbox"] {
             <div class="share-buttons">
                 <a href="#" class="share-button share-whatsapp" onclick="shareWhatsApp()"><i class="fab fa-whatsapp"></i> Share on WhatsApp</a>
                 <a href="#" class="share-button share-facebook" onclick="shareFacebook()"><i class="fab fa-facebook"></i> Share on Facebook</a>
-                <a href="#" class="share-button share-instagram" onclick="shareInstagram()"><i class="fab fa-instagram"></i> Share on Instagram</a>
-                <a href="#" class="share-button share-messenger" onclick="shareMessenger()"><i class="fab fa-facebook-messenger"></i> Share on Messenger</a>
+<!--                 <a href="#" class="share-button share-instagram" onclick="shareInstagram()"><i class="fab fa-instagram"></i> Share on Instagram</a>
+                <a href="#" class="share-button share-messenger" onclick="shareMessenger()"><i class="fab fa-facebook-messenger"></i> Share on Messenger</a> -->
             </div>
         </div>
 
