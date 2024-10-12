@@ -1345,6 +1345,74 @@ function animateStats() {
         updateStat();
     });
 }
+// Function to validate Egyptian phone number
+function isValidEgyptianPhoneNumber(phone) {
+    const egyptianPhoneRegex = /^(01)[0-25][0-9]{8}$/;
+    return egyptianPhoneRegex.test(phone);
+}
+
+// Function to validate email
+function isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
+
+// Function to validate name (only letters and spaces)
+function isValidName(name) {
+    const nameRegex = /^[A-Za-z\s]+$/;
+    return nameRegex.test(name);
+}
+
+// Function to validate academic year (1-7)
+function isValidAcademicYear(year) {
+    return year >= 1 && year <= 7;
+}
+
+// Add event listeners for real-time validation
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('recruitmentForm');
+    
+    // Phone number validation
+    const phoneInput = form.querySelector('input[name="phone"]');
+    phoneInput.addEventListener('input', function() {
+        if (!isValidEgyptianPhoneNumber(this.value)) {
+            this.setCustomValidity('Please enter a valid Egyptian phone number (e.g., 01xxxxxxxxx)');
+        } else {
+            this.setCustomValidity('');
+        }
+    });
+
+    // Email validation
+    const emailInput = form.querySelector('input[name="email"]');
+    emailInput.addEventListener('input', function() {
+        if (!isValidEmail(this.value)) {
+            this.setCustomValidity('Please enter a valid email address');
+        } else {
+            this.setCustomValidity('');
+        }
+    });
+
+    // Name validation
+    const nameInput = form.querySelector('input[name="name"]');
+    nameInput.addEventListener('input', function() {
+        if (!isValidName(this.value)) {
+            this.setCustomValidity('Please enter a valid name (only letters and spaces)');
+        } else {
+            this.setCustomValidity('');
+        }
+    });
+
+    // Academic year validation
+    const academicYearInput = form.querySelector('input[name="academicYear"]');
+    academicYearInput.addEventListener('input', function() {
+        const year = parseInt(this.value);
+        if (!isValidAcademicYear(year)) {
+            this.setCustomValidity('Please enter a valid academic year (1-7)');
+        } else {
+            this.setCustomValidity('');
+        }
+    });
+});
 
 // Update the form submission function to handle multiple skills correctly
 function submitForm(event) {
@@ -1352,6 +1420,33 @@ function submitForm(event) {
     const form = event.target;
     const loadingOverlay = document.getElementById('loadingOverlay');
     
+    // Perform additional validations
+    const phone = form.querySelector('input[name="phone"]').value;
+    const email = form.querySelector('input[name="email"]').value;
+    const name = form.querySelector('input[name="name"]').value;
+    const academicYear = parseInt(form.querySelector('input[name="academicYear"]').value);
+
+    if (!isValidEgyptianPhoneNumber(phone)) {
+        alert('Please enter a valid Egyptian phone number.');
+        return;
+    }
+
+    if (!isValidEmail(email)) {
+        alert('Please enter a valid email address.');
+        return;
+    }
+
+    if (!isValidName(name)) {
+        alert('Please enter a valid name (only letters and spaces).');
+        return;
+    }
+
+    if (!isValidAcademicYear(academicYear)) {
+        alert('Please enter a valid academic year (1-7).');
+        return;
+    }
+
+    // If all validations pass, proceed with form submission
     loadingOverlay.classList.add('active');
     
     const formData = new FormData(form);
