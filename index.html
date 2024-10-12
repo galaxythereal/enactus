@@ -1393,16 +1393,16 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Name validation
-    const nameInput = form.querySelector('input[firstName="firstName"]');
-    nameInput.addEventListener('input', function() {
+    const firstNameInput = form.querySelector('input[firstName="firstName"]');
+    firstNameInput.addEventListener('input', function() {
         if (!isValidFirstName(this.value)) {
             this.setCustomValidity('Please enter a valid name (only letters and spaces)');
         } else {
             this.setCustomValidity('');
         }
     });
-    const nameInput = form.querySelector('input[lastName="lastName"]');
-    nameInput.addEventListener('input', function() {
+    const lastNameInput = form.querySelector('input[lastName="lastName"]');
+    lastNameInput.addEventListener('input', function() {
         if (!isValidLastName(this.value)) {
             this.setCustomValidity('Please enter a valid name (only letters and spaces)');
         } else {
@@ -1431,8 +1431,8 @@ function submitForm(event) {
     // Perform additional validations
     const phone = form.querySelector('input[name="phone"]').value;
     const email = form.querySelector('input[name="email"]').value;
-    const firstName = form.querySelector('input[firstName="firstName"]').value;
-    const lastName = form.querySelector('input[lastName="lastName"]').value;
+    const firstName = form.querySelector('input[name="firstName"]').value;
+    const lastName = form.querySelector('input[name="lastName"]').value;
     const academicYear = parseInt(form.querySelector('input[name="academicYear"]').value);
 
     if (!isValidEgyptianPhoneNumber(phone)) {
