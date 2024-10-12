@@ -1331,7 +1331,7 @@ function showCommitteeQuestions() {
             div.className = 'form-group';
             div.innerHTML = `
                 <label for="${q.name}" class="required-label">${q.label}</label>
-                <textarea id="${q.name}" name="${q.name}" rows="4" mandatory></textarea>
+                <textarea id="${q.name}" name="${q.name}" rows="4" required></textarea>
             `;
             container.appendChild(div);
         });
