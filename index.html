@@ -1358,12 +1358,15 @@ function isValidEmail(email) {
 }
 
 // Function to validate name (only letters and spaces)
-function isValidName(name) {
+function isValidFirstName(name) {
     const nameRegex = /^[A-Za-z\s]+$/;
     return nameRegex.test(name);
 }
 
-
+function isValidLastName(name) {
+    const nameRegex = /^[A-Za-z\s]+$/;
+    return nameRegex.test(name);
+}
 
 // Add event listeners for real-time validation
 document.addEventListener('DOMContentLoaded', function() {
