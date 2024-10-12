@@ -228,7 +228,7 @@ body {
 
 /* Quote Modal Styles */
 .quote-modal {
-    display: none; /* Keep this for hiding the modal by default */
+    display: none;
     position: fixed;
     top: 0;
     left: 0;
@@ -236,14 +236,12 @@ body {
     bottom: 0;
     background: rgba(0, 0, 0, 0.8);
     z-index: 1000;
-    padding: 1rem;
-}
-
-/* Add this new class for when the modal is visible */
-.quote-modal.show {
-    display: flex; /* Change to flex when visible */
     justify-content: center;
     align-items: center;
+}
+
+.quote-modal.show {
+    display: flex;
 }
 
 .quote-content {
@@ -265,16 +263,19 @@ body {
     margin-bottom: 1rem;
     line-height: 1.4;
 }
+
 .quote-author {
     font-style: italic;
     margin-bottom: 1.5rem;
 }
+
 .quote-share-buttons {
     display: flex;
     justify-content: center;
     gap: 1rem;
     flex-wrap: wrap;
 }
+
 .quote-share-button {
     padding: 0.5rem 1rem;
     border-radius: 8px;
@@ -287,20 +288,21 @@ body {
     align-items: center;
     gap: 0.5rem;
 }
+
 .quote-share-button:hover {
     background: rgba(255, 255, 255, 0.3);
 }
+
 .close-quote {
     position: absolute;
-    top: -2rem;
-    right: 0rem;
+    top: 0.5rem;
+    right: 0.5rem;
     background: none;
     border: none;
     color: white;
     font-size: 1.5rem;
     cursor: pointer;
 }
-
         /* Enhanced Stats Bar */
         .stats-bar {
             display: flex;
