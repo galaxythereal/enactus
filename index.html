@@ -238,10 +238,11 @@ body {
     z-index: 1000;
     justify-content: center;
     align-items: center;
-    padding: 1rem;
 }
 
-
+.quote-modal.show {
+    display: flex;
+}
 .quote-content {
     background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
     border-radius: 16px;
@@ -1598,13 +1599,13 @@ function showQuoteModal() {
     document.querySelector('.quote-text').textContent = randomQuote.text;
     document.querySelector('.quote-author').textContent = "- " + randomQuote.author;
     
-    modal.style.display = 'flex'; // Show the modal
+    modal.classList.add('show');
 }
 
 // Event listener for closing the modal
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('.close-quote').addEventListener('click', () => {
-        document.querySelector('.quote-modal').style.display = 'none'; // Hide the modal
+        document.querySelector('.quote-modal').classList.remove('show');
     });
 });
 
