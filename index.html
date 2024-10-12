@@ -1394,7 +1394,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Name validation
     const firstNameInput = form.querySelector('input[firstName="firstName"]');
-    firstNameInput.addEventListener('input', function() {
+    firstName.addEventListener('input', function() {
         if (!isValidFirstName(this.value)) {
             this.setCustomValidity('Please enter a valid name (only letters and spaces)');
         } else {
@@ -1402,7 +1402,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     const lastNameInput = form.querySelector('input[lastName="lastName"]');
-    lastNameInput.addEventListener('input', function() {
+    lastName.addEventListener('input', function() {
         if (!isValidLastName(this.value)) {
             this.setCustomValidity('Please enter a valid name (only letters and spaces)');
         } else {
