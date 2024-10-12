@@ -238,11 +238,9 @@ body {
     z-index: 1000;
     justify-content: center;
     align-items: center;
+    padding: 1rem;
 }
 
-.quote-modal.show {
-    display: flex;
-}
 .quote-content {
     background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
     border-radius: 16px;
@@ -252,10 +250,9 @@ body {
     text-align: center;
     color: white;
     box-shadow: var(--shadow-lg);
-    position: relative;
+    position: relative; /* Important for the absolute positioning of close button */
 }
 
-/* Rest of the CSS remains the same */
 .quote-text {
     font-size: 1.5rem;
     font-weight: 600;
@@ -294,14 +291,15 @@ body {
 
 .close-quote {
     position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
+    top: -2rem; /* Position from top */
+    right: 0rem; /* Position from right */
     background: none;
     border: none;
     color: white;
     font-size: 1.5rem;
     cursor: pointer;
 }
+
         /* Enhanced Stats Bar */
         .stats-bar {
             display: flex;
@@ -825,7 +823,7 @@ input[type="checkbox"] {
                 <div id="formProgress" class="progress"></div>
             </div>
         </div>
-        
+        <button onclick="showQuoteModal()">Test Quote Modal</button>
         <form id="recruitmentForm">
             <!-- Personal Information Section -->
             <div class="form-section animate__animated animate__fadeIn">
@@ -1333,7 +1331,7 @@ function submitForm(event) {
     script.src = `https://script.google.com/macros/s/AKfycbygXTvy53hB1gpvChV2Y-0YiTgqiFwnNJ6zkKuv-nxdIG5PTRsxxCyBNesE-yYWDeGz/exec?${encodedData}&callback=formSubmitCallback`;
     
     // Define the callback function
-    window.formSubmitCallback = function(response) {
+   window.formSubmitCallback = function(response) {
         loadingOverlay.classList.remove('active');
         if (response.result === 'success') {
             showQuoteModal();
@@ -1348,6 +1346,7 @@ function submitForm(event) {
         // Remove the callback function
         delete window.formSubmitCallback;
     };
+
 
     // Append the script to the document to send the request
     document.body.appendChild(script);
@@ -1592,6 +1591,7 @@ const inspirationalQuotes = [
 
 
 
+
 function showQuoteModal() {
     const modal = document.querySelector('.quote-modal');
     const randomQuote = inspirationalQuotes[Math.floor(Math.random() * inspirationalQuotes.length)];
@@ -1599,15 +1599,16 @@ function showQuoteModal() {
     document.querySelector('.quote-text').textContent = randomQuote.text;
     document.querySelector('.quote-author').textContent = "- " + randomQuote.author;
     
-    modal.classList.add('show');
+    modal.style.display = 'flex'; // Show the modal
 }
 
 // Event listener for closing the modal
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('.close-quote').addEventListener('click', () => {
-        document.querySelector('.quote-modal').classList.remove('show');
+        document.querySelector('.quote-modal').style.display = 'none'; // Hide the modal
     });
 });
+
 
 // Test function to show the quote modal (can be triggered as needed)
 function testQuoteModal() {
